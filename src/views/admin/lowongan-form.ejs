@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= lowongan ? 'Edit' : 'Tambah' %> Lowongan | Admin Tracer Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/admin/dashboard.css"/>
+  <style>
+    .form-container-box {
+      background: #white;
+      background-color: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+    .form-section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #064E3B;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      border-bottom: 1.5px solid var(--border);
+      padding-bottom: 8px;
+    }
+    .form-section-title svg {
+      width: 16px; height: 16px; fill: currentColor;
+    }
+    .form-group-full {
+      width: 100%;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-group-full label, .form-group-custom label {
+      font-size: 12px; font-weight: 600; color: #333;
+    }
+    .required {
+      color: #c0392b;
+      margin-left: 2px;
+    }
+    .form-group-full input, .form-group-custom input, .form-group-custom select, .form-group-full textarea {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+      transition: all var(--transition);
+      font-family: inherit;
+    }
+    .form-group-full input:focus, .form-group-custom input:focus, .form-group-custom select:focus, .form-group-full textarea:focus {
+      border-color: #2d6a4f;
+      box-shadow: 0 0 0 3px rgba(45,106,79,0.1);
+    }
+    .dropzone-area {
+      border: 1.5px dashed var(--border);
+      border-radius: 10px;
+      background: #fafaf9;
+      height: 140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      text-align: center;
+      padding: 16px;
+      transition: all var(--transition);
+      position: relative;
+    }
+    .dropzone-area:hover {
+      border-color: #2d6a4f;
+      background: #f4faf6;
+    }
+    .dropzone-area svg {
+      width: 28px; height: 28px; fill: #aaa; margin-bottom: 6px;
+    }
+    .dropzone-area span {
+      font-size: 12px; font-weight: 600; color: #2D6A4F;
+    }
+    .dropzone-area p {
+      font-size: 10px; color: #888; margin-top: 2px;
+    }
+    .dropzone-preview-img {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      object-fit: contain;
+      border-radius: 10px;
+      display: none;
+      background: #fff;
+    }
+    .input-icon-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-icon-wrap svg {
+      position: absolute;
+      left: 12px;
+      width: 16px; height: 16px; fill: #aaa;
+    }
+    .input-icon-wrap input {
+      width: 100%;
+      padding-left: 38px;
+    }
+    .grid-row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .grid-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .form-buttons-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .btn-batal {
+      padding: 10px 24px;
+      border: 1.5px solid var(--border);
+      background: #white;
+      background-color: #fff;
+      color: #555;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 13px;
+      transition: all var(--transition);
+    }
+    .btn-batal:hover {
+      background: #f5f5f5;
+    }
+    .btn-simpan {
+      padding: 10px 24px;
+      border: none;
+      background: #064E3B;
+      color: #white;
+      color: #fff;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all var(--transition);
+    }
+    .btn-simpan:hover {
+      background: #053d2f;
+    }
+    .btn-simpan svg {
+      width: 16px; height: 16px; fill: #fff;
+    }
+  </style>
+</head>
+<body>
+
+<%- include('_sidebar', { active: 'lowongan' }) %>
+
+<main class="main-content">
+  <!-- Topbar -->
+  <%- include('_topbar', { breadcrumbs: [{ label: 'Lowongan', url: '/admin/lowongan' }, { label: 'Form Entri' }] }) %>
+
+  <div class="page-content" style="background:#fcfcf7; min-height: calc(100vh - 54px); padding: 24px;">
+    <!-- Page Header -->
+    <div class="page-header" style="margin-bottom: 24px;">
+      <h1 style="font-size: 20px; font-weight: 800; color: #064E3B;"><%= lowongan ? 'Edit' : 'Tambah' %> Lowongan</h1>
+      <p style="font-size:12px; color:#555; margin-top:4px;">Silakan lengkapi formulir di bawah ini untuk mempublikasikan kesempatan kerja bagi alumni.</p>
+    </div>
+
+    <% if (error) { %>
+      <div class="alert alert-error" style="margin-bottom: 20px;"><%= error %></div>
+    <% } %>
+
+    <!-- Form Container -->
+    <form action="/admin/lowongan/<%= lowongan ? lowongan.id + '/edit' : 'tambah' %>" method="POST" enctype="multipart/form-data" class="form-container-box">
+      <!-- Section 1: Detail Pekerjaan -->
+      <div class="form-section-title">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+        <span>Detail Pekerjaan</span>
+      </div>
+
+      <div class="form-group-full">
+        <label for="judul">Nama Jabatan / Posisi<span class="required">*</span></label>
+        <input type="text" id="judul" name="judul" value="<%= lowongan ? lowongan.judul : '' %>" placeholder="Contoh: Senior Web Developer, IT Consultant" required/>
+      </div>
+
+      <div class="form-group-full">
+        <label for="deskripsi">Deskripsi Lowongan<span class="required">*</span></label>
+        <textarea id="deskripsi" name="deskripsi" rows="6" placeholder="Sebutkan kualifikasi, tanggung jawab, dan manfaat..." required><%= lowongan ? lowongan.deskripsi || '' : '' %></textarea>
+      </div>
+
+      <div class="grid-row-2">
+        <div class="form-group-full" style="margin-bottom:0;">
+          <label>Poster / Foto Lowongan</label>
+          <div class="dropzone-area" onclick="triggerFileSelect()">
+            <svg id="upload-icon" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+            <span id="upload-text">Pilih Gambar</span>
+            <p id="upload-sub">Atau tarik file ke sini (Maks. 2MB)</p>
+            <input type="file" name="gambar" id="gambarInput" accept="image/*" style="display:none;" onchange="previewFile(this)"/>
+            <img id="gambarPreview" class="dropzone-preview-img" src="<%= lowongan && lowongan.gambar ? lowongan.gambar : '' %>" style="<%= lowongan && lowongan.gambar ? 'display:block;' : '' %>" alt="Pratinjau Poster"/>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div class="form-group-full" style="margin-bottom:0;">
+            <label for="link">Link Pendaftaran (URL)<span class="required">*</span></label>
+            <div class="input-icon-wrap" style="margin-top:4px;">
+              <svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+              <input type="url" id="link" name="link" value="<%= lowongan ? lowongan.link || '' : '' %>" placeholder="https://perusahaan.com/karir" required/>
+            </div>
+          </div>
+          
+          <div class="form-group-full" style="margin-bottom:0;">
+            <label for="deadline">Batas Akhir (Deadline)</label>
+            <input type="date" id="deadline" name="deadline" value="<%= lowongan && lowongan.deadline ? new Date(lowongan.deadline).toISOString().split('T')[0] : '' %>"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-buttons-row">
+        <a href="/admin/lowongan" class="btn-batal">Batal</a>
+        <button type="submit" class="btn-simpan">
+          <svg viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+          Simpan Lowongan
+        </button>
+      </div>
+    </form>
+
+    <!-- Footer -->
+    <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #e2e8f0; padding-top:16px; font-size:11px; color:#777; margin-top:20px;">
+      <span>© 2026 Universitas Hamzanwadi - Information Systems</span>
+      <div style="display:flex; gap:16px;">
+        <a href="#" style="color:inherit; text-decoration:none;">Privacy Policy</a>
+        <a href="#" style="color:inherit; text-decoration:none;">Contact Support</a>
+        <a href="#" style="color:inherit; text-decoration:none;">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+
+  function triggerFileSelect() {
+    document.getElementById('gambarInput').click();
+  }
+
+  function previewFile(input) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const preview = document.getElementById('gambarPreview');
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+        
+        // Hide icons and default text
+        document.getElementById('upload-icon').style.display = 'none';
+        document.getElementById('upload-text').style.display = 'none';
+        document.getElementById('upload-sub').style.display = 'none';
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+</script>
+
+</body>
+</html>

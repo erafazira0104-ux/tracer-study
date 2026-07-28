@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard Alumni | Tracer Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/alumni/dashboard.css"/>
+</head>
+<body>
+
+<div class="dashboard-container">
+  <!-- SIDEBAR PARTIAL -->
+  <%- include('../partials/alumni-sidebar') %>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+    
+    <!-- TOP HEADER -->
+    <%- include('../partials/alumni-topbar', { topbarTitle: 'Dashboard Overview', topbarSub: 'Selamat datang kembali di sistem pelacakan alumni.' }) %>
+
+    <!-- CONTENT WRAPPER -->
+    <div class="content-body">
+      
+      <!-- Flash Alert -->
+      <% if (flash_success) { %>
+        <div class="alert alert-success">
+          <div class="alert-icon">✓</div>
+          <div class="alert-content"><%= flash_success %></div>
+        </div>
+      <% } %>
+      <% if (flash_error) { %>
+        <div class="alert alert-error">
+          <div class="alert-icon">⚠️</div>
+          <div class="alert-content"><%= flash_error %></div>
+        </div>
+      <% } %>
+
+      <!-- TOP GRID SECTION -->
+      <div class="dashboard-grid">
+        
+        <!-- LEFT: STATUS TRACER STUDY -->
+        <div class="card status-card">
+          <div class="status-card-header">
+            <div>
+              <h3>Status Tracer Study</h3>
+              <p class="status-desc">Kontribusi Anda sangat berharga bagi akreditasi program studi dan pengembangan kurikulum masa depan.</p>
+            </div>
+            <div class="status-badge-container">
+              <% if (tracer) { %>
+                <span class="status-badge success">SUDAH MENGISI (<%= jumlahPengisian %>x)</span>
+              <% } else { %>
+                <span class="status-badge warning">BELUM MENGISI</span>
+              <% } %>
+            </div>
+          </div>
+
+          <div class="status-progress-section">
+            <div class="progress-item">
+              <div class="progress-labels">
+                <span class="progress-label">PROFIL ALUMNI</span>
+                <span class="progress-value"><%= profilKelengkapan %>%</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill green-gradient" style="width: <%= profilKelengkapan %>%"></div>
+              </div>
+              <p class="progress-subtext"><%= profilKelengkapan === 100 ? '✓ Data profil telah lengkap & terverifikasi' : 'Segera lengkapi data profil akademik Anda' %></p>
+            </div>
+
+            <div class="progress-item">
+              <div class="progress-labels">
+                <span class="progress-label">KUESIONER TRACER</span>
+                <span class="progress-value"><%= tracerKelengkapan %>%</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill <%= tracer ? 'green-gradient' : 'gray' %>" style="width: <%= tracerKelengkapan %>%"></div>
+              </div>
+              <p class="progress-subtext"><%= tracer ? '✓ Telah mengisi ' + jumlahPengisian + 'x — Terakhir: ' + new Date(tracer.tanggal_isi).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Segera lengkapi data kuesioner Anda' %></p>
+            </div>
+          </div>
+
+          <div class="status-card-footer-banner">
+            <div class="banner-icon-box"><%= tracer ? '🔄' : '🚀' %></div>
+            <div class="banner-info">
+              <h4><%= tracer ? 'Update Data Karir Anda' : 'Lengkapi Kuesioner Sekarang' %></h4>
+              <p><%= tracer ? 'Perbarui status karir Anda untuk periode ' + new Date().getFullYear() + '. Setiap update membantu kampus memantau perkembangan alumni.' : 'Hanya membutuhkan waktu kurang dari 5 menit untuk mengisi data pelacakan alumni.' %></p>
+            </div>
+            <a href="/alumni/tracer" class="btn btn-primary-green">
+              <span><%= tracer ? 'Update Tracer Study' : 'Mulai Kuesioner' %></span>
+              <svg viewBox="0 0 24 24" class="btn-arrow"><path fill="currentColor" d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- RIGHT SIDE CARDS -->
+        <div class="right-column-grid">
+          
+          <!-- TIME LIMIT CARD -->
+          <div class="card limit-card">
+            <div class="limit-header">
+              <div class="limit-icon-box">📅</div>
+              <div>
+                <span class="limit-title">BATAS WAKTU</span>
+                <h3>31 Des 2026</h3>
+              </div>
+            </div>
+            <div class="limit-body">
+              <p class="limit-days-left">Sisa <strong>periode pelaporan</strong> aktif.</p>
+              <p class="limit-sub">Jangan lewatkan periode pengumpulan data tracer study untuk tahun pelaporan ini.</p>
+              <div class="limit-bar-indicator">
+                <div class="limit-fill-red" style="width: 75%"></div>
+              </div>
+            </div>
+          </div>
+
+
+
+        </div>
+
+      </div>
+
+
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="main-footer">
+      <p>&copy; <%= new Date().getFullYear() %> Information Systems Hamzanwadi University. All Rights Reserved.</p>
+    </footer>
+
+  </div>
+</div>
+
+<script>
+  // Auto dismiss flash alerts
+  setTimeout(() => {
+    document.querySelectorAll('.alert').forEach(el => {
+      el.style.opacity = '0';
+      setTimeout(() => el.remove(), 500);
+    });
+  }, 4000);
+</script>
+</body>
+</html>

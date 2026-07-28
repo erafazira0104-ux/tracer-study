@@ -1,0 +1,35 @@
+/* alumni.css — khusus halaman alumni, extend dashboard.css */
+/* File ini minimal karena semua style sudah di dashboard.css */
+
+/* Tambahan khusus halaman alumni */
+.nim-col { width: 110px; }
+.status-col { width: 130px; }
+.aksi-col { width: 100px; }
+
+/* Avatar warna berdasarkan huruf */
+.av-a { background: #2d6a4f; }
+.av-b { background: #2b6cb0; }
+.av-c { background: #7c3aed; }
+.av-d { background: #c2410c; }
+.av-e { background: #0d7377; }
+.av-f { background: #d97706; }
+.av-g { background: #1a5276; }
+.av-h { background: #6d4c41; }
+.av-i { background: #1b5e20; }
+.av-j { background: #880e4f; }
+.av-k { background: #4a148c; }
+.av-l { background: #006064; }
+.av-m { background: #bf360c; }
+.av-n { background: #01579b; }
+.av-o { background: #33691e; }
+.av-p { background: #4e342e; }
+.av-q { background: #827717; }
+.av-r { background: #1565c0; }
+.av-s { background: #37474f; }
+.av-t { background: #558b2f; }
+.av-u { background: #6a1b9a; }
+.av-v { background: #0277bd; }
+.av-w { background: #e65100; }
+.av-x { background: #00695c; }
+.av-y { background: #283593; }
+.av-z { background: #4e342e; }

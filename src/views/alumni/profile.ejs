@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lengkapi Profil | Alumni Tracer Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <!-- Reuse dashboard styles for layout & sidebar, import profile.css for page specific styles -->
+  <link rel="stylesheet" href="/css/alumni/dashboard.css"/>
+  <link rel="stylesheet" href="/css/alumni/profile.css"/>
+</head>
+<body>
+
+<div class="dashboard-container">
+  <!-- SIDEBAR PARTIAL -->
+  <%- include('../partials/alumni-sidebar') %>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+    
+    <!-- TOP HEADER -->
+    <%- include('../partials/alumni-topbar', { topbarTitle: 'Alumni Tracer Study', topbarSub: 'Sistem Informasi Hamzanwadi University' }) %>
+
+    <!-- CONTENT WRAPPER -->
+    <div class="content-body">
+      
+      <!-- BREADCRUMBS -->
+      <div class="breadcrumbs">
+        <a href="/alumni/dashboard">Beranda</a>
+        <span>/</span>
+        <span class="active">Lengkapi Profil</span>
+      </div>
+
+      <!-- PAGE TITLE -->
+      <div class="page-title-section">
+        <h2>Lengkapi Profil Alumni</h2>
+        <p>Tahap 1: Sinkronisasi Data Identitas dan Akademik</p>
+      </div>
+
+      <!-- PROGRESS TRACKER -->
+      <div class="progress-tracker">
+        <div class="tracker-step active">
+          <div class="step-num-box">
+            <svg viewBox="0 0 24 24" class="step-icon"><path fill="currentColor" d="M12 6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2m0 10c2.7 0 5.8 1.29 6 2H6c.23-.72 3.3-2 6-2m0-12C9.79 4 8 5.79 8 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 10c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          </div>
+          <span>Lengkapi Profil</span>
+        </div>
+        <div class="tracker-line <%= isTracerFilled ? 'filled' : '' %>"></div>
+        <div class="tracker-step <%= isTracerFilled ? 'done' : 'active-pending' %>">
+          <div class="step-num-box">
+            <svg viewBox="0 0 24 24" class="step-icon"><path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2zm0-4H7V7h10v2zm0 8H7v-2h10v2z"/></svg>
+          </div>
+          <span>Isi Kuesioner</span>
+        </div>
+        <div class="tracker-line <%= isTracerFilled ? 'filled' : '' %>"></div>
+        <div class="tracker-step <%= isTracerFilled ? 'done' : 'todo' %>">
+          <div class="step-num-box">
+            <svg viewBox="0 0 24 24" class="step-icon"><path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          </div>
+          <span>Selesai</span>
+        </div>
+      </div>
+
+      <!-- Flash Alert -->
+      <% if (success) { %>
+        <div class="alert alert-success">
+          <div class="alert-icon">✓</div>
+          <div class="alert-content"><%= success %></div>
+        </div>
+      <% } %>
+      <% if (error) { %>
+        <div class="alert alert-error">
+          <div class="alert-icon">⚠️</div>
+          <div class="alert-content"><%= error %></div>
+        </div>
+      <% } %>
+
+      <!-- FORM GRID -->
+      <div class="profile-grid">
+        
+        <!-- LEFT: FORM DATA -->
+        <div class="profile-form-area">
+          <form action="/alumni/profile" method="POST" id="profileForm">
+            <input type="hidden" name="redirect_to_tracer" id="redirectToTracer" value="false"/>
+
+            <!-- SECTION 1: DATA PRIBADI -->
+            <div class="form-card">
+              <div class="form-card-header">
+                <span class="header-icon-box">👤</span>
+                <h3>Data Pribadi</h3>
+              </div>
+              <div class="form-card-body">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="nama">Nama Lengkap</label>
+                    <input type="text" id="nama" name="nama" value="<%= alumni.nama %>" placeholder="Masukkan nama lengkap sesuai ijazah" required/>
+                  </div>
+                </div>
+
+                <div class="form-row two-cols">
+                  <div class="form-group">
+                    <label for="jenis_kelamin">Jenis Kelamin</label>
+                    <select id="jenis_kelamin" name="jenis_kelamin">
+                      <option value="">Pilih Jenis Kelamin</option>
+                      <option value="L" <%= alumni.jenis_kelamin === 'L' ? 'selected' : '' %>>Laki-laki</option>
+                      <option value="P" <%= alumni.jenis_kelamin === 'P' ? 'selected' : '' %>>Perempuan</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="no_hp">Nomor HP</label>
+                    <input type="text" id="no_hp" name="no_hp" value="<%= alumni.no_hp || '' %>" placeholder="0812xxxx"/>
+                  </div>
+                </div>
+
+                <div class="form-row two-cols">
+                  <div class="form-group">
+                    <label for="tempat_lahir">Tempat Lahir</label>
+                    <input type="text" id="tempat_lahir" name="tempat_lahir" value="<%= alumni.tempat_lahir || '' %>" placeholder="Kota Kelahiran"/>
+                  </div>
+                  <div class="form-group">
+                    <label for="tanggal_lahir">Tanggal Lahir</label>
+                    <% 
+                      let dobStr = '';
+                      if (alumni.tanggal_lahir) {
+                        const d = new Date(alumni.tanggal_lahir);
+                        const year = d.getFullYear();
+                        const month = String(d.getMonth() + 1).padStart(2, '0');
+                        const day = String(d.getDate()).padStart(2, '0');
+                        dobStr = `${year}-${month}-${day}`;
+                      }
+                    %>
+                    <input type="date" id="tanggal_lahir" name="tanggal_lahir" value="<%= dobStr %>"/>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" value="<%= alumni.email %>" placeholder="alumni@email.com" required/>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="alamat">Alamat Lengkap</label>
+                    <textarea id="alamat" name="alamat" rows="3" placeholder="Alamat lengkap domisili saat ini"><%= alumni.alamat || '' %></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 2: DATA AKADEMIK -->
+            <div class="form-card">
+              <div class="form-card-header">
+                <span class="header-icon-box">🎓</span>
+                <h3>Data Akademik</h3>
+              </div>
+              <div class="form-card-body">
+                <div class="form-row two-cols">
+                  <div class="form-group">
+                    <label for="nim">NIM (Nomor Induk Mahasiswa)</label>
+                    <input type="text" id="nim" name="nim" value="<%= alumni.nim %>" readonly class="readonly-input" title="NIM tidak dapat diubah"/>
+                  </div>
+                  <div class="form-group">
+                    <label for="ipk_terakhir">IPK Terakhir</label>
+                    <input type="number" step="0.01" min="0" max="4" id="ipk_terakhir" name="ipk_terakhir" value="<%= alumni.ipk_terakhir || '' %>" placeholder="Contoh: 3.75"/>
+                  </div>
+                </div>
+
+                <div class="form-row two-cols">
+                  <div class="form-group">
+                    <label for="fakultas">Fakultas</label>
+                    <select id="fakultas" name="fakultas">
+                      <option value="">Pilih Fakultas</option>
+                      <option value="Fakultas Teknik" <%= alumni.fakultas === 'Fakultas Teknik' ? 'selected' : '' %>>Fakultas Teknik</option>
+                      <option value="Fakultas Kesehatan" <%= alumni.fakultas === 'Fakultas Kesehatan' ? 'selected' : '' %>>Fakultas Kesehatan</option>
+                      <option value="Fakultas Keguruan" <%= alumni.fakultas === 'Fakultas Keguruan' ? 'selected' : '' %>>Fakultas Keguruan dan Ilmu Pendidikan</option>
+                      <option value="Fakultas Ilmu Sosial" <%= alumni.fakultas === 'Fakultas Ilmu Sosial' ? 'selected' : '' %>>Fakultas Ilmu Sosial dan Ekonomi</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="program_studi">Program Studi</label>
+                    <select id="program_studi" name="program_studi">
+                      <option value="">Pilih Program Studi</option>
+                      <option value="Sistem Informasi" <%= alumni.program_studi === 'Sistem Informasi' ? 'selected' : '' %>>Sistem Informasi</option>
+                      <option value="Teknik Informatika" <%= alumni.program_studi === 'Teknik Informatika' ? 'selected' : '' %>>Teknik Informatika</option>
+                      <option value="Pendidikan Teknologi Informasi" <%= alumni.program_studi === 'Pendidikan Teknologi Informasi' ? 'selected' : '' %>>Pendidikan Teknologi Informasi</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-row three-cols">
+                  <div class="form-group">
+                    <label for="tahun_masuk">Tahun Masuk</label>
+                    <input type="number" id="tahun_masuk" name="tahun_masuk" value="<%= alumni.tahun_masuk || '' %>" placeholder="20XX"/>
+                  </div>
+                  <div class="form-group">
+                    <label for="tahun_lulus">Tahun Lulus</label>
+                    <input type="number" id="tahun_lulus" name="tahun_lulus" value="<%= alumni.tahun_lulus || '' %>" placeholder="20XX"/>
+                  </div>
+                  <div class="form-group">
+                    <label for="angkatan">Angkatan</label>
+                    <input type="text" id="angkatan" name="angkatan" value="<%= alumni.angkatan || '' %>" placeholder="20XX"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="form-actions-row">
+              <button type="submit" class="btn btn-secondary-outline" onclick="setRedirect(false)">Simpan Draft</button>
+              <button type="submit" class="btn btn-primary-green" onclick="setRedirect(true)">Simpan dan Lanjutkan</button>
+            </div>
+
+          </form>
+
+        </div>
+
+        <!-- RIGHT: WIDGET PANELS -->
+        <div class="profile-widgets-area">
+          
+          <!-- TIPS CARD -->
+          <div class="card widget-card tips-card">
+            <div class="widget-header">
+              <span class="widget-icon">💡</span>
+              <h4>Tips Mengisi</h4>
+            </div>
+            <ul class="tips-list">
+              <li>
+                <strong>Kesesuaian Data:</strong> Pastikan Nama Lengkap ditulis sesuai dengan yang tertera di Ijazah resmi Anda.
+              </li>
+              <li>
+                <strong>Hubungi WhatsApp:</strong> Pastikan Nomor HP yang diisi aktif dan terhubung ke WhatsApp untuk info karir dan alumni.
+              </li>
+              <li>
+                <strong>Verifikasi Akademik:</strong> Data akademik akan divalidasi oleh Biro Administrasi Akademik untuk kelengkapan administrasi program studi.
+              </li>
+            </ul>
+          </div>
+
+          <!-- BANNER HERO WIDGET -->
+          <div class="widget-banner-card">
+            <div class="banner-gradient-overlay"></div>
+            <div class="banner-content">
+              <h3>Bersatu Membangun Bangsa</h3>
+              <p>Alumni Hamzanwadi University</p>
+            </div>
+          </div>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="main-footer">
+      <p>&copy; <%= new Date().getFullYear() %> Information Systems Hamzanwadi University. All Rights Reserved.</p>
+    </footer>
+
+  </div>
+</div>
+
+<script>
+  function setRedirect(val) {
+    document.getElementById('redirectToTracer').value = val ? 'true' : 'false';
+  }
+
+  // Auto dismiss flash alerts
+  setTimeout(() => {
+    document.querySelectorAll('.alert').forEach(el => {
+      el.style.opacity = '0';
+      setTimeout(() => el.remove(), 500);
+    });
+  }, 4000);
+</script>
+</body>
+</html>

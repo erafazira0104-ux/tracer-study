@@ -1,0 +1,80 @@
+<div class="topbar" style="justify-content: space-between; height: 60px; padding: 0 24px;">
+  <!-- Sidebar Toggle for Mobile -->
+  <button class="sidebar-toggle" onclick="toggleSidebar()" style="background: none; border: none; cursor: pointer; padding: 4px; border-radius: 6px; color: #555; margin-right: 8px;">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+  </button>
+
+  <!-- Left Side: Title/Subtitle or Breadcrumbs -->
+  <% if (typeof breadcrumbs !== 'undefined' && breadcrumbs && breadcrumbs.length > 0) { %>
+    <div class="topbar-breadcrumb" style="flex:1; display:flex; align-items:center; gap:6px; font-size:13px; color:#888;">
+      <% breadcrumbs.forEach((crumb, i) => { %>
+        <% if (i > 0) { %><span style="margin: 0 2px;">›</span><% } %>
+        <% if (crumb.url) { %>
+          <a href="<%= crumb.url %>" style="color:inherit; text-decoration:none; transition: color 0.2s;"><%= crumb.label %></a>
+        <% } else { %>
+          <span class="crumb-active" style="color:#111; font-weight:600;"><%= crumb.label %></span>
+        <% } %>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div style="flex: 1;">
+      <div class="topbar-title" style="font-size:14px; font-weight: 700; color: #111;"><%= title %></div>
+      <% if (typeof subTitle !== 'undefined' && subTitle) { %>
+        <div class="topbar-sub" style="font-size: 11px; color: #888; margin-top: 2px;"><%= subTitle %></div>
+      <% } %>
+    </div>
+  <% } %>
+
+  <!-- Right Side: Search & Profile Dropdown -->
+  <div style="display:flex; align-items:center; gap:16px; justify-content: flex-end;">
+    <% if (typeof showSearch !== 'undefined' && showSearch) { %>
+      <form method="GET" action="<%= searchAction %>" class="topbar-search-wrap" style="position:relative; display: flex; align-items: center;">
+        <svg viewBox="0 0 24 24" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); width:16px; height:16px; fill:#9ca3af; pointer-events: none;"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <input 
+          type="text" 
+          name="<%= typeof searchName !== 'undefined' ? searchName : 'search' %>" 
+          placeholder="<%= typeof searchPlaceholder !== 'undefined' ? searchPlaceholder : 'Cari...' %>" 
+          value="<%= typeof searchValue !== 'undefined' ? searchValue : '' %>"
+          style="padding:6px 12px 6px 36px; border:1.5px solid #d1e7d9; border-radius:8px; outline:none; font-size:13px; width: 220px; transition: border-color 0.2s;"
+        />
+      </form>
+    <% } %>
+
+    <!-- Admin Profile Dropdown -->
+    <div class="profile-dropdown" style="position:relative; display:inline-block;">
+      <button class="profile-dropbtn" onclick="toggleProfileMenu(event)" style="display:flex; align-items:center; gap:8px; background:none; border:none; cursor:pointer; padding:6px 12px; border-radius:20px; transition: background 0.2s;">
+        <div class="profile-avatar-img" style="width:32px; height:32px; border-radius:50%; background:#2d6a4f; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; text-transform:uppercase; overflow:hidden; flex-shrink:0;">
+          <% if (typeof adminFoto !== 'undefined' && adminFoto) { %>
+            <img src="<%= adminFoto %>" style="width:100%; height:100%; object-fit:cover; border-radius:50%;"/>
+          <% } else { %>
+            <%= locals.adminName ? adminName[0].toUpperCase() : 'A' %>
+          <% } %>
+        </div>
+        <span class="profile-name" style="font-size:12px; font-weight:600; color:#333;">Admin</span>
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="color:#555;"><path d="M7 10l5 5 5-5z"/></svg>
+      </button>
+      <div id="profileDropdown" class="dropdown-content" style="display:none; position:absolute; right:0; background-color:#fff; min-width:160px; box-shadow:0px 8px 16px 0px rgba(0,0,0,0.1); border:1px solid #e2e8f0; border-radius:8px; z-index:100; margin-top:4px; overflow:hidden;">
+        <a href="/admin/pengaturan" style="color:#333; padding:10px 16px; text-decoration:none; display:block; font-size:12px; font-weight:500; text-align:left; transition: background 0.2s;">Pengaturan</a>
+        <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" style="color:#333; padding:10px 16px; text-decoration:none; display:block; font-size:12px; font-weight:500; text-align:left; transition: background 0.2s;">Keluar</a>
+        <form id="logout-form" action="/admin/login/logout" method="POST" style="display:none;"></form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleProfileMenu(e) {
+    e.stopPropagation();
+    const dropdown = document.getElementById('profileDropdown');
+    if (dropdown) {
+      const isHidden = dropdown.style.display === 'none' || dropdown.style.display === '';
+      dropdown.style.display = isHidden ? 'block' : 'none';
+    }
+  }
+  window.addEventListener('click', function(event) {
+    var dropdown = document.getElementById('profileDropdown');
+    if (dropdown) {
+      dropdown.style.display = 'none';
+    }
+  });
+</script>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kelola Periode Pengisian | Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/admin/dashboard.css"/>
+  <!-- Flatpickr (Custom Date Time Picker) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <style>
+    .tambah-periode-form {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 32px;
+      margin-bottom: 32px;
+      box-shadow: 0 4px 20px -2px rgba(6, 78, 59, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    .tambah-periode-form::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #064E3B, #eab308);
+    }
+    .tambah-periode-form h3 {
+      font-size: 17px; 
+      font-weight: 800; 
+      color: #064E3B; 
+      display: flex; 
+      align-items: center; 
+      gap: 10px; 
+      margin-bottom: 6px;
+    }
+    .tambah-periode-form p {
+      font-size: 13px; 
+      color: #64748b; 
+      margin-bottom: 24px;
+    }
+    .tambah-form-row {
+      display: flex;
+      gap: 20px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+    .form-group-custom {
+      flex: 1;
+      min-width: 250px;
+    }
+    .form-group-custom label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .form-group-custom input {
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 14px;
+      outline: none;
+      background: #fafaf9;
+      font-family: inherit;
+      color: #1e293b;
+      transition: all 0.3s ease;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .form-group-custom input:focus {
+      border-color: #064E3B;
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(6, 78, 59, 0.1);
+    }
+    .btn-submit-custom {
+      background: linear-gradient(135deg, #eab308, #ca8a04);
+      color: #fff;
+      font-weight: 700;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 48px;
+      box-sizing: border-box;
+    }
+    .btn-submit-custom:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(202, 138, 4, 0.3);
+    }
+    
+    /* Period Card/Item List */
+    .periode-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .periode-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    .periode-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 20px -8px rgba(6, 78, 59, 0.15);
+      border-color: #064E3B;
+    }
+    .periode-card.active {
+      border: 2px solid #064E3B;
+      background: #f0fdf4;
+    }
+    .active-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: #064E3B;
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .inactive-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: #f1f5f9;
+      color: #64748b;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .periode-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0 0 16px 0;
+      padding-right: 60px;
+    }
+    .periode-info-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #475569;
+      margin-bottom: 8px;
+    }
+    .periode-info-item svg {
+      color: #64748b;
+      flex-shrink: 0;
+    }
+    .periode-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 16px;
+    }
+    .btn-act {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+      border: none;
+    }
+    .btn-act-toggle {
+      background: #e2e8f0;
+      color: #1e293b;
+    }
+    .btn-act-toggle:hover {
+      background: #cbd5e1;
+    }
+    .periode-card.active .btn-act-toggle {
+      background: #d1e7dd;
+      color: #0f5132;
+      cursor: default;
+      pointer-events: none;
+    }
+    .btn-act-delete {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fee2e2;
+    }
+    .btn-act-delete:hover {
+      background: #fee2e2;
+      color: #7f1d1d;
+    }
+  </style>
+</head>
+<body>
+
+<%- include('_sidebar', { active: 'tracer' }) %>
+
+<main class="main-content">
+  <%- include('_topbar', { breadcrumbs: [{ label: 'Tracer Study', url: '/admin/tracer' }, { label: 'Kelola Periode' }] }) %>
+
+  <div class="page-content">
+    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+      <div>
+        <h1>Kelola Masa Pengisian Tracer Study</h1>
+        <p>Atur periode pengisian, tanggal mulai, dan batas waktu kuesioner tracer study alumni.</p>
+      </div>
+      <a href="/admin/tracer" class="btn btn-ghost" style="padding:10px 16px; text-decoration:none; font-size:13px; font-weight:700; display:inline-flex; align-items:center; gap:8px;">
+        &larr; Kembali ke Kuesioner
+      </a>
+    </div>
+
+    <!-- Alert / Messages -->
+    <% if (flash_success) { %>
+      <div class="alert alert-success" style="background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d; padding:16px; border-radius:12px; margin-bottom:24px; display:flex; gap:12px; align-items:center;">
+        <span style="font-weight:bold;">✓</span>
+        <div><%= flash_success %></div>
+      </div>
+    <% } %>
+    <% if (flash_error) { %>
+      <div class="alert alert-danger" style="background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; padding:16px; border-radius:12px; margin-bottom:24px; display:flex; gap:12px; align-items:center;">
+        <span style="font-weight:bold;">⚠️</span>
+        <div><%= flash_error %></div>
+      </div>
+    <% } %>
+
+    <!-- TAMBAH PERIODE FORM -->
+    <div class="tambah-periode-form">
+      <h3>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        Buka Masa Pengisian Baru
+      </h3>
+      <p>Atur waktu mulai dan waktu selesai pengisian kuesioner tracer study secara fleksibel.</p>
+      
+      <form action="/admin/tracer/periode/tambah" method="POST">
+        <div class="tambah-form-row">
+          <div class="form-group-custom" style="flex: 2;">
+            <label for="nama">Nama / Label Periode</label>
+            <input type="text" id="nama" name="nama" placeholder="Contoh: Periode Ganjil 2026 atau Tahun 2026 Batch I" required/>
+          </div>
+          
+          <div class="form-group-custom">
+            <label for="tanggal_mulai">Waktu Mulai</label>
+            <input type="text" id="tanggal_mulai" name="tanggal_mulai" placeholder="Pilih Waktu Mulai" required/>
+          </div>
+
+          <div class="form-group-custom">
+            <label for="tanggal_selesai">Waktu Selesai</label>
+            <input type="text" id="tanggal_selesai" name="tanggal_selesai" placeholder="Pilih Waktu Selesai" required/>
+          </div>
+          
+          <button type="submit" class="btn-submit-custom">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            Buat Periode
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- PENGATURAN COOLDOWN FORM -->
+    <div class="tambah-periode-form" style="background: #fafaf9; border-left: 4px solid #ca8a04; margin-bottom: 32px;">
+      <h3 style="color: #854d0e;">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="color: #854d0e;"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+        Pengaturan Jeda Pengisian Ulang (Alumni Cooldown)
+      </h3>
+      <p style="color: #854d0e;">Tentukan berapa lama alumni harus menunggu sebelum diizinkan memperbarui data karir mereka kembali (dalam satuan bulan). <strong>Isi dengan angka 0 jika ingin mematikan jeda (selalu terbuka untuk keperluan uji coba/testing).</strong></p>
+      
+      <form action="/admin/tracer/pengaturan/cooldown" method="POST">
+        <div class="tambah-form-row" style="align-items: center;">
+          <div class="form-group-custom" style="max-width: 250px;">
+            <label for="cooldown_bulan" style="color: #854d0e;">Jeda Pengisian (Bulan)</label>
+            <input type="number" id="cooldown_bulan" name="cooldown_bulan" value="<%= cooldownBulan %>" min="0" max="60" required style="border-color: #f59e0b; background: #fff;"/>
+          </div>
+          
+          <button type="submit" class="btn-submit-custom" style="background: linear-gradient(135deg, #ca8a04, #854d0e); height: 48px; box-shadow: 0 4px 12px rgba(133, 77, 14, 0.2);">
+            Simpan Pengaturan
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- LIST PERIODE -->
+    <div style="margin-bottom: 16px;">
+      <h3 style="font-size: 15px; font-weight:800; color:#1e293b; margin-bottom:16px; text-transform:uppercase; letter-spacing:0.5px;">Daftar Periode Pengisian</h3>
+    </div>
+
+    <div class="periode-grid">
+      <% if (!periodes || periodes.length === 0) { %>
+        <div style="grid-column: 1 / -1; background:#fff; border: 1px solid #e2e8f0; border-radius:16px; padding:48px; text-align:center; color:#94a3b8;">
+          Belum ada periode pengisian yang dikonfigurasi.
+        </div>
+      <% } else { %>
+        <% periodes.forEach(function(p) { %>
+          <% 
+            const now = new Date();
+            const start = new Date(p.tanggal_mulai);
+            const end = new Date(p.tanggal_selesai);
+            const isOpen = p.is_active && now >= start && now <= end;
+          %>
+          <div class="periode-card <%= p.is_active ? 'active' : '' %>">
+            <div>
+              <% if (p.is_active) { %>
+                <span class="active-badge">Aktif</span>
+              <% } else { %>
+                <span class="inactive-badge">Tidak Aktif</span>
+              <% } %>
+              
+              <h4 class="periode-title"><%= p.nama %></h4>
+              
+              <div class="periode-info-item">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7v-5z"/></svg>
+                <span>Waktu Mulai: <strong><%= start.toLocaleString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) %></strong></span>
+              </div>
+              
+              <div class="periode-info-item">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                <span>Waktu Selesai: <strong><%= end.toLocaleString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) %></strong></span>
+              </div>
+
+              <div class="periode-info-item" style="margin-top: 12px; font-size:12px;">
+                Status Masa Pengisian:
+                <% if (!p.is_active) { %>
+                  <span style="color:#64748b; font-weight:700;">Periode Non-aktif</span>
+                <% } else if (now < start) { %>
+                  <span style="color:#d97706; font-weight:700;">Belum Dimulai</span>
+                <% } else if (now > end) { %>
+                  <span style="color:#dc2626; font-weight:700;">Sudah Ditutup</span>
+                <% } else { %>
+                  <span style="color:#16a34a; font-weight:700;">Terbuka (Sedang Berjalan)</span>
+                <% } %>
+              </div>
+            </div>
+
+            <div class="periode-actions">
+              <!-- TOGGLE ACTIVE -->
+              <form action="/admin/tracer/periode/<%= p.id %>/toggle" method="POST" style="flex:1;">
+                <button type="submit" class="btn-act btn-act-toggle" <%= p.is_active ? 'disabled' : '' %>>
+                  <% if (p.is_active) { %>
+                    ✓ Sedang Aktif
+                  <% } else { %>
+                    Aktifkan Periode
+                  <% } %>
+                </button>
+              </form>
+
+              <!-- DELETE -->
+              <form action="/admin/tracer/periode/<%= p.id %>/hapus" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus periode ini?')" style="flex-shrink:0;">
+                <button type="submit" class="btn-act btn-act-delete" title="Hapus Periode">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                </button>
+              </form>
+            </div>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </div>
+</main>
+
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+
+  // Initialize Flatpickr for start and end datetime fields
+  flatpickr("#tanggal_mulai", {
+    enableTime: true,
+    altInput: true,
+    altFormat: "d-m-Y H:i",
+    dateFormat: "Y-m-d H:i",
+    time_24hr: true
+  });
+
+  flatpickr("#tanggal_selesai", {
+    enableTime: true,
+    altInput: true,
+    altFormat: "d-m-Y H:i",
+    dateFormat: "Y-m-d H:i",
+    time_24hr: true
+  });
+</script>
+</body>
+</html>

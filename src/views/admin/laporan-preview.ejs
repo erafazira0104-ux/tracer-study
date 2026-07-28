@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pratinjau Hasil Ekspor | Admin Tracer Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/admin/dashboard.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    /* Browser mockup container */
+    .sheet-mockup-container {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      margin-top: 24px;
+    }
+    .sheet-mockup-header {
+      background: #f1f5f9;
+      border-bottom: 1px solid var(--border);
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .sheet-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .sheet-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+    .sheet-dot.red { background: #ef4444; }
+    .sheet-dot.yellow { background: #f59e0b; }
+    .sheet-dot.green { background: #10b981; }
+    .sheet-tab-box {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      padding: 6px 14px;
+      border-radius: 6px 6px 0 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #333;
+      margin-left: 20px;
+      position: relative;
+      top: 13px;
+    }
+    .sheet-tab-box svg {
+      width: 12px; height: 12px; fill: #10b981;
+    }
+    .sheet-body-content {
+      padding: 48px;
+      background: #fff;
+    }
+    .sheet-main-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #064E3B;
+      letter-spacing: 0.5px;
+    }
+    .sheet-subtitle {
+      font-size: 13px;
+      font-weight: 600;
+      color: #555;
+      margin-top: 4px;
+    }
+    .sheet-date-text {
+      font-size: 11px;
+      color: #888;
+      margin-top: 4px;
+    }
+    .alumni-link {
+      color: #2d6a4f;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .alumni-link:hover {
+      text-decoration: underline;
+    }
+    /* Action buttons */
+    .preview-actions-row {
+      display: flex;
+      gap: 12px;
+    }
+    .btn-preview-outline {
+      padding: 8px 16px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      color: #555;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: all var(--transition);
+    }
+    .btn-preview-outline:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+    .btn-preview-solid {
+      padding: 8px 16px;
+      border: none;
+      background: #064E3B;
+      color: #fff;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: all var(--transition);
+    }
+    .btn-preview-solid:hover {
+      background: #053d2f;
+    }
+    .btn-preview-outline svg, .btn-preview-solid svg {
+      width: 14px; height: 14px; fill: currentColor;
+    }
+    .topbar-search-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      max-width: 320px;
+      width: 100%;
+    }
+    .topbar-search-wrap svg {
+      position: absolute;
+      left: 12px;
+      width: 16px; height: 16px; fill: #aaa;
+    }
+    .topbar-search-wrap input {
+      width: 100%;
+      padding: 8px 12px 8px 36px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 12px;
+      outline: none;
+      background: #f3f4f6;
+      transition: all var(--transition);
+    }
+    .topbar-search-wrap input:focus {
+      background: #fff;
+      border-color: #2d6a4f;
+      box-shadow: 0 0 0 3px rgba(45,106,79,0.1);
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      .sheet-mockup-container, .sheet-mockup-container * {
+        visibility: visible;
+      }
+      .sheet-mockup-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        border: none;
+        box-shadow: none;
+      }
+      .sheet-mockup-header {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<%- include('_sidebar', { active: 'laporan' }) %>
+
+<main class="main-content">
+  <!-- Topbar matching mockup -->
+  <%- include('_topbar', { breadcrumbs: [{ label: 'Kembali ke Laporan', url: '/admin/laporan' }], showSearch: true, searchAction: '#', searchPlaceholder: 'Cari laporan...' }) %>
+
+  <div class="page-content" style="background:#fcfcf7; min-height: calc(100vh - 60px); padding: 24px;">
+    <!-- Title header with buttons -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+      <div>
+        <h1 style="font-size: 20px; font-weight: 800; color: #064E3B;">Pratinjau Hasil Ekspor</h1>
+        <p style="font-size:12px; color:#555; margin-top:4px;">
+          <% if (type === 'konseling') { %>
+            Pratinjau: Laporan Sesi Konseling Karir Alumni
+          <% } else if (type === 'lowongan') { %>
+            Pratinjau: Laporan Akses Lowongan Kerja Alumni
+          <% } else { %>
+            Pratinjau: Laporan Hasil Tracer Study 2023 - Angkatan 2021 &amp; 2022
+          <% } %>
+        </p>
+      </div>
+
+      <div class="preview-actions-row">
+        <button onclick="window.print()" class="btn-preview-outline">
+          <svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+          Download
+        </button>
+        <% 
+          let exportUrl = '/admin/laporan/export/tracer';
+          if (type === 'konseling') exportUrl = '/admin/laporan/export/konseling';
+          else if (type === 'lowongan') exportUrl = '/admin/laporan/export/lowongan';
+        %>
+        <a href="<%= exportUrl %>" class="btn-preview-outline">
+          <svg viewBox="0 0 24 24"><path d="M21.17 3.25c-.27-.27-.63-.42-1-.42H3.83c-.37 0-.73.15-1 .42-.27.27-.42.63-.42 1v15.5c0 .37.15.73.42 1 .27.27.63.42 1 .42h16.34c.37 0 .73-.15 1-.42.27-.27.42-.63.42-1V4.25c0-.37-.15-.73-.42-1zm-1.5 16.5H4.33V4.83h15.34v14.92zM7 7h10v2H7zm0 4h10v2H7zm0 4h7v2H7z"/></svg>
+          Download Excel
+        </a>
+        <button onclick="window.print()" class="btn-preview-solid">
+          <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+          Download PDF
+        </button>
+      </div>
+    </div>
+
+    <!-- Excel Mockup Page -->
+    <div class="sheet-mockup-container">
+      <div class="sheet-mockup-header">
+        <div class="sheet-dots">
+          <div class="sheet-dot red"></div>
+          <div class="sheet-dot yellow"></div>
+          <div class="sheet-dot green"></div>
+          
+          <div class="sheet-tab-box">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+            <span>
+              <% if (type === 'konseling') { %>
+                laporan_konseling_karir.xlsx
+              <% } else if (type === 'lowongan') { %>
+                laporan_akses_lowongan.xlsx
+              <% } else { %>
+                tracer_study_2023.xlsx
+              <% } %>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sheet-body-content">
+        <!-- University Title Header -->
+        <div style="text-align:center; margin-bottom:36px; border-bottom: 2px solid #064E3B; padding-bottom: 20px;">
+          <h2 class="sheet-main-title">UNIVERSITAS HAMZANWADI</h2>
+          <p class="sheet-subtitle">
+            <% if (type === 'konseling') { %>
+              Laporan Sesi Konseling Karir Alumni
+            <% } else if (type === 'lowongan') { %>
+              Laporan Akses Lowongan Kerja Alumni
+            <% } else { %>
+              Laporan Data Tracer Study Program Studi Sistem Informasi
+            <% } %>
+          </p>
+          <p class="sheet-date-text">Periode Pelaporan: Januari - Desember 2023</p>
+        </div>
+
+        <div class="table-responsive">
+          <% if (type === 'konseling') { %>
+            <!-- Tabel Konseling -->
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width:40px; text-align:center;">No</th>
+                  <th style="width:180px;">Nama Alumni</th>
+                  <th style="width:120px;">NIM</th>
+                  <th style="width:80px; text-align:center;">Lulus</th>
+                  <th style="width:180px;">Konselor Pilihan</th>
+                  <th>Topik / Masalah</th>
+                  <th style="width:120px; text-align:center;">Status Layanan</th>
+                  <th style="width:110px; text-align:center;">Tanggal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (!data || data.length === 0) { %>
+                <tr><td colspan="8" style="text-align:center; padding:32px; color:#888;">Belum ada data konseling.</td></tr>
+                <% } else { %>
+                <% data.forEach((r, i) => { %>
+                <tr>
+                  <td style="text-align:center; font-weight:600; color:#555;"><%= i+1 %></td>
+                  <td>
+                    <a href="/admin/alumni" class="alumni-link"><%= r.nama %></a>
+                  </td>
+                  <td style="font-weight:500;"><%= r.nim || '-' %></td>
+                  <td style="text-align:center;"><%= r.tahun_lulus || '-' %></td>
+                  <td style="font-weight:600; color:#064E3B;"><%= r.konselor || '-' %></td>
+                  <td><%= r.topik %></td>
+                  <td style="text-align:center;">
+                    <span class="status-badge <%= r.status === 'sudah_dilayani' ? 'sudah' : 'belum' %>">
+                      <%= r.status === 'sudah_dilayani' ? 'Sudah Dilayani' : 'Belum Dilayani' %>
+                    </span>
+                  </td>
+                  <td style="text-align:center; font-size:11px; color:#666;">
+                    <%= new Date(r.created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) %>
+                  </td>
+                </tr>
+                <% }) %>
+                <% } %>
+              </tbody>
+            </table>
+
+          <% } else if (type === 'lowongan') { %>
+            <!-- Tabel Akses Lowongan -->
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width:40px; text-align:center;">No</th>
+                  <th style="width:180px;">Nama Alumni</th>
+                  <th style="width:120px;">NIM</th>
+                  <th style="width:160px;">Email</th>
+                  <th style="width:110px;">No. HP</th>
+                  <th>Lowongan Kerja</th>
+                  <th>Perusahaan</th>
+                  <th style="width:110px; text-align:center;">Tanggal Akses</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (!data || data.length === 0) { %>
+                <tr><td colspan="8" style="text-align:center; padding:32px; color:#888;">Belum ada log akses lowongan.</td></tr>
+                <% } else { %>
+                <% data.forEach((r, i) => { %>
+                <tr>
+                  <td style="text-align:center; font-weight:600; color:#555;"><%= i+1 %></td>
+                  <td style="font-weight:600;"><%= r.nama %></td>
+                  <td style="font-weight:500;"><%= r.nim || '-' %></td>
+                  <td><%= r.email %></td>
+                  <td><%= r.no_hp || '-' %></td>
+                  <td style="font-weight:600; color:#064E3B;"><%= r.nama_lowongan %></td>
+                  <td><%= r.perusahaan %></td>
+                  <td style="text-align:center; font-size:11px; color:#666;">
+                    <%= new Date(r.created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) %>
+                  </td>
+                </tr>
+                <% }) %>
+                <% } %>
+              </tbody>
+            </table>
+
+          <% } else { %>
+            <!-- Tabel Tracer Study (Default) -->
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width:40px; text-align:center;">No</th>
+                  <th style="width:180px;">Nama Alumni</th>
+                  <th style="width:120px;">NIM</th>
+                  <th style="width:80px; text-align:center;">Lulus</th>
+                  <th style="width:120px; text-align:center;">Status</th>
+                  <th>Perusahaan/Instansi</th>
+                  <th>Posisi</th>
+                  <th style="width:130px;">Gaji (Estimasi)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (!data || data.length === 0) { %>
+                <tr><td colspan="8" style="text-align:center; padding:32px; color:#888;">Belum ada data tracer study.</td></tr>
+                <% } else { %>
+                <% data.forEach((r, i) => { %>
+                <tr>
+                  <td style="text-align:center; font-weight:600; color:#555;"><%= i+1 %></td>
+                  <td>
+                    <a href="/admin/alumni" class="alumni-link"><%= r.nama %></a>
+                  </td>
+                  <td style="font-weight:500;"><%= r.nim %></td>
+                  <td style="text-align:center;"><%= r.tahun_lulus || '-' %></td>
+                  <td style="text-align:center;">
+                    <% 
+                      let statusClass = 'belum';
+                      let statusLabel = 'Belum Mengisi';
+                      if (r.status_pekerjaan === 'bekerja') {
+                        statusClass = 'sudah';
+                        statusLabel = 'Bekerja';
+                      } else if (r.status_pekerjaan === 'wirausaha') {
+                        statusClass = 'wirausaha';
+                        statusLabel = 'Wirausaha';
+                      } else if (r.status_pekerjaan === 'kuliah') {
+                        statusClass = 'studi';
+                        statusLabel = 'Studi Lanjut';
+                      } else if (r.status_pekerjaan === 'belum_bekerja') {
+                        statusClass = 'belum_bekerja';
+                        statusLabel = 'Belum Bekerja';
+                      }
+                    %>
+                    <span class="status-badge <%= statusClass %>">
+                      <%= statusLabel %>
+                    </span>
+                  </td>
+                  <td><%= r.nama_perusahaan || '-' %></td>
+                  <td><%= r.jabatan || '-' %></td>
+                  <td style="font-weight:600; color:#444;">
+                    <% 
+                      let displayGaji = '-';
+                      if (r.gaji_pertama) {
+                        if (!isNaN(r.gaji_pertama) && !isNaN(parseFloat(r.gaji_pertama))) {
+                          displayGaji = 'Rp ' + parseInt(r.gaji_pertama).toLocaleString('id-ID');
+                        } else {
+                          displayGaji = r.gaji_pertama;
+                        }
+                      }
+                    %>
+                    <%= displayGaji %>
+                  </td>
+                </tr>
+                <% }) %>
+                <% } %>
+              </tbody>
+            </table>
+          <% } %>
+        </div>
+
+        <!-- Summary Footer info matching mockup -->
+        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #e2e8f0; padding-top:20px; margin-top:32px; font-size:11px; color:#666;">
+          <div>
+            <strong>
+              <% if (type === 'konseling') { %>
+                Total Booking: <%= totalResponden %> Sesi
+              <% } else if (type === 'lowongan') { %>
+                Total Akses: <%= totalResponden %> Kali
+              <% } else { %>
+                Total Responden: <%= totalResponden %> Alumni
+              <% } %>
+            </strong>
+            <p style="margin-top:4px; color:#888;">Data ini diekstrak secara otomatis melalui sistem Informasi Tracer study di Universitas Hamzanwadi.</p>
+          </div>
+          <div style="text-align:right;">
+            <span>Dicetak pada: <%= new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) %>, <%= new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}) %> WITA</span>
+            <p style="margin-top:4px; font-weight:600; color:#064E3B;">Halaman 1 dari 1</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+
+  // Pemicu unduh otomatis setelah halaman termuat
+  window.onload = function() {
+    const element = document.querySelector('.sheet-body-content');
+    const headingEl = document.querySelector('.sheet-subtitle');
+    const headingText = headingEl ? headingEl.innerText : 'Laporan_Tracer_Study';
+    const cleanFilename = headingText.trim().replace(/[^a-z0-9]/gi, '_') + '.pdf';
+
+    const opt = {
+      margin:       10,
+      filename:     cleanFilename,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+    };
+
+    html2pdf().set(opt).from(element).save().then(() => {
+      // Kembali ke halaman Laporan setelah proses download dipicu
+      window.location.href = '/admin/laporan';
+    }).catch(err => {
+      console.error('PDF Generation Error:', err);
+      window.location.href = '/admin/laporan';
+    });
+  };
+</script>
+</body>
+</html>

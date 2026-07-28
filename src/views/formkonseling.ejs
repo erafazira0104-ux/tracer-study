@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="/css/public.css"/>
+  <link rel="stylesheet" href="/css/formkonseling.css"/>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<%- include('partials/public-navbar') %>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="main">
+  <div class="page-header">
+    <h1>Konsultasi Karir</h1>
+    <p>Wujudkan impian karir Anda bersama bimbingan profesional. Silakan lengkapi formulir di bawah ini untuk menjadwalkan sesi konsultasi dengan konselor pilihan Anda.</p>
+  </div>
+
+  <div class="content-wrap">
+    <!-- Left Column: Form Card -->
+    <div class="form-card">
+      <% if (typeof success !== 'undefined' && success) { %>
+      <div class="alert-success">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        Permintaan konsultasi Anda berhasil dikirim! Konselor akan menghubungi Anda segera.
+      </div>
+      <% } %>
+
+      <% if (typeof error !== 'undefined' && error) { %>
+      <div class="alert-error">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        <%= error %>
+      </div>
+      <% } %>
+
+      <form action="/konseling/form" method="POST" class="form">
+        <!-- Row 1 -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nama Lengkap Alumni</label>
+            <input
+              type="text"
+              name="nama"
+              placeholder="Masukkan nama lengkap"
+              value="<%= typeof formData !== 'undefined' ? formData.nama || '' : '' %>"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label>NIM (Nomor Induk Mahasiswa)</label>
+            <input
+              type="text"
+              name="nim"
+              placeholder="Contoh: 1901010001"
+              value="<%= typeof formData !== 'undefined' ? formData.nim || '' : '' %>"
+              required
+            />
+          </div>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tahun Lulus</label>
+            <input
+              type="number"
+              name="tahunLulus"
+              placeholder="2023"
+              min="2000"
+              max="2030"
+              value="<%= typeof formData !== 'undefined' ? formData.tahunLulus || '' : '' %>"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label>Pilih Nama Konselor</label>
+            <div class="select-wrap">
+              <select name="konselor" required>
+                <option value="" disabled selected>Pilih Konselor Karir</option>
+                <% konselors.forEach(function(k) { %>
+                  <option value="<%= k.id %>"
+                    <%= typeof formData !== 'undefined' && formData.konselor == k.id ? 'selected' : '' %>>
+                    <%= k.nama %>
+                  </option>
+                <% }); %>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 3 -->
+        <div class="form-group full">
+          <label>Topik / Permasalahan Konseling</label>
+          <textarea
+            name="topik"
+            rows="5"
+            placeholder="Ceritakan detail rencana karir atau kendala yang Anda hadapi saat ini..."
+            required
+          ><%= typeof formData !== 'undefined' ? formData.topik || '' : '' %></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-submit">
+            <svg class="send-icon" viewBox="0 0 24 24" width="16" height="16" style="fill:#fff; margin-right:8px; vertical-align:middle;"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+            Kirim &amp; Hubungi Konselor
+          </button>
+          <span class="btn-help-text">Konselor akan menghubungi Anda via email terdaftar dalam 2x24 jam.</span>
+        </div>
+      </form>
+    </div>
+
+    <!-- Right Column: Side Column -->
+    <div class="side-col">
+      <!-- Card 1: Career Pathway -->
+      <div class="side-card pathway-card">
+        <div class="pathway-hero">
+          <img src="/images/campus-building.png" alt="Campus Building" />
+          <div class="pathway-hero-overlay">
+            <h3>Career Pathway</h3>
+            <span>Bimbingan Masa Depan Alumni</span>
+          </div>
+        </div>
+        <div class="pathway-body">
+          <div class="pathway-item">
+            <div class="pathway-icon">
+              <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+            </div>
+            <div class="pathway-text">
+              <strong>Review CV &amp; Portfolio</strong>
+              <p>Bedah tuntas dokumen lamaran kerja Anda.</p>
+            </div>
+          </div>
+          <div class="pathway-item">
+            <div class="pathway-icon">
+              <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+            </div>
+            <div class="pathway-text">
+              <strong>Simulasi Interview</strong>
+              <p>Latihan wawancara dengan feedback langsung.</p>
+            </div>
+          </div>
+          <div class="pathway-item">
+            <div class="pathway-icon">
+              <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+            </div>
+            <div class="pathway-text">
+              <strong>Mapping Karir</strong>
+              <p>Tentukan jalur karir sesuai spesialisasi.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Total Bimbingan -->
+      <div class="side-card stats-card">
+        <div class="stats-text">
+          <span class="stats-label">TOTAL KONSULTASI</span>
+          <strong class="stats-num">1,248+</strong>
+        </div>
+        <div class="stats-icon-box">
+          <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/public-footer') %>
+
+</body>
+</html>

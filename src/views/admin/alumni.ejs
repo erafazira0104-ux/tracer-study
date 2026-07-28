@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Data Alumni | Tracer Study Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/admin/dashboard.css"/>
+  <link rel="stylesheet" href="/css/admin/alumni.css"/>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<%- include('_sidebar', { active: 'alumni' }) %>
+
+<main class="main-content">
+  <!-- Topbar -->
+  <%- include('_topbar', { breadcrumbs: [{ label: 'Admin', url: '/admin/dashboard' }, { label: 'Data Alumni' }] }) %>
+
+  <div class="page-content">
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1>Kelola Data Alumni</h1>
+      <p>Manajemen data alumni program studi Sistem Informasi Fakultas Teknik Universitas Hamzanwadi.<br/>Pantau progress pengisian survey tracer study dan verifikasi data lulusan.</p>
+    </div>
+
+    <!-- Flash -->
+    <% if (flash_success) { %>
+    <div class="alert alert-success"><%= flash_success %></div>
+    <% } %>
+    <% if (flash_error) { %>
+    <div class="alert alert-error"><%= flash_error %></div>
+    <% } %>
+
+    <!-- Toolbar -->
+    <div class="page-toolbar">
+      <form method="GET" action="/admin/alumni" class="search-form" style="flex:1;display:flex;align-items:center;gap:10px;">
+        <input type="hidden" name="status" value="<%= typeof filterStatus !== 'undefined' ? filterStatus : '' %>"/>
+        <div class="search-wrap" style="max-width:340px;">
+          <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          <input type="text" name="search" value="<%= search %>" placeholder="Cari berdasarkan nama atau NIM..."/>
+        </div>
+      </form>
+      <form action="/admin/alumni/import" method="POST" enctype="multipart/form-data" id="importForm" style="display:none;">
+        <input type="file" name="csvFile" id="csvFileInput" accept=".csv,.xls,.xlsx,.pdf" onchange="submitImportForm()"/>
+      </form>
+      <button type="button" class="btn btn-ghost" onclick="triggerImport()">
+        <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        Import
+      </button>
+      <a href="/admin/alumni/export" class="btn btn-ghost">
+        <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        Export
+      </a>
+      <a href="/admin/alumni/tambah" class="btn btn-primary">
+        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        + Tambah Alumni
+      </a>
+    </div>
+
+    <!-- Table Card -->
+    <div class="data-card">
+      <div class="data-card-header">
+        <h3>Daftar Lulusan</h3>
+        <div class="header-counts">
+          <span class="count-badge green">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            <span><%= sumData.sudahMengisi %> Sudah Mengisi</span>
+          </span>
+          <span class="count-badge red">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>
+            <span><%= sumData.belumMengisi %> Belum Mengisi</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width:110px;">NIM</th>
+              <th>NAMA ALUMNI</th>
+              <th style="width:110px;">TAHUN LULUS</th>
+              <th style="width:140px;">STATUS</th>
+              <th style="width:100px;">AKSI</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (alumni.length === 0) { %>
+            <tr><td colspan="5" class="empty-row">Tidak ada data alumni.</td></tr>
+            <% } else { %>
+            <% alumni.forEach((a, i) => {
+              const initials = a.nama ? a.nama.split(' ').slice(0,2).map(n=>n[0]).join('').toUpperCase() : '?';
+              const avKey = a.nama ? a.nama[0].toLowerCase() : 'a';
+              const avClass = 'av-' + avKey;
+            %>
+            <tr>
+              <td><span class="nim-code"><%= a.nim %></span></td>
+              <td>
+                <div class="alumni-cell-name">
+                  <div class="alumni-initials <%= avClass %>"><%= initials %></div>
+                  <span style="font-weight:600;"><%= a.nama %></span>
+                </div>
+              </td>
+              <td><%= a.tahun_lulus || '-' %></td>
+              <td>
+                <% if (a.sudah_tracer) { %>
+                <span class="badge badge-sudah">Sudah Mengisi</span>
+                <% } else { %>
+                <span class="badge badge-belum">Belum Mengisi</span>
+                <% } %>
+              </td>
+              <td>
+                <div class="action-btns" style="display:flex; gap:6px; justify-content:center;">
+                  <a href="/admin/alumni/<%= a.id %>/edit" class="btn-action-text edit-btn" style="color:#d97706; border: 1px solid #fde68a; background:#fffbeb; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:600; text-decoration:none;" title="Edit">Edit</a>
+                  <form action="/admin/alumni/<%= a.id %>/hapus" method="POST" style="display:inline;" onsubmit="return confirm('Yakin hapus alumni ini?')">
+                    <button type="submit" class="btn-action-text delete-btn" style="color:#dc2626; border: 1px solid #fca5a5; background:#fef2f2; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer;" title="Hapus">Hapus</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            <% }) %>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination-wrap">
+        <span>Menampilkan <%= Math.min((currentPage-1)*10+1, totalRows) %>–<%= Math.min(currentPage*10, totalRows) %> dari <%= totalRows %> alumni</span>
+        <div class="pagination">
+          <a href="?search=<%= search %>&page=<%= currentPage-1 %>" class="page-btn <%= currentPage <= 1 ? 'disabled' : '' %>">
+            <svg viewBox="0 0 24 24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/></svg>
+          </a>
+          <% for (let p = 1; p <= Math.min(totalPages, 5); p++) { %>
+          <a href="?search=<%= search %>&page=<%= p %>" class="page-btn <%= p === currentPage ? 'active' : '' %>"><%= p %></a>
+          <% } %>
+          <% if (totalPages > 5) { %>
+          <span class="page-btn disabled">...</span>
+          <a href="?search=<%= search %>&page=<%= totalPages %>" class="page-btn <%= totalPages === currentPage ? 'active' : '' %>"><%= totalPages %></a>
+          <% } %>
+          <a href="?search=<%= search %>&page=<%= currentPage+1 %>" class="page-btn <%= currentPage >= totalPages ? 'disabled' : '' %>">
+            <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="summary-card-label">Partisipasi</div>
+        <div class="summary-card-num"><%= sumData.partisipasi %>%</div>
+        <div class="summary-card-sub">
+          <span class="trend up">↑ <%= sumData.partisipasi %>%</span>
+          <span>dari total alumni</span>
+        </div>
+        <div class="summary-bar">
+          <div class="summary-bar-fill" style="width:<%= sumData.partisipasi %>%"></div>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-card-label">Total Alumni</div>
+        <div class="summary-card-num"><%= sumData.totalAlumni %> Lulusan</div>
+        <div class="summary-card-sub">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="#2d6a4f"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          <span>Tercatat di sistem</span>
+        </div>
+        <div class="summary-bar">
+          <div class="summary-bar-fill" style="width:100%;background:#2b6cb0"></div>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-card-label">Sudah Mengisi</div>
+        <div class="summary-card-num"><%= sumData.sudahMengisi %></div>
+        <div class="summary-card-sub">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="#2d6a4f"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          <span style="color:#2d6a4f;font-weight:600;"><%= sumData.partisipasi %>% · Terverifikasi</span>
+        </div>
+        <div class="summary-bar">
+          <div class="summary-bar-fill" style="width:<%= sumData.partisipasi %>%;background:#2d6a4f"></div>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-card-label">Belum Mengisi</div>
+        <div class="summary-card-num"><%= sumData.belumMengisi %></div>
+        <div class="summary-card-sub">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="#c0392b"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>
+          <span style="color:#c0392b;">Menunggu</span>
+        </div>
+        <div class="summary-bar">
+          <div class="summary-bar-fill" style="width:<%= 100 - sumData.partisipasi %>%;background:#c0392b"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align:center; padding:16px 0 4px; font-size:11px; color:#aaa; margin-top:24px;">
+      &copy; 2026 Information Systems Fakultas Teknik Hamzanwadi University. All Rights Reserved.
+    </div>
+
+  </div>
+</main>
+
+<script>
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+setTimeout(() => {
+  document.querySelectorAll('.alert').forEach(el => el.style.opacity = '0');
+}, 4000);
+
+function triggerImport() {
+  document.getElementById('csvFileInput').click();
+}
+function submitImportForm() {
+  const fileInput = document.getElementById('csvFileInput');
+  if (fileInput.files.length > 0) {
+    if (confirm('Apakah Anda yakin ingin mengimpor data alumni dari file "' + fileInput.files[0].name + '"?')) {
+      document.getElementById('importForm').submit();
+    }
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Layanan Konseling Karir | Tracer Study Hamzanwadi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/public.css"/>
+  <link rel="stylesheet" href="/css/konseling.css"/>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<%- include('partials/public-navbar') %>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <span class="hero-tag">Karir &amp; Masa Depan</span>
+  <h1>Rancang Karir Impian Anda Bersama Kami.</h1>
+  <div class="hero-divider"></div>
+  <p>Layanan konseling karir khusus alumni Sistem Informasi Hamzanwadi untuk membantu Anda menavigasi tantangan industri teknologi dan mencapai potensi maksimal.</p>
+  <div>
+    <a href="/konseling/form" class="btn-hero">Mulai Konsultasi</a>
+  </div>
+  <div class="hero-badge">
+    <div class="hero-badge-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+    </div>
+    <div class="hero-badge-text">
+      <strong>Konselor Berpengalaman</strong>
+      <span>Dapatkan insight langsung dari praktisi industri.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROFIL KONSELOR ===== -->
+<section class="section">
+  <div class="section-header">
+    <div class="section-bar"></div>
+    <div class="section-header-text">
+      <h2 class="section-title">Profil Konselor Profesional</h2>
+      <p class="section-subtitle">Pilih konselor yang sesuai dengan bidang minat Anda</p>
+    </div>
+  </div>
+
+  <div class="konselor-grid">
+    <% if (typeof konselors !== 'undefined' && konselors && konselors.length > 0) { %>
+      <% for (var i = 0; i < konselors.length; i++) { %>
+      <div class="konselor-card">
+        <div class="konselor-photo">
+          <% if (konselors[i].foto) { %>
+            <img src="/images/<%= konselors[i].foto %>" alt="<%= konselors[i].nama %>"/>
+          <% } else { %>
+            <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+          <% } %>
+        </div>
+        <div class="konselor-name"><%= konselors[i].nama %></div>
+        <div class="konselor-expertise"><%= konselors[i].bidang_keahlian %></div>
+        <a href="/konseling/form?konselor_id=<%= konselors[i].id %>" class="btn-konselor">
+          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+          Mulai Konsultasi
+        </a>
+      </div>
+      <% } %>
+    <% } else { %>
+      <p style="color:#888;font-size:0.9rem;">Belum ada konselor tersedia.</p>
+    <% } %>
+  </div>
+
+  <hr class="section-divider"/>
+</section>
+
+<!-- ===== PERSIAPAN SEBELUM KONSELING ===== -->
+<section class="section persiapan" style="padding-top:0">
+  <div class="persiapan-wrap">
+    <div class="persiapan-title">
+      <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+      Persiapan Sebelum Konseling
+    </div>
+    <div class="persiapan-grid">
+      <div class="persiapan-card">
+        <div class="persiapan-num">1</div>
+        <h4>Siapkan CV Terbaru</h4>
+        <p>Pastikan CV Anda mencerminkan pengalaman dan keahlian terbaru untuk mendapatkan saran yang relevan.</p>
+        <a href="#" class="persiapan-link">
+          <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          Update your CV
+        </a>
+      </div>
+      <div class="persiapan-card">
+        <div class="persiapan-num">2</div>
+        <h4>Tentukan Tujuan</h4>
+        <p>Identifikasi apa yang ingin Anda capai, apakah itu transisi karir, negosiasi gaji, atau pengembangan skill.</p>
+        <a href="#" class="persiapan-link">
+          <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          Define your goals
+        </a>
+      </div>
+      <div class="persiapan-card">
+        <div class="persiapan-num">3</div>
+        <h4>Koneksi Internet</h4>
+        <p>Gunakan koneksi yang stabil dan lingkungan yang tenang untuk kelancaran sesi konsultasi online.</p>
+        <a href="#" class="persiapan-link">
+          <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          Stable connection
+        </a>
+      </div>
+      <div class="persiapan-card">
+        <div class="persiapan-num">4</div>
+        <h4>Catat Pertanyaan</h4>
+        <p>Siapkan daftar pertanyaan spesifik agar waktu konsultasi Anda dapat dimanfaatkan secara maksimal.</p>
+        <a href="#" class="persiapan-link">
+          <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          Note down questions
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== KETENTUAN KONSELING ===== -->
+<section class="section ketentuan">
+  <div class="ketentuan-wrap">
+    <div class="ketentuan-heading">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+      Ketentuan Konseling
+    </div>
+    <div class="ketentuan-grid">
+      <div class="ketentuan-card">
+        <div class="ketentuan-icon">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+        </div>
+        <h3>Konseling Hybrid</h3>
+        <p>Layanan fleksibel tersedia secara Online (Zoom/GMeet) maupun Tatap Muka (Offline) sesuai kenyamanan Anda.</p>
+      </div>
+      <div class="ketentuan-card highlight">
+        <div class="ketentuan-icon">
+          <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+        </div>
+        <h3>Privasi Terjamin</h3>
+        <p>Seluruh data dan isi percakapan bersifat rahasia dan dilindungi sepenuhnya oleh kebijakan privasi ketat kami.</p>
+      </div>
+      <div class="ketentuan-card">
+        <div class="ketentuan-icon">
+          <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
+        </div>
+        <h3>Sesi 60 Menit</h3>
+        <p>Durasi optimal untuk setiap sesi konsultasi agar pembahasan tetap mendalam, fokus, dan memberikan hasil efektif.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<%- include('partials/public-footer') %>
+
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Daftar Booking Konseling | Tracer Study Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/admin/dashboard.css"/>
+  <style>
+    .status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .status-badge.belum { background: #fee2e2; color: #ef4444; }
+    .status-badge.sudah { background: #e8f4ec; color: #2d6a4f; }
+  </style>
+</head>
+<body>
+
+<%- include('_sidebar', { active: 'konseling' }) %>
+
+<main class="main-content">
+  <!-- Topbar -->
+  <%- include('_topbar', { breadcrumbs: [{ label: 'Konselor Karir', url: '/admin/konseling' }, { label: 'Booking Konseling' }] }) %>
+
+  <div class="page-content">
+    <div class="page-header">
+      <h1>Daftar Booking Konseling Alumni</h1>
+      <p>Berikut adalah data alumni yang melakukan registrasi bimbingan konseling karir.</p>
+    </div>
+
+    <!-- Table Card -->
+    <div class="data-card" style="margin-top: 20px;">
+      <div class="data-card-header">
+        <h3>Booking Permintaan Konseling</h3>
+        <a href="/admin/konseling" class="btn btn-outline">← Kembali</a>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width:50px;">NO</th>
+              <th>NAMA ALUMNI</th>
+              <th>NIM</th>
+              <th>TAHUN LULUS</th>
+              <th>KONSELOR PILIHAN</th>
+              <th>TOPIK / MASALAH</th>
+              <th style="text-align:center;">STATUS LAYANAN</th>
+              <th style="text-align:center;">AKSI</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (!bookings || bookings.length === 0) { %>
+            <tr>
+              <td colspan="8" style="text-align:center; padding:24px; color:#9ca3af;">Belum ada registrasi booking konseling.</td>
+            </tr>
+            <% } else { %>
+            <% bookings.forEach(function(b, i) { %>
+            <tr>
+              <td><%= i + 1 %></td>
+              <td style="font-weight:600;"><%= b.nama_alumni %></td>
+              <td><span class="nim-code"><%= b.nim || '-' %></span></td>
+              <td><%= b.tahun_lulus || '-' %></td>
+              <td style="font-weight:600; color:var(--green-dark);"><%= b.nama_konselor || '-' %></td>
+              <td><%= b.topik %></td>
+              <td style="text-align:center;">
+                <span class="status-badge <%= b.status === 'sudah_dilayani' ? 'sudah' : 'belum' %>">
+                  <%= b.status === 'sudah_dilayani' ? 'Sudah Dilayani' : 'Belum Dilayani' %>
+                </span>
+              </td>
+              <td style="text-align:center;">
+                <form action="/admin/konseling/<%= b.id %>/status" method="POST" style="display:inline;">
+                  <input type="hidden" name="status" value="<%= b.status === 'sudah_dilayani' ? 'belum_dilayani' : 'sudah_dilayani' %>"/>
+                  <button type="submit" class="btn-action-text" style="color:var(--green-dark); border:1px solid var(--border); background:#fff; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer;" title="Tandai Status">Tandai <%= b.status === 'sudah_dilayani' ? 'Belum' : 'Sudah' %></button>
+                </form>
+              </td>
+            </tr>
+            <% }) %>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align:center; padding:16px 0 4px; font-size:11px; color:#aaa; margin-top:24px;">
+      &copy; 2026 Information Systems Fakultas Teknik Hamzanwadi University. All Rights Reserved.
+    </div>
+  </div>
+</main>
+
+<script>
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+</script>
+</body>
+</html>

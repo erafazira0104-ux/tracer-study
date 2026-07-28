@@ -1,0 +1,229 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --green-dark: #064E3B;
+  --green-emerald: #047857;
+  --green-btn: #064E3B;
+  --green-light: #ECFDF5;
+  --green-border: #A7F3D0;
+  
+  --bg-cream: #FCFCF7;
+  --white: #ffffff;
+  --gray-light: #F1F5F9;
+  --gray-mid: #E2E8F0;
+  --gray-text: #64748B;
+  --text-dark: #0F172A;
+  --text-muted: #475569;
+  --card-border: #E2E8F0;
+  --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 12px 30px -5px rgba(6, 78, 59, 0.12);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font);
+  color: var(--text-dark);
+  background: var(--bg-cream);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== MAIN ===== */
+.main {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 80px 24px 100px;
+  text-align: center;
+}
+
+.success-icon-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.success-icon-ring {
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  background: var(--green-light);
+  border: 2px solid var(--green-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 28px rgba(6, 78, 59, 0.15);
+  animation: pulse-ring 2.5s infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 18px rgba(52, 211, 153, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(52, 211, 153, 0);
+  }
+}
+
+.success-icon {
+  width: 68px;
+  height: 68px;
+  background: linear-gradient(135deg, #022018 0%, #064E3B 50%, #047857 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 16px rgba(6, 78, 59, 0.3);
+}
+
+.success-icon svg {
+  width: 36px;
+  height: 36px;
+  fill: #ffffff;
+}
+
+.success-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 14px;
+  letter-spacing: -0.6px;
+}
+
+.success-desc {
+  font-size: 1.02rem;
+  color: var(--text-muted);
+  max-width: 580px;
+  margin: 0 auto 44px;
+  line-height: 1.75;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 44px;
+}
+
+.info-card {
+  background: #ffffff;
+  border: 1.5px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 28px;
+  text-align: left;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.info-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--green-border);
+  box-shadow: var(--shadow-md);
+}
+
+.info-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.info-icon {
+  width: 44px;
+  height: 44px;
+  background: var(--green-light);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(6, 78, 59, 0.08);
+}
+
+.info-icon svg {
+  width: 22px;
+  height: 22px;
+  fill: var(--green-dark);
+}
+
+.info-card-title {
+  font-size: 1.02rem;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.info-card-text {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+.action-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.btn-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: #25D366;
+  color: #ffffff;
+  padding: 16px 36px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-size: 0.98rem;
+  font-weight: 800;
+  box-shadow: 0 8px 22px rgba(37, 211, 102, 0.28);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-whatsapp:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(37, 211, 102, 0.4);
+  background: #1EBE57;
+}
+
+.btn-whatsapp svg {
+  width: 22px;
+  height: 22px;
+  fill: #ffffff;
+}
+
+.btn-back-dashboard {
+  color: var(--gray-text);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.btn-back-dashboard:hover {
+  color: var(--green-dark);
+}
+
+@media (max-width: 600px) {
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+  .main {
+    padding: 56px 20px;
+  }
+  .success-title {
+    font-size: 1.8rem;
+  }
+}

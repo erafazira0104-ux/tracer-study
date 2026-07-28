@@ -1,0 +1,63 @@
+<nav class="public-navbar">
+  <div class="public-navbar-container">
+    <a href="/" class="public-navbar-brand">
+      <div class="public-navbar-logo">
+        <img src="/images/logo-ft.png" alt="Logo FT Universitas Hamzanwadi" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';" />
+        <span class="logo-fallback" style="display:none;">FT</span>
+      </div>
+      <div class="public-navbar-title">
+        <strong>TRACER STUDY</strong>
+        <span>Sistem Informasi</span>
+      </div>
+    </a>
+
+    <button class="public-mobile-toggle" id="publicMobileToggle" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <div class="public-navbar-menu" id="publicNavbarMenu">
+      <ul class="public-nav-list">
+        <li>
+          <a href="/beranda" class="<%= (typeof activeNav !== 'undefined' && activeNav === 'beranda') || (typeof page !== 'undefined' && page === 'beranda') ? 'active' : '' %>">
+            Beranda
+          </a>
+        </li>
+        <li>
+          <a href="/tentang" class="<%= (typeof activeNav !== 'undefined' && activeNav === 'tentang') || (typeof page !== 'undefined' && page === 'tentang') ? 'active' : '' %>">
+            Tentang
+          </a>
+        </li>
+        <li>
+          <a href="/konseling" class="<%= (typeof activeNav !== 'undefined' && activeNav === 'konseling') || (typeof page !== 'undefined' && page === 'konseling') ? 'active' : '' %>">
+            Konseling
+          </a>
+        </li>
+        <li>
+          <a href="/lowongan" class="<%= (typeof activeNav !== 'undefined' && activeNav === 'lowongan') || (typeof page !== 'undefined' && page === 'lowongan') ? 'active' : '' %>">
+            Lowongan
+          </a>
+        </li>
+      </ul>
+      <div class="public-nav-actions">
+        <a href="/login" class="btn-login-alumni">
+          Login
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const toggle = document.getElementById('publicMobileToggle');
+    const menu = document.getElementById('publicNavbarMenu');
+    if (toggle && menu) {
+      toggle.addEventListener('click', function () {
+        toggle.classList.toggle('active');
+        menu.classList.toggle('show');
+      });
+    }
+  });
+</script>

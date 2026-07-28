@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grafik &amp; Analitik | Admin Tracer Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/admin/dashboard.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .chart-grid-custom {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      margin-top: 24px;
+    }
+    .chart-card-full {
+      grid-column: span 2;
+    }
+    @media (max-width: 900px) {
+      .chart-grid-custom {
+        grid-template-columns: 1fr;
+      }
+      .chart-card-full {
+        grid-column: span 1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<%- include('_sidebar', { active: 'grafik' }) %>
+
+<main class="main-content">
+  <!-- Topbar -->
+  <%- include('_topbar', { title: 'Grafik & Analitik Alumni' }) %>
+
+  <div class="page-content" style="background:#fcfcf7; min-height: calc(100vh - 60px); padding: 24px;">
+    <!-- Page Header Info -->
+    <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <h1 style="font-size: 20px; font-weight: 800; color: #064E3B;">Analitik Kuesioner</h1>
+        <p style="font-size:12px; color:#555; margin-top:4px;">Tinjau diagram visual dari pengumpulan kuesioner pelacakan karir alumni.</p>
+      </div>
+      <a href="/admin/laporan" class="btn btn-secondary" style="font-size:12px; background:#e8f4ec; color:#064E3B; border:none; padding:10px 20px; border-radius:8px; text-decoration:none; font-weight:600;">
+        Lihat Laporan Rekap
+      </a>
+    </div>
+
+    <!-- Mini Statistics Grid -->
+    <div class="stat-grid" style="grid-template-columns:repeat(3, 1fr); margin-bottom:24px;">
+      <div class="stat-card green">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-number"><%= totalAlumni %></div>
+          <div class="stat-label">Total Alumni</div>
+        </div>
+      </div>
+
+      <div class="stat-card blue">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-number"><%= totalIsi %></div>
+          <div class="stat-label">Sudah Mengisi</div>
+        </div>
+      </div>
+
+      <div class="stat-card orange">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-number"><%= partisipasi %>%</div>
+          <div class="stat-label">Rasio Partisipasi</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Grid wrapper -->
+    <div class="chart-grid-custom">
+      <!-- 1. Status Alumni Terkini (Doughnut Chart matching Dashboard look) -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3>Status Karir Alumni</h3>
+            <div class="card-sub">Data sebaran status pekerjaan responden</div>
+          </div>
+        </div>
+        <div class="card-body" style="padding:20px;">
+          <div style="display:flex; align-items:center; gap:24px; justify-content:center;">
+            <div style="position:relative; width:140px; height:140px;">
+              <canvas id="statusChart" width="140" height="140"></canvas>
+              <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; line-height:1.2;">
+                <span style="font-size:20px; font-weight:800; color:#111;"><%= totalIsi %></span>
+                <span style="font-size:9px; color:#888; text-transform:uppercase;">Responden</span>
+              </div>
+            </div>
+
+            <!-- Custom Legend identical to dashboard -->
+            <div class="status-legend" style="display:flex; flex-direction:column; gap:10px; flex:1;">
+              <% 
+                const statusLabels = { bekerja: 'Bekerja', wirausaha: 'Wirausaha', kuliah: 'Studi Lanjut', belum_bekerja: 'Belum Bekerja' };
+                const statusColors = { bekerja: '#2d6a4f', wirausaha: '#d4a017', kuliah: '#2b6cb0', belum_bekerja: '#c0392b' };
+                const total = totalIsi || 1;
+              %>
+              <% ['bekerja', 'wirausaha', 'kuliah', 'belum_bekerja'].forEach(key => { %>
+                <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px;">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="width:10px; height:10px; border-radius:50%; background:<%= statusColors[key] %>;"></span>
+                    <span style="color:#555; font-weight:500;"><%= statusLabels[key] %></span>
+                  </div>
+                  <div style="text-align:right;">
+                    <span style="font-weight:700; color:#111;"><%= Math.round(counts[key]/total*100) %>%</span>
+                    <span style="font-size:10px; color:#888; margin-left:4px;"><%= counts[key] %> org</span>
+                  </div>
+                </div>
+              <% }); %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Kesesuaian Bidang Kerja -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3>Kesesuaian Bidang Kerja</h3>
+            <div class="card-sub">Hubungan studi lulusan dengan bidang pekerjaan saat ini</div>
+          </div>
+        </div>
+        <div class="card-body" style="padding:20px;">
+          <canvas id="kesesuaianChart" style="max-height: 180px;"></canvas>
+        </div>
+      </div>
+
+      <!-- 3. Masa Tunggu Kerja -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3>Masa Tunggu Kerja</h3>
+            <div class="card-sub">Waktu yang dibutuhkan alumni untuk mendapatkan pekerjaan pertama</div>
+          </div>
+        </div>
+        <div class="card-body" style="padding:20px;">
+          <canvas id="masaTungguChart" style="max-height: 180px;"></canvas>
+        </div>
+      </div>
+
+      <!-- 4. Trend Lulusan per Tahun -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3>Trend Lulusan per Tahun</h3>
+            <div class="card-sub">Grafik pertumbuhan kuantitas lulusan pertahun</div>
+          </div>
+        </div>
+        <div class="card-body" style="padding:20px;">
+          <canvas id="trendChart" style="max-height: 180px;"></canvas>
+        </div>
+      </div>
+
+      <!-- 5. Sebaran Gaji Pertama (Full card at bottom) -->
+      <div class="card chart-card-full">
+        <div class="card-header">
+          <div>
+            <h3>Sebaran Estimasi Gaji Pertama</h3>
+            <div class="card-sub">Penyebaran nominal pendapatan awal lulusan bekerja</div>
+          </div>
+        </div>
+        <div class="card-body" style="padding:20px;">
+          <canvas id="gajiChart" style="max-height: 220px;"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align:center; border-top:1px solid #e2e8f0; padding-top:16px; font-size:11px; color:#777; margin-top:40px;">
+      &copy; 2026 Information Systems Fakultas Teknik Hamzanwadi University. All Rights Reserved.
+    </div>
+  </div>
+</main>
+
+<script>
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+
+  // DONUT: Status Alumni
+  const ctxStatus = document.getElementById('statusChart').getContext('2d');
+  const total = <%= totalIsi %> || 1;
+  new Chart(ctxStatus, {
+    type: 'doughnut',
+    data: {
+      labels: ['Bekerja', 'Wirausaha', 'Studi Lanjut', 'Belum Bekerja'],
+      datasets: [{
+        data: [<%= counts.bekerja %>, <%= counts.wirausaha %>, <%= counts.kuliah %>, <%= counts.belum_bekerja %>],
+        backgroundColor: ['#2d6a4f', '#d4a017', '#2b6cb0', '#c0392b'],
+        borderWidth: 2,
+        borderColor: '#fff',
+      }]
+    },
+    options: {
+      cutout: '70%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => ` ${ctx.label}: ${ctx.raw} orang (${Math.round(ctx.raw / total * 100)}%)`
+          }
+        }
+      },
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { animateRotate: true, duration: 1000 },
+    }
+  });
+
+  // BAR: Kesesuaian Bidang Kerja
+  const kesesuaianData = <%- JSON.stringify(kesesuaian) %>;
+  const ctxKesesuaian = document.getElementById('kesesuaianChart').getContext('2d');
+  new Chart(ctxKesesuaian, {
+    type: 'bar',
+    data: {
+      labels: kesesuaianData.map(s => s.kesesuaian_bidang),
+      datasets: [{
+        data: kesesuaianData.map(s => s.total),
+        backgroundColor: '#2d6a4f',
+        borderRadius: 6,
+        maxBarThickness: 40
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false } },
+        y: { beginAtZero: true, ticks: { precision: 0 } }
+      }
+    }
+  });
+
+  // BAR: Masa Tunggu Kerja
+  const masaTungguData = <%- JSON.stringify(masaTunggu) %>;
+  const ctxMasaTunggu = document.getElementById('masaTungguChart').getContext('2d');
+  new Chart(ctxMasaTunggu, {
+    type: 'bar',
+    data: {
+      labels: masaTungguData.map(s => s.lama_mencari_kerja),
+      datasets: [{
+        data: masaTungguData.map(s => s.total),
+        backgroundColor: '#52b788',
+        borderRadius: 6,
+        maxBarThickness: 40
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false } },
+        y: { beginAtZero: true, ticks: { precision: 0 } }
+      }
+    }
+  });
+
+  // LINE: Trend Lulusan per Tahun
+  const trendData = <%- JSON.stringify(trend) %>;
+  const ctxTrend = document.getElementById('trendChart').getContext('2d');
+  new Chart(ctxTrend, {
+    type: 'line',
+    data: {
+      labels: trendData.map(s => s.tahun_lulus),
+      datasets: [{
+        data: trendData.map(s => s.total),
+        borderColor: '#2d6a4f',
+        backgroundColor: 'rgba(45, 106, 79, 0.08)',
+        fill: true,
+        tension: 0.3,
+        borderWidth: 2,
+        pointBackgroundColor: '#2d6a4f'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false } },
+        y: { beginAtZero: true, ticks: { precision: 0 } }
+      }
+    }
+  });
+
+  // HORIZONTAL BAR: Sebaran Gaji Pertama
+  const gajiData = <%- JSON.stringify(gaji) %>;
+  const ctxGaji = document.getElementById('gajiChart').getContext('2d');
+  new Chart(ctxGaji, {
+    type: 'bar',
+    data: {
+      labels: gajiData.map(s => s.gaji_pertama),
+      datasets: [{
+        data: gajiData.map(s => s.total),
+        backgroundColor: '#d4a017',
+        borderRadius: 6,
+        maxBarThickness: 24
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { beginAtZero: true, ticks: { precision: 0 } },
+        y: { grid: { display: false } }
+      }
+    }
+  });
+
+
+</script>
+</body>
+</html>

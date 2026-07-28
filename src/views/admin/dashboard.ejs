@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard Admin | Tracer Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/admin/dashboard.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<%- include('_sidebar', { active: 'dashboard' }) %>
+
+<!-- ===== MAIN ===== -->
+<main class="main-content">
+  <!-- Topbar -->
+  <%- include('_topbar', { title: 'Dashboard', subTitle: 'Sistem Informasi Fakultas Teknik • ' + new Date().toLocaleDateString('id-ID', {weekday:'long',year:'numeric',month:'long',day:'numeric'}) }) %>
+
+  <div class="page-content">
+
+    <!-- Stat Cards -->
+    <div class="stat-grid">
+      <div class="stat-card green" onclick="location.href='/admin/alumni'" style="cursor:pointer;">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-number"><%= stat.totalAlumni.toLocaleString('id-ID') %></div>
+          <div class="stat-label">Total Alumni</div>
+        </div>
+      </div>
+
+      <div class="stat-card blue" onclick="location.href='/admin/alumni?status=sudah'" style="cursor:pointer;">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-number"><%= stat.sudahIsiTracer.toLocaleString('id-ID') %></div>
+          <div class="stat-label">Sudah Isi Tracer</div>
+        </div>
+      </div>
+
+      <div class="stat-card red" onclick="location.href='/admin/alumni?status=belum'" style="cursor:pointer;">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-number"><%= stat.belumIsiTracer.toLocaleString('id-ID') %></div>
+          <div class="stat-label">Belum Isi Tracer</div>
+        </div>
+      </div>
+
+      <div class="stat-card orange" onclick="location.href='/admin/lowongan/akses'" style="cursor:pointer;">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.35C18 2.53 15.47 0 12 0S6 2.53 6 4.65c0 .47.11.91.18 1.35H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-8 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-number"><%= stat.lowonganAktif.toLocaleString('id-ID') %></div>
+          <div class="stat-label">Akses Lowongan</div>
+        </div>
+      </div>
+
+      <div class="stat-card yellow" onclick="location.href='/admin/konseling/booking'" style="cursor:pointer;">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8z"/></svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-number"><%= stat.konselingAktif.toLocaleString('id-ID') %></div>
+          <div class="stat-label">Sesi Konseling</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Partisipasi + Status Alumni -->
+    <div class="dashboard-row">
+
+      <!-- Partisipasi -->
+      <div class="card partisipasi-card">
+        <div class="card-header">
+          <div>
+            <h3>Partisipasi</h3>
+          </div>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="#aaa"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+        </div>
+        <div class="card-body">
+          <div class="donut-wrap">
+            <canvas id="partisipasiChart" width="130" height="130"></canvas>
+            <div class="donut-center">
+              <span class="donut-pct"><%= stat.persentaseTracer %>%</span>
+              <span class="donut-lbl">Partisipasi</span>
+            </div>
+          </div>
+          <p class="partisipasi-info">
+            Respon dari <strong><%= stat.sudahIsiTracer %></strong> dari<br/>
+            total alumni per <strong><%= new Date().toLocaleDateString('id-ID', {day:'numeric',month:'numeric',year:'numeric'}) %></strong>
+          </p>
+          <a href="/admin/pengingat" class="btn-aksi">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="#fff"><path d="M18 17v-6c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v6H4v2h16v-2h-2zM12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2z"/></svg>
+            Aksi Pengingat Invitasi
+          </a>
+        </div>
+      </div>
+
+      <!-- Status Alumni Terkini -->
+      <div class="card status-chart-card">
+        <div class="card-header">
+          <div>
+            <h3>Status Alumni Terkini</h3>
+            <div class="card-sub">Data berdasarkan status karir terakhir</div>
+          </div>
+          <a href="/admin/tracer" class="card-header-link">Semua Angkatan</a>
+        </div>
+        <div class="card-body">
+          <div style="display:flex; align-items:center; gap:24px;">
+            <div class="status-donut-wrap" style="width:160px;height:160px;">
+              <canvas id="statusChart" width="160" height="160"></canvas>
+              <div class="status-donut-center">
+                <span class="status-donut-num"><%= stat.sudahIsiTracer %></span>
+                <span class="status-donut-lbl">Responden</span>
+              </div>
+            </div>
+            <div class="status-legend">
+              <div class="status-legend-item">
+                <div class="legend-dot-row">
+                  <span class="legend-dot" style="background:#2d6a4f"></span>
+                  <span class="legend-name">Bekerja</span>
+                </div>
+                <span class="legend-pct"><%= stat.sudahIsiTracer > 0 ? Math.round(stat.bekerja/stat.sudahIsiTracer*100) : 0 %>%</span>
+                <span class="legend-num"><%= stat.bekerja %> orang</span>
+              </div>
+              <div class="status-legend-item">
+                <div class="legend-dot-row">
+                  <span class="legend-dot" style="background:#d4a017"></span>
+                  <span class="legend-name">Wirausaha</span>
+                </div>
+                <span class="legend-pct"><%= stat.sudahIsiTracer > 0 ? Math.round(stat.wirausaha/stat.sudahIsiTracer*100) : 0 %>%</span>
+                <span class="legend-num"><%= stat.wirausaha %> orang</span>
+              </div>
+              <div class="status-legend-item">
+                <div class="legend-dot-row">
+                  <span class="legend-dot" style="background:#2b6cb0"></span>
+                  <span class="legend-name">Studi Lanjut</span>
+                </div>
+                <span class="legend-pct"><%= stat.sudahIsiTracer > 0 ? Math.round(stat.kuliah/stat.sudahIsiTracer*100) : 0 %>%</span>
+                <span class="legend-num"><%= stat.kuliah %> orang</span>
+              </div>
+              <div class="status-legend-item">
+                <div class="legend-dot-row">
+                  <span class="legend-dot" style="background:#c0392b"></span>
+                  <span class="legend-name">Belum Bekerja</span>
+                </div>
+                <span class="legend-pct"><%= stat.sudahIsiTracer > 0 ? Math.round(stat.belumBekerja/stat.sudahIsiTracer*100) : 0 %>%</span>
+                <span class="legend-num"><%= stat.belumBekerja %> orang</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Masa Tunggu + Kesesuaian -->
+    <div class="dashboard-row-3">
+
+      <!-- Masa Tunggu Kerja -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3>Masa Tunggu Kerja</h3>
+            <div class="card-sub">Rata-rata durasi penempatan alumni</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="bar-list">
+            <%
+              const mtColors = ['green','teal','orange','red'];
+              const mtTextColors = ['#064E3B', '#0f766e', '#c2410c', '#991b1b'];
+              masaTungguData.forEach((item, i) => {
+            %>
+            <div class="bar-item">
+              <div class="bar-label-row">
+                <span class="bar-label"><%= item.label %></span>
+                <span class="bar-pct" style="color:<%= mtTextColors[i % mtTextColors.length] %>; font-weight:700;"><%= item.pct %>%</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill <%= mtColors[i % mtColors.length] %>" style="width:<%= item.pct %>%"></div>
+              </div>
+            </div>
+            <% }) %>
+            <% if (masaTungguData.every(d => d.total === 0)) { %>
+            <div style="text-align:center;color:#aaa;padding:20px 0;font-size:12px;">Belum ada data masa tunggu kerja</div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kesesuaian Bidang Kerja -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3>Kesesuaian Bidang Kerja</h3>
+            <div class="card-sub">Korelasi kurikulum dengan dunia kerja</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="bar-list">
+            <%
+              const ksColors = ['green','teal','orange','red'];
+              const ksTextColors = ['#064E3B', '#0f766e', '#c2410c', '#991b1b'];
+              if (kesesuaianData.length === 0) {
+                const defaultKesesuaian = [
+                  {label:'Sangat Sesuai', pct:0},
+                  {label:'Sesuai', pct:0},
+                  {label:'Kurang Sesuai', pct:0},
+                  {label:'Tidak Sesuai', pct:0},
+                ];
+                defaultKesesuaian.forEach((item,i) => {
+              %>
+              <div class="bar-item">
+                <div class="bar-label-row">
+                  <span class="bar-label"><%= item.label %></span>
+                  <span class="bar-pct" style="color:<%= ksTextColors[i % ksTextColors.length] %>; font-weight:700;"><%= item.pct %>%</span>
+                </div>
+                <div class="bar-track">
+                  <div class="bar-fill <%= ksColors[i % ksColors.length] %>" style="width:<%= item.pct %>%"></div>
+                </div>
+              </div>
+              <% }); } else {
+                kesesuaianData.forEach((item, i) => {
+              %>
+              <div class="bar-item">
+                <div class="bar-label-row">
+                  <span class="bar-label"><%= item.label %></span>
+                  <span class="bar-pct" style="color:<%= ksTextColors[i % ksTextColors.length] %>; font-weight:700;"><%= item.pct %>%</span>
+                </div>
+                <div class="bar-track">
+                  <div class="bar-fill <%= ksColors[i % ksColors.length] %>" style="width:<%= item.pct %>%"></div>
+                </div>
+              </div>
+              <% }); } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Respon Terbaru -->
+    <div class="card" style="margin-top: 24px;">
+      <div class="card-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom: none; padding-bottom: 8px;">
+        <div>
+          <h3 style="font-size: 16px; font-weight: 700; color: #064E3B; margin:0;">Respon Terbaru</h3>
+          <div class="card-sub" style="font-size: 12px; color: #555; margin-top: 2px;">Data alumni yang baru saja masuk ke sistem</div>
+        </div>
+        <a href="/admin/tracer/data" class="btn-lihat-semua" style="background:#e8f4ec; color:#064E3B; padding:8px 20px; border-radius:30px; font-weight:600; font-size:12px; text-decoration:none; transition: background 0.2s;">Lihat Semua Data</a>
+      </div>
+      <div class="table-responsive">
+        <table class="recent-table" style="width:100%; border-collapse:collapse; margin-top: 12px;">
+          <thead>
+            <tr style="border-bottom:1px solid #e2e8f0; text-align:left;">
+              <th style="padding:12px 16px; font-size:11px; font-weight:600; color:#888; text-transform:uppercase; letter-spacing:0.5px;">NAMA LENGKAP</th>
+              <th style="padding:12px 16px; font-size:11px; font-weight:600; color:#888; text-transform:uppercase; letter-spacing:0.5px;">TAHUN LULUS</th>
+              <th style="padding:12px 16px; font-size:11px; font-weight:600; color:#888; text-transform:uppercase; letter-spacing:0.5px;">STATUS KARIR</th>
+              <th style="padding:12px 16px; font-size:11px; font-weight:600; color:#888; text-transform:uppercase; letter-spacing:0.5px; text-align:right;">AKSI</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (recentTracer.length === 0) { %>
+            <tr><td colspan="4" class="empty-row" style="padding:24px; text-align:center; color:#aaa; font-size:13px;">Belum ada data tracer</td></tr>
+            <% } else { %>
+            <% recentTracer.forEach(t => {
+              const initials = t.nama ? t.nama.split(' ').slice(0,2).map(n=>n[0]).join('').toUpperCase() : '?';
+              
+              // Map dynamic avatar colors matching status
+              let avBg = '#e8f4ec';
+              let avColor = '#064E3B';
+              if (t.status_pekerjaan === 'kuliah') {
+                avBg = '#fef3c7';
+                avColor = '#d97706';
+              } else if (t.status_pekerjaan === 'belum_bekerja') {
+                avBg = '#f3f4f6';
+                avColor = '#4b5563';
+              }
+            %>
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+              <td style="padding:16px;">
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <div style="width:36px; height:36px; border-radius:50%; background:<%= avBg %>; color:<%= avColor %>; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px;"><%= initials %></div>
+                  <span style="font-weight:600; color:#111; font-size:13px;"><%= t.nama %></span>
+                </div>
+              </td>
+              <td style="padding:16px; font-size:13px; color:#555;"><%= t.tahun_lulus || '-' %></td>
+              <td style="padding:16px;">
+                <% if (t.status_pekerjaan === 'bekerja') { %>
+                  <span style="display:inline-block; padding:4px 12px; border-radius:12px; background:#e2f0e6; color:#064E3B; font-weight:600; font-size:11px;">Bekerja</span>
+                <% } else if (t.status_pekerjaan === 'wirausaha') { %>
+                  <span style="display:inline-block; padding:4px 12px; border-radius:12px; background:#e8f4ec; color:#064E3B; font-weight:600; font-size:11px;">Wirausaha</span>
+                <% } else if (t.status_pekerjaan === 'kuliah') { %>
+                  <span style="display:inline-block; padding:4px 12px; border-radius:12px; background:#fef3c7; color:#b45309; font-weight:600; font-size:11px;">Studi Lanjut</span>
+                <% } else { %>
+                  <span style="display:inline-block; padding:4px 12px; border-radius:12px; background:#f3f4f6; color:#4b5563; font-weight:600; font-size:11px;">Belum Bekerja</span>
+                <% } %>
+              </td>
+              <td style="padding:16px; text-align:right;">
+                <a href="/admin/tracer/<%= t.id %>" class="detail-link" style="color:#064E3B; font-weight:600; font-size:13px; text-decoration:none;">Detail</a>
+              </td>
+            </tr>
+            <% }) %>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align:center; padding:16px 0 4px; font-size:11px; color:#aaa;">
+      &copy; 2026 Information Systems Fakultas Teknik Hamzanwadi University. All Rights Reserved.
+    </div>
+  </div>
+</main>
+
+<script>
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// DONUT: Partisipasi
+const ctx1 = document.getElementById('partisipasiChart').getContext('2d');
+new Chart(ctx1, {
+  type: 'doughnut',
+  data: {
+    datasets: [{
+      data: [<%= stat.persentaseTracer %>, <%= 100 - stat.persentaseTracer %>],
+      backgroundColor: ['#2d6a4f', '#e8f4ec'],
+      borderWidth: 0,
+    }]
+  },
+  options: {
+    cutout: '78%',
+    plugins: { legend: { display: false }, tooltip: { enabled: false } },
+    animation: { animateRotate: true, duration: 1000 },
+  }
+});
+
+// DONUT: Status Alumni
+const ctx2 = document.getElementById('statusChart').getContext('2d');
+const total2 = <%= stat.sudahIsiTracer %> || 1;
+new Chart(ctx2, {
+  type: 'doughnut',
+  data: {
+    labels: ['Bekerja','Wirausaha','Studi Lanjut','Belum Bekerja'],
+    datasets: [{
+      data: [<%= stat.bekerja %>, <%= stat.wirausaha %>, <%= stat.kuliah %>, <%= stat.belumBekerja %>],
+      backgroundColor: ['#2d6a4f','#d4a017','#2b6cb0','#c0392b'],
+      borderWidth: 2,
+      borderColor: '#fff',
+    }]
+  },
+  options: {
+    cutout: '70%',
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: (ctx) => ` ${ctx.label}: ${ctx.raw} (${Math.round(ctx.raw/total2*100)}%)`
+        }
+      }
+    },
+    animation: { animateRotate: true, duration: 1000 },
+  }
+});
+</script>
+</body>
+</html>

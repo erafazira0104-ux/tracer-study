@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= typeof tracerDetail !== 'undefined' ? 'Detail Jawaban Alumni | Admin' : 'Kelola Pertanyaan | Tracer Study Admin' %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/admin/dashboard.css"/>
+  <style>
+    /* Premium Detail Page styles */
+    .profile-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 16px;
+    }
+    .profile-avatar {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: #064E3B;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .profile-name-nim h3 {
+      font-size: 18px;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0;
+    }
+    .profile-name-nim p {
+      font-size: 13px;
+      color: #64748b;
+      margin: 2px 0 0 0;
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .detail-item label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .detail-item span {
+      font-size: 14px;
+      color: #1e293b;
+      font-weight: 600;
+    }
+    
+    .timeline-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .timeline-item {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+    .timeline-item:hover {
+      border-color: #064E3B;
+      box-shadow: 0 4px 12px rgba(6, 78, 59, 0.05);
+    }
+    .timeline-item.active {
+      border: 2px solid #064E3B;
+      background: #f0fdf4;
+    }
+    .timeline-badge-latest {
+      background: #064E3B;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+    .timeline-badge-current {
+      background: #eab308;
+      color: #064E3B;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+    .btn-action-view {
+      font-size: 12px;
+      font-weight: 700;
+      color: #064E3B;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 8px;
+    }
+    .btn-action-view:hover {
+      text-decoration: underline;
+    }
+
+    .rating-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .rating-stars {
+      display: flex;
+      gap: 4px;
+    }
+    .star-dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .star-dot.filled {
+      background: #064E3B;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+<%- include('_sidebar', { active: 'tracer' }) %>
+
+<main class="main-content">
+  <% if (typeof tracerDetail !== 'undefined') { %>
+    <!-- ==================== ALUMNI RESPONSE DETAIL VIEW ==================== -->
+    <%- include('_topbar', { breadcrumbs: [{ label: 'Tracer Study', url: '/admin/tracer' }, { label: 'Respon' }, { label: 'Detail Jawaban' }] }) %>
+
+    <div class="page-content" style="background:#fcfcfa; min-height: calc(100vh - 60px); padding: 32px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+        <h2 style="font-size:22px; font-weight:800; color:#064E3B; margin:0;">Detail Jawaban Alumni</h2>
+        <a href="/admin/tracer/data" class="btn btn-ghost" style="padding:8px 16px; text-decoration:none; font-size:12px; font-weight:700;">
+          &larr; Kembali ke Daftar
+        </a>
+      </div>
+
+      <!-- Main Layout Grid -->
+      <div style="display: flex; gap: 24px; flex-wrap: wrap;">
+        
+        <!-- Left Side: Profile & Answers (Width 70%) -->
+        <div style="flex: 2; min-width: 300px; display: flex; flex-direction: column; gap: 24px;">
+          
+          <!-- Alumni Profile -->
+          <div class="profile-card">
+            <div class="profile-header">
+              <div class="profile-avatar">
+                <%= tracerDetail.nama.charAt(0).toUpperCase() %>
+              </div>
+              <div class="profile-name-nim">
+                <h3><%= tracerDetail.nama %></h3>
+                <p>NIM: <%= tracerDetail.nim %> • Angkatan <%= tracerDetail.angkatan || '-' %> • Lulusan Tahun <%= tracerDetail.tahun_lulus || '-' %></p>
+              </div>
+            </div>
+            
+            <div class="detail-grid">
+              <div class="detail-item">
+                <label>Email</label>
+                <span><%= tracerDetail.email %></span>
+              </div>
+              <div class="detail-item">
+                <label>No. HP</label>
+                <span><%= tracerDetail.no_hp || '-' %></span>
+              </div>
+              <div class="detail-item">
+                <label>Jenis Kelamin</label>
+                <span><%= tracerDetail.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan' %></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Answer Card -->
+          <div class="profile-card" style="border-left: 4px solid #064E3B;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; margin-bottom: 16px;">
+              <h3 style="font-size: 15px; font-weight: 800; color: #064E3B; margin: 0;">Status Karir & Detail Pekerjaan</h3>
+              <span class="status-badge status-<%= tracerDetail.status_pekerjaan %>" style="padding: 6px 12px; font-size: 12px;">
+                <%= tracerDetail.status_pekerjaan === 'kuliah' ? 'Studi Lanjut' : tracerDetail.status_pekerjaan.replace('_', ' ') %>
+              </span>
+            </div>
+
+            <!-- Conditional Details based on status -->
+            <% if (tracerDetail.status_pekerjaan === 'bekerja' || tracerDetail.status_pekerjaan === 'wirausaha') { %>
+              <div class="detail-grid" style="row-gap: 20px;">
+                <div class="detail-item">
+                  <label><%= tracerDetail.status_pekerjaan === 'wirausaha' ? 'Nama Usaha' : 'Nama Perusahaan' %></label>
+                  <span><%= tracerDetail.nama_perusahaan || '-' %></span>
+                </div>
+                <div class="detail-item">
+                  <label>Posisi / Jabatan</label>
+                  <span><%= tracerDetail.jabatan || '-' %></span>
+                </div>
+                <div class="detail-item">
+                  <label>Bidang Usaha</label>
+                  <span><%= tracerDetail.bidang_perusahaan || '-' %></span>
+                </div>
+                <div class="detail-item">
+                  <label>Lokasi Pekerjaan</label>
+                  <span><%= tracerDetail.lokasi_perusahaan || '-' %></span>
+                </div>
+                <div class="detail-item">
+                  <label>Gaji Pertama</label>
+                  <span><%= tracerDetail.gaji_pertama || '-' %></span>
+                </div>
+                <div class="detail-item">
+                  <label>Lama Mencari Kerja</label>
+                  <span><%= tracerDetail.lama_mencari_kerja || '-' %></span>
+                </div>
+                <div class="detail-item">
+                  <label>Kesesuaian Bidang</label>
+                  <span><%= tracerDetail.kesesuaian_bidang || '-' %></span>
+                </div>
+              </div>
+            <% } else if (tracerDetail.status_pekerjaan === 'kuliah') { %>
+              <div class="detail-grid" style="row-gap: 20px;">
+                <div class="detail-item">
+                  <label>Nama Universitas</label>
+                  <span><%= tracerDetail.nama_universitas || '-' %></span>
+                </div>
+                <div class="detail-item">
+                  <label>Program Studi</label>
+                  <span><%= tracerDetail.program_studi_lanjut || '-' %></span>
+                </div>
+                <div class="detail-item">
+                  <label>Jenjang Pendidikan</label>
+                  <span><%= tracerDetail.jenjang_lanjut || '-' %></span>
+                </div>
+              </div>
+            <% } else { %>
+              <div class="detail-grid">
+                <div class="detail-item">
+                  <label>Lama Mencari Kerja</label>
+                  <span><%= tracerDetail.lama_mencari_kerja || '-' %></span>
+                </div>
+              </div>
+            <% } %>
+          </div>
+
+          <!-- Evaluation Card -->
+          <div class="profile-card">
+            <h3 style="font-size: 15px; font-weight: 800; color: #064E3B; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; margin-bottom: 16px;">
+              Evaluasi Pembelajaran & Mutu Prodi (Skala 1 - 5)
+            </h3>
+            
+            <div class="rating-row">
+              <div style="font-size:13px; font-weight:500; color:#334155;">Kurikulum Pembelajaran</div>
+              <div class="rating-stars">
+                <% [1, 2, 3, 4, 5].forEach(star => { %>
+                  <span class="star-dot <%= tracerDetail.eval_kurikulum >= star ? 'filled' : '' %>"><%= star %></span>
+                <% }) %>
+              </div>
+            </div>
+
+            <div class="rating-row">
+              <div style="font-size:13px; font-weight:500; color:#334155;">Kualitas Dosen Mengajar</div>
+              <div class="rating-stars">
+                <% [1, 2, 3, 4, 5].forEach(star => { %>
+                  <span class="star-dot <%= tracerDetail.eval_dosen >= star ? 'filled' : '' %>"><%= star %></span>
+                <% }) %>
+              </div>
+            </div>
+
+            <div class="rating-row">
+              <div style="font-size:13px; font-weight:500; color:#334155;">Fasilitas Kampus & Lab</div>
+              <div class="rating-stars">
+                <% [1, 2, 3, 4, 5].forEach(star => { %>
+                  <span class="star-dot <%= tracerDetail.eval_fasilitas >= star ? 'filled' : '' %>"><%= star %></span>
+                <% }) %>
+              </div>
+            </div>
+
+            <div class="rating-row">
+              <div style="font-size:13px; font-weight:500; color:#334155;">Layanan Akademik & Administrasi</div>
+              <div class="rating-stars">
+                <% [1, 2, 3, 4, 5].forEach(star => { %>
+                  <span class="star-dot <%= tracerDetail.eval_pelayanan >= star ? 'filled' : '' %>"><%= star %></span>
+                <% }) %>
+              </div>
+            </div>
+
+            <div class="rating-row" style="border-bottom:none;">
+              <div style="font-size:13px; font-weight:500; color:#334155;">Program MBKM & Magang</div>
+              <div class="rating-stars">
+                <% [1, 2, 3, 4, 5].forEach(star => { %>
+                  <span class="star-dot <%= tracerDetail.eval_mbkm >= star ? 'filled' : '' %>"><%= star %></span>
+                <% }) %>
+              </div>
+            </div>
+          </div>
+
+          <!-- Saran -->
+          <div class="profile-card">
+            <h3 style="font-size: 15px; font-weight: 800; color: #064E3B; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; margin-bottom: 16px;">
+              Saran & Masukan Konstruktif
+            </h3>
+            <p style="font-size:13.5px; line-height:1.6; color:#334155; margin:0;"><%= tracerDetail.saran || 'Tidak ada saran yang dituliskan.' %></p>
+          </div>
+
+        </div>
+
+        <!-- Right Side: Timeline History (Width 30%) -->
+        <div style="flex: 1; min-width: 280px;">
+          <h3 style="font-size:14px; font-weight:800; color:#1e293b; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:16px;">Timeline Riwayat Pengisian</h3>
+          
+          <div class="timeline-container">
+            <% if (typeof riwayatAlumni !== 'undefined' && riwayatAlumni.length > 0) { %>
+              <% riwayatAlumni.forEach(function(item, idx) { %>
+                <% 
+                  const isLatest = idx === 0;
+                  const isCurrent = item.id === tracerDetail.id;
+                %>
+                <div class="timeline-item <%= isCurrent ? 'active' : '' %>">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-size:13px; font-weight:800; color:#0f172a;">Pengisian Ke-<%= item.pengisian_ke %></span>
+                    <div style="display:flex; gap:4px;">
+                      <% if (isLatest) { %>
+                        <span class="timeline-badge-latest" title="Ini adalah data pengisian terbaru">Terbaru</span>
+                      <% } %>
+                      <% if (isCurrent) { %>
+                        <span class="timeline-badge-current">Sedang Dilihat</span>
+                      <% } %>
+                    </div>
+                  </div>
+                  <div style="font-size:11.5px; color:#64748b; margin-bottom:4px;">Periode: <strong><%= item.periode %></strong></div>
+                  <div style="font-size:11.5px; color:#64748b; margin-bottom:4px;">Status: <strong style="text-transform:capitalize;"><%= item.status_pekerjaan.replace('_', ' ') %></strong></div>
+                  <div style="font-size:11px; color:#94a3b8;"><%= new Date(item.tanggal_isi).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) %></div>
+                  
+                  <% if (!isCurrent) { %>
+                    <a href="/admin/tracer/detail/<%= item.id %>" class="btn-action-view">Lihat Pengisian Ini &rarr;</a>
+                  <% } %>
+                </div>
+              <% }); %>
+            <% } else { %>
+              <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:24px; text-align:center; color:#94a3b8; font-size:13px;">
+                Tidak ada riwayat pengisian lainnya.
+              </div>
+            <% } %>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  
+  <% } else { %>
+    <!-- ==================== MANAGE QUESTIONS PER CATEGORY VIEW ==================== -->
+    <!-- (Maintain previous questions list UI) -->
+    <%- include('_topbar', { breadcrumbs: [{ label: 'Tracer Study', url: '/admin/tracer' }, { label: 'Kelola Pertanyaan' }] }) %>
+
+    <div class="page-content" style="background:#fcfcfa; min-height: calc(100vh - 60px); padding: 32px;">
+      <!-- Back + kategori label -->
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <a href="/admin/tracer" class="pertanyaan-back" style="display:inline-flex; align-items:center; gap:6px; color:#064E3B; font-weight:700; text-decoration:none; font-size:13px;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            Kembali
+          </a>
+          <div>
+            <span class="pertanyaan-kategori-label" style="background:#e8f4ec; color:#064E3B; padding:6px 12px; border-radius:30px; font-weight:800; font-size:12px;">
+              Kategori: <%= kategoriLabel || kategori %>
+            </span>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="openAddModal()" style="background:#064E3B; color:#fff; border:none; padding:10px 16px; border-radius:10px; font-weight:700; cursor:pointer; font-size:13px; display:inline-flex; align-items:center; gap:6px;">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="#fff"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          Tambah Pertanyaan
+        </button>
+      </div>
+
+      <!-- Table Pertanyaan -->
+      <div class="data-card">
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width:50px;">NO</th>
+                <th>PERTANYAAN</th>
+                <th style="width:140px;">JENIS JAWABAN</th>
+                <th style="width:80px; text-align:center;">STATUS</th>
+                <th style="width:90px; text-align:center;">AKSI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (!pertanyaanList || pertanyaanList.length === 0) { %>
+              <tr><td colspan="5" style="text-align:center; padding:24px; color:#8aab93;">Belum ada pertanyaan pada kategori ini.</td></tr>
+              <% } else { %>
+              <% pertanyaanList.forEach((p, i) => { %>
+              <tr>
+                <td><%= i + 1 %></td>
+                <td style="font-weight:500;"><%= p.pertanyaan %></td>
+                <td>
+                  <span class="badge" style="<%= p.jenis_jawaban === 'essay' ? 'background:#dbeafe;color:#2b6cb0;' : (p.jenis_jawaban === 'skala' ? 'background:#e0e7ff;color:#4338ca;' : 'background:#fef3c7;color:#c89b0a;') %>">
+                    <%= p.jenis_jawaban === 'essay' ? 'Essay' : (p.jenis_jawaban === 'skala' ? 'Skala Rating (1-5)' : 'Pilihan Ganda') %>
+                  </span>
+                </td>
+                <td style="text-align:center;">
+                  <label class="toggle-switch">
+                    <input type="checkbox" <%= p.is_active ? 'checked' : '' %> onchange="togglePertanyaan(this, <%= p.id %>)"/>
+                    <span class="toggle-slider"></span>
+                  </label>
+                </td>
+                <td style="text-align:center;">
+                  <div class="action-btns" style="justify-content:center; display:flex; gap:8px;">
+                    <button type="button" class="btn-icon btn-edit" title="Edit"
+                      onclick='openEditModal(<%- JSON.stringify({
+                        id: p.id, pertanyaan: p.pertanyaan, jenis_jawaban: p.jenis_jawaban,
+                        opsi: p.opsi_jawaban ? (p.opsi_jawaban.trim().startsWith("[") ? JSON.parse(p.opsi_jawaban) : p.opsi_jawaban.split(",").map(s=>s.trim())) : [], is_active: !!p.is_active
+                      }) %>)' style="border:1px solid #cbd5e1; background:#f8fafc; border-radius:6px; padding:6px; cursor:pointer;">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="#64748b"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                    </button>
+                    <form action="/admin/tracer/pertanyaan/<%= p.id %>/hapus" method="POST" style="display:inline" onsubmit="return confirm('Hapus pertanyaan ini?')">
+                      <input type="hidden" name="kategori" value="<%= kategori %>"/>
+                      <button type="submit" class="btn-icon btn-delete" title="Hapus" style="border:1px solid #fecaca; background:#fef2f2; border-radius:6px; padding:6px; cursor:pointer;">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="#ef4444"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              <% }) %>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% } %>
+
+</main>
+
+<% if (typeof tracerDetail === 'undefined') { %>
+<!-- ===== MODAL TAMBAH / EDIT PERTANYAAN ===== -->
+<div class="modal-overlay" id="pertanyaanModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div>
+        <h3 id="modalTitle">Tambah Pertanyaan Baru</h3>
+        <p>Buat parameter kuesioner baru untuk data pelacakan alumni.</p>
+      </div>
+      <button type="button" class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+
+    <form id="pertanyaanForm" method="POST" action="/admin/tracer/pertanyaan">
+      <input type="hidden" name="kategori" value="<%= kategori %>"/>
+
+      <div class="form-group">
+        <label>Nama Pertanyaan</label>
+        <textarea name="pertanyaan" id="f_pertanyaan" rows="2" placeholder="Contoh: Apa jabatan Anda saat ini di tempat kerja?" required style="width:100%; border:1px solid var(--border); border-radius:8px; padding:10px; font-family:inherit; font-size:13px; outline:none;"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Kategori Pertanyaan</label>
+          <select disabled style="background:#f4f6f4; width:100%; border:1px solid var(--border); border-radius:8px; padding:8px 12px; font-size:13px; outline:none;">
+            <option><%= kategoriLabel || kategori %></option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Jenis Jawaban</label>
+          <div class="jenis-toggle" style="display:flex; gap:6px;">
+            <button type="button" class="jenis-btn active" id="btnEssay" onclick="setJenis('essay')">Essay</button>
+            <button type="button" class="jenis-btn" id="btnPilihan" onclick="setJenis('pilihan_ganda')">Pilihan Ganda</button>
+            <button type="button" class="jenis-btn" id="btnSkala" onclick="setJenis('skala')">Skala Rating (1-5)</button>
+          </div>
+          <input type="hidden" name="jenis_jawaban" id="f_jenis" value="essay"/>
+        </div>
+      </div>
+
+      <div class="form-group" id="opsiWrap" style="display:none;">
+        <label>Opsi Jawaban <a href="#" onclick="tambahOpsi(event)" style="float:right;color:#2d6a4f;font-weight:600;">+ Tambah Opsi</a></label>
+        <div id="opsiList"></div>
+      </div>
+
+      <div class="form-group">
+        <label>Status Pertanyaan</label>
+        <div style="display:flex; gap:18px; margin-top:6px;">
+          <label style="display:flex;align-items:center;gap:6px;font-weight:400;">
+            <input type="radio" name="status_aktif" value="aktif" checked/> Aktif
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-weight:400;">
+            <input type="radio" name="status_aktif" value="nonaktif"/> Tidak Aktif
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" onclick="closeModal()">Batal</button>
+        <button type="submit" class="btn btn-primary">Simpan Pertanyaan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
+function togglePertanyaan(el, id) {
+  fetch(`/admin/tracer/pertanyaan/${id}/toggle`, { method: 'POST' })
+    .then(r => r.json())
+    .then(d => { if (!d.ok) { el.checked = !el.checked; alert('Gagal mengubah status.'); } })
+    .catch(() => { el.checked = !el.checked; alert('Gagal terhubung ke server.'); });
+}
+
+let opsiCount = 0;
+function tambahOpsi(e) {
+  if (e) e.preventDefault();
+  opsiCount++;
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;gap:8px;margin-top:8px;align-items:center;';
+  wrap.innerHTML = `
+    <span style="cursor:grab;color:#aaa;">⠿</span>
+    <input type="text" name="opsi" placeholder="Opsi ${opsiCount}" style="flex:1; border:1px solid var(--border); border-radius:8px; padding:8px 12px; font-size:13px; outline:none;"/>
+    <button type="button" onclick="this.parentElement.remove()" style="border:none;background:none;color:#c0392b;font-size:16px;cursor:pointer;">&times;</button>
+  `;
+  document.getElementById('opsiList').appendChild(wrap);
+}
+
+function setJenis(jenis) {
+  document.getElementById('f_jenis').value = jenis;
+  document.getElementById('btnEssay').classList.toggle('active', jenis === 'essay');
+  document.getElementById('btnPilihan').classList.toggle('active', jenis === 'pilihan_ganda');
+  if (document.getElementById('btnSkala')) {
+    document.getElementById('btnSkala').classList.toggle('active', jenis === 'skala');
+  }
+  document.getElementById('opsiWrap').style.display = (jenis === 'pilihan_ganda' || jenis === 'skala') ? 'block' : 'none';
+  if ((jenis === 'pilihan_ganda' || jenis === 'skala') && document.getElementById('opsiList').children.length === 0) {
+    tambahOpsi(); tambahOpsi();
+  }
+}
+
+function openAddModal() {
+  document.getElementById('modalTitle').textContent = 'Tambah Pertanyaan Baru';
+  document.getElementById('pertanyaanForm').action = '/admin/tracer/pertanyaan';
+  document.getElementById('f_pertanyaan').value = '';
+  document.getElementById('opsiList').innerHTML = '';
+  opsiCount = 0;
+  setJenis('essay');
+  document.querySelector('input[name=status_aktif][value=aktif]').checked = true;
+  document.getElementById('pertanyaanModal').classList.add('show');
+}
+
+function openEditModal(data) {
+  document.getElementById('modalTitle').textContent = 'Edit Pertanyaan';
+  document.getElementById('pertanyaanForm').action = `/admin/tracer/pertanyaan/${data.id}`;
+  document.getElementById('f_pertanyaan').value = data.pertanyaan;
+  document.getElementById('opsiList').innerHTML = '';
+  opsiCount = 0;
+  setJenis(data.jenis_jawaban);
+  if (data.jenis_jawaban === 'pilihan_ganda') {
+    document.getElementById('opsiList').innerHTML = '';
+    opsiCount = 0;
+    (data.opsi && data.opsi.length ? data.opsi : ['', '']).forEach(v => {
+      tambahOpsi();
+      const inputs = document.querySelectorAll('#opsiList input[name=opsi]');
+      inputs[inputs.length - 1].value = v;
+    });
+  }
+  document.querySelector(`input[name=status_aktif][value=${data.is_active ? 'aktif' : 'nonaktif'}]`).checked = true;
+  document.getElementById('pertanyaanModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('pertanyaanModal').classList.remove('show');
+}
+</script>
+<% } %>
+
+</body>
+</html>

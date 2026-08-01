@@ -21,55 +21,69 @@
 
   <div class="page-content">
 
-    <!-- Stat Cards -->
+    <!-- Admin Welcome Hero Banner -->
+    <div class="admin-welcome-hero">
+      <div class="hero-text-area">
+        <span class="hero-badge">⚡ Panel Kontrol Administrator</span>
+        <h2>Selamat Datang Kembali, Administrator!</h2>
+        <p>Ringkasan statistik alumni, partisipasi kuesioner tracer study, dan statistik karir Sistem Informasi Universitas Hamzanwadi.</p>
+      </div>
+      <div class="hero-actions">
+        <a href="/admin/tracer/data" class="btn-hero-primary">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2zm0-4H7V7h10v2zm0 8H7v-2h10v2z"/></svg>
+          <span>Kelola Data Tracer</span>
+        </a>
+        <a href="/admin/laporan" class="btn-hero-secondary">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-4 11H9v-5h6v5zm4-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-2-9H7v4h10V3z"/></svg>
+          <span>Cetak Laporan</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Stat Cards (5 Metrics Grid) -->
     <div class="stat-grid">
       <div class="stat-card green" onclick="location.href='/admin/alumni'" style="cursor:pointer;">
-        <div class="stat-icon">
-          <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-        </div>
+        <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
         <div class="stat-body">
           <div class="stat-number"><%= stat.totalAlumni.toLocaleString('id-ID') %></div>
           <div class="stat-label">Total Alumni</div>
+          <div class="stat-trend">Terdaftar aktif</div>
         </div>
       </div>
 
       <div class="stat-card blue" onclick="location.href='/admin/alumni?status=sudah'" style="cursor:pointer;">
-        <div class="stat-icon">
-          <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-        </div>
+        <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
         <div class="stat-body">
           <div class="stat-number"><%= stat.sudahIsiTracer.toLocaleString('id-ID') %></div>
           <div class="stat-label">Sudah Isi Tracer</div>
+          <div class="stat-trend up"><%= stat.persentaseTracer %>% partisipasi</div>
         </div>
       </div>
 
       <div class="stat-card red" onclick="location.href='/admin/alumni?status=belum'" style="cursor:pointer;">
-        <div class="stat-icon">
-          <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-        </div>
+        <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></div>
         <div class="stat-body">
           <div class="stat-number"><%= stat.belumIsiTracer.toLocaleString('id-ID') %></div>
           <div class="stat-label">Belum Isi Tracer</div>
+          <div class="stat-trend down">Perlu ditindak</div>
         </div>
       </div>
 
       <div class="stat-card orange" onclick="location.href='/admin/lowongan/akses'" style="cursor:pointer;">
-        <div class="stat-icon">
-          <svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.35C18 2.53 15.47 0 12 0S6 2.53 6 4.65c0 .47.11.91.18 1.35H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-8 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
-        </div>
+        <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.35C18 2.53 15.47 0 12 0S6 2.53 6 4.65c0 .47.11.91.18 1.35H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-8 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg></div>
         <div class="stat-body">
           <div class="stat-number"><%= stat.lowonganAktif.toLocaleString('id-ID') %></div>
           <div class="stat-label">Akses Lowongan</div>
+          <div class="stat-trend">Total log akses</div>
         </div>
       </div>
 
       <div class="stat-card yellow" onclick="location.href='/admin/konseling/booking'" style="cursor:pointer;">
-        <div class="stat-icon">
-          <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8z"/></svg>
-        </div>
+        <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div>
         <div class="stat-body">
           <div class="stat-number"><%= stat.konselingAktif.toLocaleString('id-ID') %></div>
           <div class="stat-label">Sesi Konseling</div>
+          <div class="stat-trend">Permintaan masuk</div>
         </div>
       </div>
     </div>
@@ -313,8 +327,9 @@
     </div>
 
     <!-- Footer -->
-    <div style="text-align:center; padding:16px 0 4px; font-size:11px; color:#aaa;">
-      &copy; 2026 Information Systems Fakultas Teknik Hamzanwadi University. All Rights Reserved.
+    <div style="text-align:center; border-top:1px solid var(--border); padding:24px 0 4px; font-size:11.5px; color:#94a3b8; margin-top:24px; line-height:1.8;">
+      <strong style="color:#64748b;">Program Studi Sistem Informasi &mdash; Fakultas Teknik &mdash; Universitas Hamzanwadi</strong><br/>
+      &copy; <%= new Date().getFullYear() %> Sistem Informasi Tracer Study. All Rights Reserved.
     </div>
   </div>
 </main>

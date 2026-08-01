@@ -27,11 +27,7 @@ exports.index = (req, res) => {
         title: 'Tracer Study',
         adminName: req.session.adminName,
         kategoris: rows || [],
-        flash_success: req.session.flash_success || null,
-        flash_error: req.session.flash_error || null
       });
-      delete req.session.flash_success;
-      delete req.session.flash_error;
     }
   );
 };
@@ -93,10 +89,15 @@ exports.tambahPertanyaan = (req, res) => {
           db.query(
             `INSERT INTO kuesioner_pertanyaan (kategori, pertanyaan, jenis_jawaban, opsi_jawaban, is_active, urutan)
              VALUES (?,?,?,?,?,?)`,
-            [kategori, pertanyaan.trim(), jenis_jawaban === 'pilihan_ganda' ? 'pilihan_ganda' : 'essay',
+            [kategori, pertanyaan.trim(), jenis_jawaban === 'pilihan_ganda' ? 'pilihan_ganda' : (jenis_jawaban === 'skala' ? 'skala' : 'essay'),
               opsi, status_aktif === 'nonaktif' ? 0 : 1, urutan],
             (err) => {
-              if (err) console.error('DB error tambah pertanyaan:', err.message);
+              if (err) {
+                console.error('DB error tambah pertanyaan:', err.message);
+                req.session.flash_error = 'Gagal menambahkan pertanyaan.';
+              } else {
+                req.session.flash_success = `Pertanyaan berhasil ditambahkan ke kategori ${kategori}.`;
+              }
               res.redirect(`/admin/tracer/${kategori}`);
             }
           );
@@ -141,15 +142,23 @@ exports.updatePertanyaan = (req, res) => {
     const opsiArr = [].concat(req.body.opsi || []).map((o) => (o || '').trim()).filter(Boolean);
     opsi = JSON.stringify(opsiArr);
   }
+  if (jenis_jawaban === 'skala') {
+    const opsiArr = [].concat(req.body.opsi || []).map((o) => (o || '').trim()).filter(Boolean);
+    opsi = opsiArr.length > 0 ? JSON.stringify(opsiArr) : null;
+  }
 
   db.query(
     `UPDATE kuesioner_pertanyaan
      SET pertanyaan = ?, jenis_jawaban = ?, opsi_jawaban = ?, is_active = ?
      WHERE id = ?`,
-    [pertanyaan.trim(), jenis_jawaban === 'pilihan_ganda' ? 'pilihan_ganda' : 'essay',
-      opsi, status_aktif === 'nonaktif' ? 0 : 1, id],
+    [pertanyaan.trim(), jenis_jawaban, opsi, status_aktif === 'nonaktif' ? 0 : 1, id],
     (err) => {
-      if (err) console.error('DB error update pertanyaan:', err.message);
+      if (err) {
+        console.error('DB error update pertanyaan:', err.message);
+        req.session.flash_error = 'Gagal memperbarui pertanyaan.';
+      } else {
+        req.session.flash_success = 'Pertanyaan berhasil diperbarui.';
+      }
       res.redirect(`/admin/tracer/${kategori}`);
     }
   );
@@ -173,7 +182,12 @@ exports.hapusPertanyaan = (req, res) => {
   const { id } = req.params;
   const kategori = req.body.kategori || req.query.kategori;
   db.query(`DELETE FROM kuesioner_pertanyaan WHERE id = ?`, [id], (err) => {
-    if (err) console.error('DB error hapus pertanyaan:', err.message);
+    if (err) {
+      console.error('DB error hapus pertanyaan:', err.message);
+      req.session.flash_error = 'Gagal menghapus pertanyaan.';
+    } else {
+      req.session.flash_success = 'Pertanyaan berhasil dihapus.';
+    }
     res.redirect(kategori ? `/admin/tracer/${kategori}` : '/admin/tracer');
   });
 };
@@ -233,23 +247,104 @@ exports.show = (req, res) => {
       if (err || rows.length === 0) return res.redirect('/admin/tracer');
       const detail = rows[0];
 
-      // Fetch all entries by the same alumni for timeline view
-      db.query(
-        `SELECT id, periode, pengisian_ke, status_pekerjaan, nama_perusahaan, nama_universitas, tanggal_isi
-         FROM tracer_study WHERE alumni_id = ? ORDER BY tanggal_isi DESC`,
-        [detail.alumni_id],
-        (err2, allEntries) => {
-          res.render('admin/tracer-detail', {
-            title: 'Detail Tracer Study',
-            adminName: req.session.adminName,
-            kategori: detail.status_pekerjaan,
-            kategoriLabel: KATEGORI_LABEL[detail.status_pekerjaan] || detail.status_pekerjaan,
-            pertanyaanList: [],
-            tracerDetail: detail,
-            riwayatAlumni: allEntries || [],
-          });
+      // Fetch all kuesioner pertanyaan to map dynamic answers
+      db.query('SELECT * FROM kuesioner_pertanyaan ORDER BY urutan ASC, id ASC', [], (errQuestions, qRows) => {
+        if (errQuestions) console.error('Error fetching questions for admin detail:', errQuestions);
+        const questions = qRows || [];
+
+        let jawabanKustomObj = {};
+        if (detail.jawaban_kustom) {
+          try {
+            jawabanKustomObj = JSON.parse(detail.jawaban_kustom);
+          } catch (e) {}
         }
-      );
+
+        const getLegacyAnswer = (tracer, q) => {
+          if (!tracer) return '';
+          const text = (q.pertanyaan || '').toLowerCase();
+          if (q.kategori === 'bekerja') {
+            if (text.includes('saat ini sudah bekerja')) return tracer.status_kerja_detail || (tracer.status_pekerjaan === 'bekerja' ? 'Sudah bekerja' : '');
+            if (text.includes('kapan anda mulai mencari')) return tracer.kapan_mulai_cari_kerja || '';
+            if (text.includes('berapa lama') || text.includes('waktu yang dibutuhkan')) return tracer.lama_mencari_kerja || '';
+            if (text.includes('nama instansi') || text.includes('nama perusahaan')) return tracer.nama_perusahaan || '';
+            if (text.includes('jenis instansi')) return tracer.jenis_instansi || '';
+            if (text.includes('bidang usaha')) return tracer.bidang_perusahaan || '';
+            if (text.includes('jabatan')) return tracer.jabatan || '';
+            if (text.includes('lokasi')) return tracer.lokasi_perusahaan || '';
+            if (text.includes('status kepegawaian') || text.includes('status pekerjaan')) return tracer.status_kerja_detail || '';
+            if (text.includes('penghasilan pertama') || text.includes('gaji pertama')) return tracer.gaji_pertama || '';
+            if (text.includes('penghasilan anda saat ini') || text.includes('gaji saat ini')) return tracer.penghasilan_bulanan || '';
+            if (text.includes('sesuai dengan bidang studi') || text.includes('kesesuaian bidang')) return tracer.kesesuaian_bidang || '';
+            if (text.includes('kompetensi yang diperoleh') || text.includes('kesesuaian pekerjaan')) return tracer.kesesuaian_kompetensi || '';
+          }
+          if (q.kategori === 'wirausaha') {
+            if (text.includes('memiliki usaha sendiri')) return tracer.status_pekerjaan === 'wirausaha' ? 'Sudah Memiliki Usaha' : '';
+            if (text.includes('nama usaha')) return tracer.nama_perusahaan || '';
+            if (text.includes('bidang usaha')) return tracer.bidang_perusahaan || '';
+            if (text.includes('tahun memulai')) return tracer.kapan_mulai_cari_kerja || '';
+            if (text.includes('jumlah karyawan')) return tracer.jabatan || '';
+            if (text.includes('omzet')) return tracer.gaji_pertama || tracer.penghasilan_bulanan || '';
+            if (text.includes('sumber modal')) return tracer.media_mencari_kerja || '';
+            if (text.includes('sesuai dengan bidang studi') || text.includes('kesesuaian')) return tracer.kesesuaian_bidang || '';
+            if (text.includes('perkuliahan membantu')) return tracer.kesesuaian_kompetensi || '';
+          }
+          if (q.kategori === 'kuliah') {
+            if (text.includes('melanjutkan pendidikan')) return tracer.status_pekerjaan === 'kuliah' ? 'Ya' : '';
+            if (text.includes('perguruan tinggi') || text.includes('universitas')) return tracer.nama_universitas || '';
+            if (text.includes('jenjang')) return tracer.jenjang_lanjut || '';
+            if (text.includes('program studi')) return tracer.program_studi_lanjut || '';
+            if (text.includes('tahun masuk')) return tracer.kapan_mulai_cari_kerja || '';
+            if (text.includes('alasan')) return tracer.saran || '';
+            if (text.includes('sumber pembiayaan')) return tracer.media_mencari_kerja || '';
+          }
+          if (q.kategori === 'belum_bekerja') {
+            if (text.includes('mencari pekerjaan')) return tracer.status_pekerjaan === 'belum_bekerja' ? 'Ya' : '';
+            if (text.includes('melamar pekerjaan')) return tracer.kapan_mulai_cari_kerja || '';
+            if (text.includes('wawancara kerja')) return tracer.status_kerja_detail || '';
+            if (text.includes('kendala')) return tracer.lama_mencari_kerja || '';
+            if (text.includes('rencana anda')) return tracer.saran || '';
+          }
+          if (q.kategori === 'penilaian_prodi') {
+            if (text.includes('kurikulum')) return tracer.eval_kurikulum || '';
+            if (text.includes('dosen')) return tracer.eval_dosen || '';
+            if (text.includes('fasilitas') || text.includes('laboratorium') || text.includes('kelas')) return tracer.eval_fasilitas || '';
+            if (text.includes('pelayanan') || text.includes('administrasi') || text.includes('sistem akademik')) return tracer.eval_pelayanan || '';
+            if (text.includes('mbkm') || text.includes('magang')) return tracer.eval_mbkm || '';
+          }
+          return '';
+        };
+
+        const mappedQuestions = questions.map(q => {
+          return {
+            id: q.id,
+            kategori: q.kategori,
+            pertanyaan: q.pertanyaan,
+            jenis_jawaban: q.jenis_jawaban,
+            opsi_jawaban: q.opsi_jawaban,
+            jawaban: jawabanKustomObj[q.id] !== undefined ? jawabanKustomObj[q.id] : getLegacyAnswer(detail, q)
+          };
+        });
+
+        const filteredPertanyaanList = mappedQuestions.filter(q => q.kategori === detail.status_pekerjaan || q.kategori === 'penilaian_prodi');
+
+        // Fetch all entries by the same alumni for timeline view
+        db.query(
+          `SELECT id, periode, pengisian_ke, status_pekerjaan, nama_perusahaan, nama_universitas, tanggal_isi
+           FROM tracer_study WHERE alumni_id = ? ORDER BY tanggal_isi DESC`,
+          [detail.alumni_id],
+          (err2, allEntries) => {
+            res.render('admin/tracer-detail', {
+              title: 'Detail Tracer Study',
+              adminName: req.session.adminName,
+              kategori: detail.status_pekerjaan,
+              kategoriLabel: KATEGORI_LABEL[detail.status_pekerjaan] || detail.status_pekerjaan,
+              pertanyaanList: filteredPertanyaanList,
+              tracerDetail: detail,
+              riwayatAlumni: allEntries || [],
+            });
+          }
+        );
+      });
     }
   );
 };
@@ -329,18 +424,11 @@ exports.listPeriode = (req, res) => {
     db.query('SELECT * FROM tracer_periode ORDER BY created_at DESC', [], (err, rows) => {
       if (err) console.error('DB error listPeriode:', err.message);
       
-      const flash_success = req.session.flash_success || null;
-      const flash_error = req.session.flash_error || null;
-      delete req.session.flash_success;
-      delete req.session.flash_error;
-
       res.render('admin/tracer-periode', {
         title: 'Kelola Periode Tracer Study',
         adminName: req.session.adminName,
         periodes: rows || [],
         cooldownBulan,
-        flash_success,
-        flash_error,
       });
     });
   });
@@ -436,6 +524,56 @@ exports.updateCooldown = (req, res) => {
         req.session.flash_error = 'Gagal memperbarui pengaturan jeda pengisian.';
       } else {
         req.session.flash_success = `Pengaturan jeda pengisian ulang berhasil diperbarui menjadi ${cooldown_bulan} bulan.`;
+      }
+      res.redirect('/admin/tracer/periode');
+    }
+  );
+};
+
+/* ── POST /admin/tracer/kategori/:id/edit ── */
+exports.editKategori = (req, res) => {
+  const { id } = req.params;
+  const { nama, icon } = req.body;
+  if (!nama || !nama.trim()) {
+    req.session.flash_error = 'Nama kategori wajib diisi.';
+    return res.redirect('/admin/tracer');
+  }
+
+  const slug = nama.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+
+  db.query(
+    'UPDATE tracer_kategori SET nama = ?, slug = ?, icon = ? WHERE id = ?',
+    [nama.trim(), slug, icon || '📝', id],
+    (err) => {
+      if (err) {
+        console.error('DB error editKategori:', err.message);
+        req.session.flash_error = 'Gagal memperbarui kategori.';
+      } else {
+        req.session.flash_success = 'Kategori kuesioner berhasil diperbarui.';
+      }
+      res.redirect('/admin/tracer');
+    }
+  );
+};
+
+/* ── POST /admin/tracer/periode/:id/edit ── */
+exports.editPeriode = (req, res) => {
+  const { id } = req.params;
+  const { nama, tanggal_mulai, tanggal_selesai } = req.body;
+  if (!nama || !tanggal_mulai || !tanggal_selesai) {
+    req.session.flash_error = 'Semua field periode wajib diisi.';
+    return res.redirect('/admin/tracer/periode');
+  }
+
+  db.query(
+    'UPDATE tracer_periode SET nama = ?, tanggal_mulai = ?, tanggal_selesai = ? WHERE id = ?',
+    [nama, tanggal_mulai, tanggal_selesai, id],
+    (err) => {
+      if (err) {
+        console.error('DB error editPeriode:', err.message);
+        req.session.flash_error = 'Gagal memperbarui periode.';
+      } else {
+        req.session.flash_success = 'Periode pengisian berhasil diperbarui.';
       }
       res.redirect('/admin/tracer/periode');
     }

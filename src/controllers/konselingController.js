@@ -1,21 +1,26 @@
 const db = require('../configs/db');
 
 const getKonseling = (req, res) => {
-  db.query(
-    `SELECT id, nama, bidang_keahlian, foto FROM konselor WHERE is_active = 1`,
-    [],
-    (err, konselors) => {
-      if (err) {
-        console.error('DB error konseling:', err);
-        konselors = [];
+  db.query('SELECT COUNT(*) AS total FROM permintaan_konseling', [], (errCount, countRows) => {
+    const totalKonsultasi = (countRows && countRows[0] && countRows[0].total) ? countRows[0].total : 0;
+
+    db.query(
+      `SELECT id, nama, bidang_keahlian, foto, whatsapp FROM konselor WHERE is_active = 1`,
+      [],
+      (err, konselors) => {
+        if (err) {
+          console.error('DB error konseling:', err);
+          konselors = [];
+        }
+        res.render('konseling', {
+          title: 'Layanan Konseling Karir',
+          activeNav: 'konseling',
+          konselors: konselors || [],
+          totalKonsultasi: totalKonsultasi,
+        });
       }
-      res.render('konseling', {
-        title: 'Layanan Konseling Karir',
-        activeNav: 'konseling',
-        konselors: konselors || [],
-      });
-    }
-  );
+    );
+  });
 };
 
 const getBookKonselor = (req, res) => {

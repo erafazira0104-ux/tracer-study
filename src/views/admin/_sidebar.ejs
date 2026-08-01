@@ -1,11 +1,13 @@
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-        <div class="sidebar-logo-box">
-            <svg viewBox="0 0 24 24">
-                <path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z" />
-            </svg>
+        <div class="sidebar-logo-box" style="height:38px; width:auto; flex-shrink:0; display:flex; align-items:center; justify-content:center;">
+            <img src="/images/logo-ft.png" alt="Logo Hamzanwadi" style="height:38px; width:auto; object-fit:contain;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="#ffffff" style="display:none;"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg>
         </div>
-        <div class="sidebar-brand-text"><strong>TRACER STUDY</strong><span>Sistem Informasi</span></div>
+        <div class="sidebar-brand-text" style="display:flex; flex-direction:column; line-height:1.2; text-align:left;">
+            <strong style="font-size:13px; font-weight:850; letter-spacing:0.5px; color:#ffffff; text-transform:uppercase;">TRACER STUDY</strong>
+            <span style="font-size:11px; font-weight:500; color:rgba(255,255,255,0.85);">Sistem Informasi</span>
+        </div>
     </div>
     <nav class="sidebar-nav">
         <a href="/admin/dashboard" class="nav-item <%= active === 'dashboard' ? 'active' : '' %>">
@@ -51,3 +53,209 @@
         </a>
     </nav>
 </aside>
+
+<!-- ===== CUSTOM CONFIRM MODAL (Global) ===== -->
+<div id="swal-overlay" style="
+  display:none; position:fixed; inset:0;
+  background:rgba(15,23,42,0.45);
+  backdrop-filter:blur(6px);
+  z-index:99999;
+  align-items:center; justify-content:center;
+  opacity:0; transition:opacity 0.22s ease;
+">
+  <div id="swal-card" style="
+    background:#fff; border-radius:20px;
+    box-shadow:0 24px 48px -8px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.04);
+    max-width:400px; width:90%;
+    padding:32px 28px 24px;
+    text-align:center;
+    transform:translateY(20px) scale(0.96);
+    transition:transform 0.28s cubic-bezier(0.16,1,0.3,1);
+  ">
+    <div id="swal-icon-wrap" style="
+      width:64px; height:64px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      margin:0 auto 18px; font-size:28px;
+    "></div>
+    <h3 id="swal-title" style="font-size:16px;font-weight:800;color:#0f172a;margin:0 0 8px;font-family:'Inter',sans-serif;"></h3>
+    <p id="swal-msg" style="font-size:13px;color:#64748b;margin:0 0 24px;line-height:1.55;font-family:'Inter',sans-serif;"></p>
+    <div style="display:flex;gap:10px;">
+      <button id="swal-cancel" type="button" style="
+        flex:1; padding:11px 16px; border-radius:10px;
+        border:1.5px solid #e2e8f0; background:#f8fafc;
+        color:#475569; font-size:13px; font-weight:700;
+        cursor:pointer; font-family:'Inter',sans-serif;
+        transition:all 0.18s;
+      " onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'">
+        Batal
+      </button>
+      <button id="swal-ok" type="button" style="
+        flex:1; padding:11px 16px; border-radius:10px;
+        border:none; color:#fff;
+        font-size:13px; font-weight:700; cursor:pointer;
+        font-family:'Inter',sans-serif; transition:all 0.18s;
+      "></button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOAST CONTAINER (Global) ===== -->
+<div id="toast-global" style="
+  position:fixed; top:20px; right:20px;
+  display:flex; flex-direction:column; gap:10px;
+  z-index:999999; pointer-events:none;
+"></div>
+
+<style>
+  #swal-ok:hover { filter:brightness(0.9); transform:translateY(-1px); }
+  #swal-cancel:hover { border-color:#cbd5e1 !important; }
+</style>
+
+<script>
+(function(){
+  let _cb = null;
+  const overlay  = document.getElementById('swal-overlay');
+  const card     = document.getElementById('swal-card');
+  const iconWrap = document.getElementById('swal-icon-wrap');
+  const title    = document.getElementById('swal-title');
+  const msg      = document.getElementById('swal-msg');
+  const btnOk    = document.getElementById('swal-ok');
+  const btnCancel= document.getElementById('swal-cancel');
+
+  function openModal(options, callback) {
+    const isDelete = (options.type === 'delete') || (options.message||'').toLowerCase().includes('hapus');
+    _cb = callback;
+
+    iconWrap.textContent  = isDelete ? '🗑️' : '⚠️';
+    iconWrap.style.background   = isDelete ? '#fef2f2' : '#fff7ed';
+    iconWrap.style.border = isDelete ? '1.5px solid #fee2e2' : '1.5px solid #fed7aa';
+
+    title.textContent = options.title || (isDelete ? 'Hapus Data?' : 'Konfirmasi');
+    msg.textContent   = options.message || 'Apakah Anda yakin ingin melakukan tindakan ini?';
+
+    btnOk.textContent   = isDelete ? 'Ya, Hapus' : 'Ya, Lanjutkan';
+    btnOk.style.background = isDelete ? 'linear-gradient(135deg,#ef4444,#dc2626)' : 'linear-gradient(135deg,#064E3B,#04392b)';
+    btnOk.style.boxShadow  = isDelete ? '0 4px 14px rgba(239,68,68,0.3)' : '0 4px 14px rgba(6,78,59,0.3)';
+
+    overlay.style.display = 'flex';
+    overlay.offsetHeight;
+    overlay.style.opacity = '1';
+    card.style.transform  = 'translateY(0) scale(1)';
+  }
+
+  function closeModal() {
+    overlay.style.opacity = '0';
+    card.style.transform  = 'translateY(20px) scale(0.96)';
+    setTimeout(() => { overlay.style.display = 'none'; }, 220);
+  }
+
+  btnCancel.addEventListener('click', () => { closeModal(); _cb = null; });
+  btnOk.addEventListener('click', () => {
+    if (_cb) _cb();
+    closeModal(); _cb = null;
+  });
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) { closeModal(); _cb = null; } });
+
+  // Public API
+  window.customConfirm = function(message, callback, options) {
+    openModal({ message, ...(options||{}) }, callback);
+  };
+
+  // Beautiful Toast
+  window.showToast = function(message, type='success') {
+    const c = document.getElementById('toast-global');
+    const t = document.createElement('div');
+    const colors = {
+      success: { bg:'#f0fdf4', border:'#86efac', accent:'#16a34a', icon:'✓' },
+      error:   { bg:'#fef2f2', border:'#fca5a5', accent:'#dc2626', icon:'✕' },
+      info:    { bg:'#eff6ff', border:'#93c5fd', accent:'#2563eb', icon:'ℹ' },
+    };
+    const col = colors[type] || colors.success;
+
+    t.style.cssText = `
+      display:flex; align-items:center; gap:12px;
+      background:${col.bg}; border:1px solid ${col.border};
+      border-left:4px solid ${col.accent};
+      border-radius:12px; padding:14px 18px;
+      box-shadow:0 8px 20px -4px rgba(0,0,0,0.08);
+      color:#0f172a; font-size:13px; font-weight:600;
+      font-family:'Inter',sans-serif;
+      min-width:280px; max-width:380px;
+      opacity:0; transform:translateY(-16px) scale(0.96);
+      transition:all 0.35s cubic-bezier(0.16,1,0.3,1);
+      pointer-events:auto;
+    `;
+
+    t.innerHTML = `
+      <span style="
+        width:22px;height:22px;border-radius:50%;
+        background:${col.accent};color:#fff;
+        display:flex;align-items:center;justify-content:center;
+        font-size:12px;font-weight:800;flex-shrink:0;
+      ">${col.icon}</span>
+      <span style="flex:1;">${message}</span>
+      <button onclick="this.parentElement.remove()" style="
+        background:none;border:none;color:#94a3b8;
+        cursor:pointer;font-size:16px;padding:0;line-height:1;
+      ">&times;</button>
+    `;
+
+    c.appendChild(t);
+    t.offsetHeight;
+    t.style.opacity = '1';
+    t.style.transform = 'translateY(0) scale(1)';
+
+    setTimeout(() => {
+      if (t.parentNode) {
+        t.style.opacity = '0';
+        t.style.transform = 'translateY(-10px) scale(0.96)';
+        setTimeout(() => t.remove(), 350);
+      }
+    }, 4000);
+  };
+
+  // Auto intercept ALL confirm() calls in forms and buttons
+  function interceptConfirms() {
+    document.querySelectorAll('form[onsubmit*="confirm("]').forEach(form => {
+      const attr = form.getAttribute('onsubmit');
+      const match = attr.match(/confirm\(['"` + "`" + `](.*?)['"` + "`" + `]\)/);
+      const message = match ? match[1] : 'Apakah Anda yakin?';
+      form.removeAttribute('onsubmit');
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        window.customConfirm(message, () => form.submit(), { type:'delete' });
+      }, { once: false });
+    });
+
+    document.querySelectorAll('[onclick*="confirm("]').forEach(el => {
+      const attr = el.getAttribute('onclick');
+      const match = attr.match(/confirm\(['"` + "`" + `](.*?)['"` + "`" + `]\)/);
+      const message = match ? match[1] : 'Apakah Anda yakin?';
+      el.removeAttribute('onclick');
+      el.addEventListener('click', function(e) {
+        e.preventDefault();
+        window.customConfirm(message, () => {
+          const form = el.closest('form');
+          if (form) form.submit();
+          else if (el.tagName === 'A' && el.href) window.location.href = el.href;
+        }, { type:'delete' });
+      });
+    });
+  }
+
+  // Run on DOM ready + after any dynamic content
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', interceptConfirms);
+  } else {
+    interceptConfirms();
+  }
+
+  // Auto show flash toast
+  <% if (locals.flash_success) { %>
+  window.addEventListener('DOMContentLoaded', () => showToast('<%= locals.flash_success %>', 'success'));
+  <% } %>
+  <% if (locals.flash_error) { %>
+  window.addEventListener('DOMContentLoaded', () => showToast('<%= locals.flash_error %>', 'error'));
+  <% } %>
+})();
+</script>

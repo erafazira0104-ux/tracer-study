@@ -1,35 +1,542 @@
-/* alumni.css — khusus halaman alumni, extend dashboard.css */
-/* File ini minimal karena semua style sudah di dashboard.css */
+/* ============================================================
+   ADMIN — DATA ALUMNI (MATCHING MOCKUP DESIGN & FONTS)
+   ============================================================ */
 
-/* Tambahan khusus halaman alumni */
-.nim-col { width: 110px; }
-.status-col { width: 130px; }
-.aksi-col { width: 100px; }
+/* Import Plus Jakarta Sans for crisp typography */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-/* Avatar warna berdasarkan huruf */
-.av-a { background: #2d6a4f; }
-.av-b { background: #2b6cb0; }
-.av-c { background: #7c3aed; }
-.av-d { background: #c2410c; }
-.av-e { background: #0d7377; }
-.av-f { background: #d97706; }
-.av-g { background: #1a5276; }
-.av-h { background: #6d4c41; }
-.av-i { background: #1b5e20; }
-.av-j { background: #880e4f; }
-.av-k { background: #4a148c; }
-.av-l { background: #006064; }
-.av-m { background: #bf360c; }
-.av-n { background: #01579b; }
-.av-o { background: #33691e; }
-.av-p { background: #4e342e; }
-.av-q { background: #827717; }
-.av-r { background: #1565c0; }
-.av-s { background: #37474f; }
-.av-t { background: #558b2f; }
-.av-u { background: #6a1b9a; }
-.av-v { background: #0277bd; }
-.av-w { background: #e65100; }
-.av-x { background: #00695c; }
-.av-y { background: #283593; }
-.av-z { background: #4e342e; }
+.page-content {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── HEADER ── */
+.alumni-header-section {
+  margin-bottom: 24px;
+}
+
+.alumni-header-section h1 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #064E3B;
+  margin: 0 0 6px;
+  letter-spacing: -0.2px;
+}
+
+.alumni-header-section p {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 400;
+  color: #64748B;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── ACTION TOOLBAR CARD ── */
+.alumni-action-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 14px 18px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.alumni-search-form {
+  flex: 1;
+  min-width: 260px;
+}
+
+.search-input-box {
+  position: relative;
+  width: 100%;
+}
+
+.search-input-box svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  fill: #94A3B8;
+  pointer-events: none;
+}
+
+.search-input-box input {
+  width: 100%;
+  padding: 9px 16px 9px 40px;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 400;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: #F8FAFC;
+  color: #1E293B;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.search-input-box input::placeholder {
+  color: #94A3B8;
+  font-weight: 400;
+}
+
+.search-input-box input:focus {
+  background: #FFFFFF;
+  border-color: #064E3B;
+  box-shadow: 0 0 0 3px rgba(6, 78, 59, 0.08);
+}
+
+.action-buttons-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-outline-custom {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FFFFFF;
+  color: #064E3B;
+  border: 1px solid #CBD5E1;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-custom:hover {
+  background: #F8FAFC;
+  border-color: #064E3B;
+}
+
+.btn-solid-green {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #064E3B;
+  color: #FFFFFF;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 3px 10px rgba(6, 78, 59, 0.18);
+}
+
+.btn-solid-green:hover {
+  background: #043E2F;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(6, 78, 59, 0.25);
+}
+
+/* ── TABLE CARD ── */
+.alumni-table-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.alumni-table-header {
+  padding: 18px 24px;
+  background: #FFFFFF;
+  border-bottom: 1px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.table-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #064E3B;
+  margin: 0;
+}
+
+.table-header-pills {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.pill-green {
+  background: #ECFDF5;
+  color: #059669;
+}
+
+.pill-green .pill-dot {
+  color: #059669;
+  font-size: 0.55rem;
+}
+
+.pill-grey {
+  background: #F1F5F9;
+  color: #64748B;
+}
+
+.pill-grey .pill-dot {
+  color: #94A3B8;
+  font-size: 0.55rem;
+}
+
+.pill-badge:hover {
+  opacity: 0.85;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.alumni-custom-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.alumni-custom-table th {
+  background: #FFFFFF;
+  padding: 14px 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: #064E3B;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #E2E8F0;
+  text-align: left;
+}
+
+.alumni-custom-table td {
+  padding: 15px 20px;
+  font-size: 0.88rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: #1E293B;
+  border-bottom: 1px solid #F1F5F9;
+  vertical-align: middle;
+}
+
+.alumni-custom-table tbody tr:hover td {
+  background: #F8FAFC;
+}
+
+.nim-text {
+  font-weight: 700;
+  color: #064E3B;
+  font-size: 0.88rem;
+}
+
+.alumni-profile-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-initials {
+  width: 32px;
+  height: 34px;
+  border-radius: 50%;
+  background: #E2E8F0;
+  color: #475569;
+  font-weight: 700;
+  font-size: 11px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.alumni-name-label {
+  font-weight: 600;
+  color: #1E293B;
+  font-size: 0.88rem;
+}
+
+.year-text {
+  color: #64748B;
+  font-weight: 400;
+  font-size: 0.88rem;
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 16px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.status-sudah {
+  background: #064E3B;
+  color: #FFFFFF;
+}
+
+.status-belum {
+  background: #ECFDF5;
+  color: #059669;
+}
+
+.table-actions-group {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.action-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: #64748B;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.action-icon-btn:hover {
+  color: #064E3B;
+  background: #F1F5F9;
+}
+
+.action-icon-btn.delete-btn:hover {
+  color: #DC2626;
+  background: #FEE2E2;
+}
+
+.empty-row {
+  text-align: center;
+  padding: 40px;
+  color: #94A3B8;
+  font-size: 0.88rem;
+}
+
+/* ── PAGINATION ── */
+.alumni-table-pagination {
+  padding: 14px 20px;
+  background: #FFFFFF;
+  border-top: 1px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pagination-info {
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: #64748B;
+}
+
+.pagination-info strong {
+  font-weight: 700;
+  color: #1E293B;
+}
+
+.pagination-buttons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.page-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  border: 1px solid #E2E8F0;
+  background: #FFFFFF;
+  color: #1E293B;
+  font-weight: 600;
+  font-size: 0.82rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.page-btn:hover:not(.disabled):not(.active) {
+  background: #F8FAFC;
+  border-color: #CBD5E1;
+}
+
+.page-btn.active {
+  background: #064E3B;
+  color: #FFFFFF;
+  border-color: #064E3B;
+  font-weight: 700;
+}
+
+.page-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── SUMMARY GRID (4 CARDS AT BOTTOM) ── */
+.alumni-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.summary-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.summary-card-lbl {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #64748B;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.summary-trend-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #059669;
+  background: #ECFDF5;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.summary-card-val {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #0F172A;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.summary-unit {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #64748B;
+}
+
+.summary-pct-sub {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #94A3B8;
+  margin-left: 4px;
+}
+
+.summary-subtext {
+  font-size: 0.78rem;
+  color: #64748B;
+  font-weight: 500;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.summary-subtext.green {
+  color: #059669;
+}
+
+.summary-subtext.grey {
+  color: #64748B;
+}
+
+.summary-progress-track {
+  height: 5px;
+  background: #E2E8F0;
+  border-radius: 10px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.summary-progress-fill {
+  height: 100%;
+  background: #064E3B;
+  border-radius: 10px;
+  transition: width 0.6s ease;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 992px) {
+  .alumni-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .alumni-summary-grid {
+    grid-template-columns: 1fr;
+  }
+  .alumni-action-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .action-buttons-group {
+    width: 100%;
+    justify-content: stretch;
+  }
+  .btn-outline-custom, .btn-solid-green {
+    flex: 1;
+    justify-content: center;
+  }
+}

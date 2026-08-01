@@ -26,7 +26,10 @@ router.get('/booking',       ctrl.listBookings);
 router.get('/export',        ctrl.exportCsv);
 router.get('/tambah-konselor', ctrl.showTambahKonselor);
 router.post('/tambah-konselor', upload.single('foto'), ctrl.storeKonselor);
+router.get('/edit/:id',      ctrl.showEditKonselor);
+router.post('/edit/:id',     upload.single('foto'), ctrl.updateKonselor);
 router.post('/delete/:id',   ctrl.destroyKonselor);
+router.post('/template-wa',  ctrl.updateTemplateWa);
 router.post('/:id/status',   ctrl.updateStatus);
 
 module.exports = router;

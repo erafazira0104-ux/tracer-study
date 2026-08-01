@@ -5,10 +5,117 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Lengkapi Profil | Alumni Tracer Study</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <!-- Reuse dashboard styles for layout & sidebar, import profile.css for page specific styles -->
   <link rel="stylesheet" href="/css/alumni/dashboard.css"/>
   <link rel="stylesheet" href="/css/alumni/profile.css"/>
+  <style>
+    /* Custom Styling Overrides for Profile Page */
+    .profile-form-area .form-card {
+      border-radius: 20px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.03);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .profile-form-area .form-card-header {
+      background: #ffffff;
+      padding: 20px 24px;
+      border-bottom: 1px solid #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .profile-form-area .form-card-header h3 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #064e3b;
+      margin: 0;
+    }
+    .profile-form-area .form-card-body {
+      padding: 24px;
+    }
+    .profile-form-area label {
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: #1e293b;
+      display: block;
+      margin-bottom: 8px;
+    }
+    .profile-form-area input[type="text"],
+    .profile-form-area input[type="email"],
+    .profile-form-area input[type="number"],
+    .profile-form-area input[type="date"],
+    .profile-form-area select,
+    .profile-form-area textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      font-family: inherit;
+      color: #0f172a;
+      background-color: #f8fafc;
+      transition: all 0.25s ease;
+      box-sizing: border-box;
+    }
+    .profile-form-area input:focus,
+    .profile-form-area select:focus,
+    .profile-form-area textarea:focus {
+      background-color: #ffffff;
+      border-color: #059669;
+      box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.12);
+      outline: none;
+    }
+    .profile-form-area input.readonly-input {
+      background-color: #f1f5f9;
+      color: #64748b;
+      border-color: #e2e8f0;
+      cursor: not-allowed;
+    }
+    
+    .btn-save-draft {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ffffff;
+      color: #475569;
+      border: 1.5px solid #cbd5e1;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 12px 22px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-save-draft:hover {
+      background: #f8fafc;
+      color: #0f172a;
+      border-color: #94a3b8;
+    }
+
+    .btn-save-continue {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #064e3b 0%, #047857 100%);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 12px 26px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 14px rgba(6, 78, 59, 0.2);
+    }
+    .btn-save-continue:hover {
+      background: linear-gradient(135deg, #043e2f 0%, #064e3b 100%);
+      box-shadow: 0 8px 20px rgba(6, 78, 59, 0.35);
+      transform: translateY(-1px);
+    }
+  </style>
 </head>
 <body>
 
@@ -20,7 +127,7 @@
   <div class="main-content">
     
     <!-- TOP HEADER -->
-    <%- include('../partials/alumni-topbar', { topbarTitle: 'Alumni Tracer Study', topbarSub: 'Sistem Informasi Hamzanwadi University' }) %>
+    <%- include('../partials/alumni-topbar', { topbarTitle: 'Lengkapi Profil Alumni', topbarSub: 'Sistem Informasi Universitas Hamzanwadi' }) %>
 
     <!-- CONTENT WRAPPER -->
     <div class="content-body">
@@ -32,14 +139,33 @@
         <span class="active">Lengkapi Profil</span>
       </div>
 
-      <!-- PAGE TITLE -->
-      <div class="page-title-section">
-        <h2>Lengkapi Profil Alumni</h2>
-        <p>Tahap 1: Sinkronisasi Data Identitas dan Akademik</p>
+      <!-- HERO BANNER -->
+      <div class="welcome-hero" style="background: linear-gradient(135deg, #064E3B 0%, #047857 60%, #059669 100%); border-radius: 20px; padding: 28px 32px; color: #ffffff; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(6, 78, 59, 0.18); margin-bottom: 24px;">
+        <div style="position: absolute; top: -40px; right: -40px; width: 220px; height: 220px; background: rgba(255,255,255,0.06); border-radius: 50%; pointer-events: none;"></div>
+        <div style="position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;">
+          <div style="display: flex; align-items: center; gap: 18px;">
+            <div style="width: 60px; height: 60px; border-radius: 50%; border: 2.5px solid #a7f3d0; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 26px;">
+              👤
+            </div>
+            <div>
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                <span style="background: #ecfdf5; color: #047857; font-size: 10px; font-weight: 800; padding: 3px 10px; border-radius: 20px; text-transform: uppercase;">
+                  Tahap 1: Sinkronisasi Identitas
+                </span>
+              </div>
+              <h2 style="font-size: 1.4rem; font-weight: 800; margin: 0 0 4px 0; color: #ffffff;">Lengkapi Profil Alumni</h2>
+              <p style="font-size: 0.88rem; color: #d1fae5; margin: 0; opacity: 0.95;">Perbarui data identitas pribadi dan riwayat akademik Anda untuk validasi data Tracer Study.</p>
+            </div>
+          </div>
+          <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.25); padding: 10px 18px; border-radius: 14px; text-align: center;">
+            <span style="font-size: 11px; font-weight: 700; color: #d1fae5; display: block; margin-bottom: 2px;">Kelengkapan Profil</span>
+            <strong style="font-size: 1.25rem; font-weight: 800; color: #ffffff;"><%= profilKelengkapan %>%</strong>
+          </div>
+        </div>
       </div>
 
       <!-- PROGRESS TRACKER -->
-      <div class="progress-tracker">
+      <div class="progress-tracker" style="border-radius: 18px; padding: 20px 28px; margin-bottom: 24px; border: 1px solid #e2e8f0;">
         <div class="tracker-step active">
           <div class="step-num-box">
             <svg viewBox="0 0 24 24" class="step-icon"><path fill="currentColor" d="M12 6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2m0 10c2.7 0 5.8 1.29 6 2H6c.23-.72 3.3-2 6-2m0-12C9.79 4 8 5.79 8 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 10c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
@@ -64,15 +190,37 @@
 
       <!-- Flash Alert -->
       <% if (success) { %>
-        <div class="alert alert-success">
+        <div class="alert alert-success" style="border-radius:14px; margin-bottom:20px;">
           <div class="alert-icon">✓</div>
           <div class="alert-content"><%= success %></div>
         </div>
       <% } %>
       <% if (error) { %>
-        <div class="alert alert-error">
+        <div class="alert alert-error" style="border-radius:14px; margin-bottom:20px;">
           <div class="alert-icon">⚠️</div>
           <div class="alert-content"><%= error %></div>
+        </div>
+      <% } %>
+
+      <!-- Profile Completeness Warning -->
+      <% if (typeof missingFields !== 'undefined' && missingFields.length > 0) { %>
+        <div style="background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 1.5px solid #fde68a; border-radius: 18px; padding: 20px 24px; margin-bottom: 24px; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.08);">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+            <span style="font-size:20px;">⚠️</span>
+            <h4 style="margin:0; font-size:0.95rem; font-weight:800; color:#92400e;">Profil Belum Lengkap — Anda belum dapat mengisi Kuesioner Tracer Study</h4>
+          </div>
+          <p style="font-size:0.84rem; color:#78350f; margin:0 0 12px; line-height:1.5;">Harap isi field data berikut agar dapat melanjutkan ke pengisian kuesioner tracer study:</p>
+          <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px;">
+            <% missingFields.forEach(function(f) { %>
+              <span style="background:#fef08a; color:#854d0e; font-size:0.75rem; font-weight:700; padding:4px 12px; border-radius:8px; border:1px solid #fde047;"><%= f.label %></span>
+            <% }); %>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div style="flex:1; height:8px; background:#fef08a; border-radius:10px; overflow:hidden;">
+              <div style="height:100%; width:<%= profilKelengkapan %>%; background: linear-gradient(90deg, #f59e0b, #10b981); border-radius:10px; transition: width 0.8s ease;"></div>
+            </div>
+            <span style="font-size:0.8rem; font-weight:800; color:#92400e;"><%= profilKelengkapan %>% Lengkap</span>
+          </div>
         </div>
       <% } %>
 
@@ -87,18 +235,20 @@
             <!-- SECTION 1: DATA PRIBADI -->
             <div class="form-card">
               <div class="form-card-header">
-                <span class="header-icon-box">👤</span>
-                <h3>Data Pribadi</h3>
+                <span style="background: #ecfdf5; color: #047857; padding: 8px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+                </span>
+                <h3>Data Identitas Pribadi</h3>
               </div>
               <div class="form-card-body">
-                <div class="form-row">
-                  <div class="form-group">
-                    <label for="nama">Nama Lengkap</label>
+                <div class="form-row" style="margin-bottom: 20px;">
+                  <div class="form-group" style="width:100%;">
+                    <label for="nama">Nama Lengkap <span style="color:#ef4444;">*</span></label>
                     <input type="text" id="nama" name="nama" value="<%= alumni.nama %>" placeholder="Masukkan nama lengkap sesuai ijazah" required/>
                   </div>
                 </div>
 
-                <div class="form-row two-cols">
+                <div class="form-row two-cols" style="margin-bottom: 20px;">
                   <div class="form-group">
                     <label for="jenis_kelamin">Jenis Kelamin</label>
                     <select id="jenis_kelamin" name="jenis_kelamin">
@@ -108,12 +258,12 @@
                     </select>
                   </div>
                   <div class="form-group">
-                    <label for="no_hp">Nomor HP</label>
-                    <input type="text" id="no_hp" name="no_hp" value="<%= alumni.no_hp || '' %>" placeholder="0812xxxx"/>
+                    <label for="no_hp">Nomor HP / WhatsApp <span style="color:#ef4444;">*</span></label>
+                    <input type="text" id="no_hp" name="no_hp" value="<%= alumni.no_hp || '' %>" placeholder="0812xxxx" required/>
                   </div>
                 </div>
 
-                <div class="form-row two-cols">
+                <div class="form-row two-cols" style="margin-bottom: 20px;">
                   <div class="form-group">
                     <label for="tempat_lahir">Tempat Lahir</label>
                     <input type="text" id="tempat_lahir" name="tempat_lahir" value="<%= alumni.tempat_lahir || '' %>" placeholder="Kota Kelahiran"/>
@@ -134,17 +284,17 @@
                   </div>
                 </div>
 
-                <div class="form-row">
-                  <div class="form-group">
-                    <label for="email">Email</label>
+                <div class="form-row" style="margin-bottom: 20px;">
+                  <div class="form-group" style="width:100%;">
+                    <label for="email">Email Terdaftar <span style="color:#ef4444;">*</span></label>
                     <input type="email" id="email" name="email" value="<%= alumni.email %>" placeholder="alumni@email.com" required/>
                   </div>
                 </div>
 
                 <div class="form-row">
-                  <div class="form-group">
-                    <label for="alamat">Alamat Lengkap</label>
-                    <textarea id="alamat" name="alamat" rows="3" placeholder="Alamat lengkap domisili saat ini"><%= alumni.alamat || '' %></textarea>
+                  <div class="form-group" style="width:100%;">
+                    <label for="alamat">Alamat Domisili Lengkap</label>
+                    <textarea id="alamat" name="alamat" rows="3" placeholder="Alamat lengkap domisili tempat tinggal saat ini"><%= alumni.alamat || '' %></textarea>
                   </div>
                 </div>
               </div>
@@ -153,22 +303,24 @@
             <!-- SECTION 2: DATA AKADEMIK -->
             <div class="form-card">
               <div class="form-card-header">
-                <span class="header-icon-box">🎓</span>
-                <h3>Data Akademik</h3>
+                <span style="background: #ecfdf5; color: #047857; padding: 8px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg>
+                </span>
+                <h3>Data Akademik & Kelulusan</h3>
               </div>
               <div class="form-card-body">
-                <div class="form-row two-cols">
+                <div class="form-row two-cols" style="margin-bottom: 20px;">
                   <div class="form-group">
                     <label for="nim">NIM (Nomor Induk Mahasiswa)</label>
-                    <input type="text" id="nim" name="nim" value="<%= alumni.nim %>" readonly class="readonly-input" title="NIM tidak dapat diubah"/>
+                    <input type="text" id="nim" name="nim" value="<%= alumni.nim %>" readonly class="readonly-input" title="NIM dikunci oleh sistem"/>
                   </div>
                   <div class="form-group">
-                    <label for="ipk_terakhir">IPK Terakhir</label>
+                    <label for="ipk_terakhir">IPK Kelulusan</label>
                     <input type="number" step="0.01" min="0" max="4" id="ipk_terakhir" name="ipk_terakhir" value="<%= alumni.ipk_terakhir || '' %>" placeholder="Contoh: 3.75"/>
                   </div>
                 </div>
 
-                <div class="form-row two-cols">
+                <div class="form-row two-cols" style="margin-bottom: 20px;">
                   <div class="form-group">
                     <label for="fakultas">Fakultas</label>
                     <select id="fakultas" name="fakultas">
@@ -180,8 +332,8 @@
                     </select>
                   </div>
                   <div class="form-group">
-                    <label for="program_studi">Program Studi</label>
-                    <select id="program_studi" name="program_studi">
+                    <label for="program_studi">Program Studi <span style="color:#ef4444;">*</span></label>
+                    <select id="program_studi" name="program_studi" required>
                       <option value="">Pilih Program Studi</option>
                       <option value="Sistem Informasi" <%= alumni.program_studi === 'Sistem Informasi' ? 'selected' : '' %>>Sistem Informasi</option>
                       <option value="Teknik Informatika" <%= alumni.program_studi === 'Teknik Informatika' ? 'selected' : '' %>>Teknik Informatika</option>
@@ -189,28 +341,19 @@
                     </select>
                   </div>
                 </div>
-
-                <div class="form-row three-cols">
-                  <div class="form-group">
-                    <label for="tahun_masuk">Tahun Masuk</label>
-                    <input type="number" id="tahun_masuk" name="tahun_masuk" value="<%= alumni.tahun_masuk || '' %>" placeholder="20XX"/>
-                  </div>
-                  <div class="form-group">
-                    <label for="tahun_lulus">Tahun Lulus</label>
-                    <input type="number" id="tahun_lulus" name="tahun_lulus" value="<%= alumni.tahun_lulus || '' %>" placeholder="20XX"/>
-                  </div>
-                  <div class="form-group">
-                    <label for="angkatan">Angkatan</label>
-                    <input type="text" id="angkatan" name="angkatan" value="<%= alumni.angkatan || '' %>" placeholder="20XX"/>
-                  </div>
-                </div>
               </div>
             </div>
 
             <!-- ACTION BUTTONS -->
-            <div class="form-actions-row">
-              <button type="submit" class="btn btn-secondary-outline" onclick="setRedirect(false)">Simpan Draft</button>
-              <button type="submit" class="btn btn-primary-green" onclick="setRedirect(true)">Simpan dan Lanjutkan</button>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 28px; padding-top: 20px; border-top: 1px solid #e2e8f0; flex-wrap: wrap;">
+              <button type="submit" class="btn-save-draft" onclick="setRedirect(false)">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+                <span>Simpan Draft</span>
+              </button>
+              <button type="submit" class="btn-save-continue" onclick="setRedirect(true)">
+                <span>Simpan &amp; Lanjutkan Pengisian</span>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+              </button>
             </div>
 
           </form>
@@ -221,35 +364,108 @@
         <div class="profile-widgets-area">
           
           <!-- TIPS CARD -->
-          <div class="card widget-card tips-card">
-            <div class="widget-header">
-              <span class="widget-icon">💡</span>
-              <h4>Tips Mengisi</h4>
+          <div class="card widget-card tips-card" style="border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 8px 24px rgba(0,0,0,0.03);">
+            <div class="widget-header" style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+              <span style="font-size: 20px;">💡</span>
+              <h4 style="font-size: 1rem; font-weight: 800; color: #064e3b; margin:0;">Tips Mengisi Data</h4>
             </div>
-            <ul class="tips-list">
-              <li>
-                <strong>Kesesuaian Data:</strong> Pastikan Nama Lengkap ditulis sesuai dengan yang tertera di Ijazah resmi Anda.
+            <ul class="tips-list" style="display:flex; flex-direction:column; gap:12px; padding:0; margin:0; list-style:none;">
+              <li style="display:flex; align-items:flex-start; gap:10px; font-size:0.84rem; color:#475569; line-height:1.5;">
+                <span style="color:#059669; font-weight:800;">✓</span>
+                <span><strong>Kesesuaian Ijazah:</strong> Pastikan Nama Lengkap ditulis sesuai dengan yang tertera di Ijazah resmi Anda.</span>
               </li>
-              <li>
-                <strong>Hubungi WhatsApp:</strong> Pastikan Nomor HP yang diisi aktif dan terhubung ke WhatsApp untuk info karir dan alumni.
+              <li style="display:flex; align-items:flex-start; gap:10px; font-size:0.84rem; color:#475569; line-height:1.5;">
+                <span style="color:#059669; font-weight:800;">✓</span>
+                <span><strong>WhatsApp Aktif:</strong> Gunakan Nomor HP yang terhubung ke WhatsApp untuk menerima notifikasi info karir alumni.</span>
               </li>
-              <li>
-                <strong>Verifikasi Akademik:</strong> Data akademik akan divalidasi oleh Biro Administrasi Akademik untuk kelengkapan administrasi program studi.
+              <li style="display:flex; align-items:flex-start; gap:10px; font-size:0.84rem; color:#475569; line-height:1.5;">
+                <span style="color:#059669; font-weight:800;">✓</span>
+                <span><strong>Validasi Akademik:</strong> Data akademik akan diverifikasi oleh Admin Tracer Study Fakultas Teknik.</span>
               </li>
             </ul>
           </div>
 
-          <!-- BANNER HERO WIDGET -->
-          <div class="widget-banner-card">
-            <div class="banner-gradient-overlay"></div>
-            <div class="banner-content">
-              <h3>Bersatu Membangun Bangsa</h3>
-              <p>Alumni Hamzanwadi University</p>
+          <!-- USER META CARD -->
+          <div class="card widget-card" style="border-radius: 20px; border: 1px solid #e2e8f0; background: #ffffff; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.03);">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <div style="width: 50px; height: 50px; border-radius: 50%; background: #064e3b; color: #ffffff; font-weight: 800; font-size: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <%= (alumni && alumni.nama) ? alumni.nama[0].toUpperCase() : 'A' %>
+              </div>
+              <div style="min-width: 0;">
+                <h5 style="margin: 0 0 2px; font-size: 0.95rem; font-weight: 800; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                  <%= alumni ? alumni.nama : 'Alumni' %>
+                </h5>
+                <p style="margin: 0; font-size: 0.78rem; color: #64748b;">NIM: <%= alumni ? alumni.nim : '-' %></p>
+                <span style="display: inline-block; margin-top: 6px; background: #ecfdf5; color: #047857; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 12px; border: 1px solid #a7f3d0;">
+                  Profil <%= profilKelengkapan %>% Lengkap
+                </span>
+              </div>
             </div>
           </div>
 
+        </div>
 
+      </div>
 
+      <!-- BOTTOM FEATURE CARDS & HELP SECTION -->
+      <div class="profile-bottom-features" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 24px;">
+        
+        <!-- CARD 1: STATUS KELENGKAPAN -->
+        <div class="feature-card-item" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:18px; padding:22px; box-shadow:0 6px 18px rgba(0,0,0,0.03);">
+          <div class="feature-card-header" style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+            <div style="width:40px; height:40px; border-radius:12px; background:#ecfdf5; color:#047857; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;">📊</div>
+            <div>
+              <h4 style="margin:0; font-size:0.92rem; font-weight:800; color:#0f172a;">Status Data Alumni</h4>
+              <span style="font-size:0.75rem; color:#64748b;">Verifikasi Berkelanjutan</span>
+            </div>
+          </div>
+          <p class="feature-card-desc" style="font-size:0.82rem; color:#475569; line-height:1.55; margin-bottom:14px;">
+            Data identitas dan akademik Anda digunakan untuk pencatatan rekapitulasi lulusan Program Studi Sistem Informasi FT Universitas Hamzanwadi.
+          </p>
+          <div class="feature-card-action">
+            <span class="status-pill <%= (typeof missingFields !== 'undefined' && missingFields.length > 0) ? 'warning' : 'success' %>" style="font-size:0.75rem; font-weight:700; padding:4px 12px; border-radius:20px;">
+              <%= (typeof missingFields !== 'undefined' && missingFields.length > 0) ? '⚠️ Profil Perlu Dilengkapi' : '✓ Data Profil Lengkap' %>
+            </span>
+          </div>
+        </div>
+
+        <!-- CARD 2: PUSAT BANTUAN WHATSAPP -->
+        <div class="feature-card-item" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:18px; padding:22px; box-shadow:0 6px 18px rgba(0,0,0,0.03);">
+          <div class="feature-card-header" style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+            <div style="width:40px; height:40px; border-radius:12px; background:#dcfce7; color:#15803d; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;">💬</div>
+            <div>
+              <h4 style="margin:0; font-size:0.92rem; font-weight:800; color:#0f172a;">Bantuan &amp; Layanan Data</h4>
+              <span style="font-size:0.75rem; color:#64748b;">Kontak Administrator</span>
+            </div>
+          </div>
+          <p class="feature-card-desc" style="font-size:0.82rem; color:#475569; line-height:1.55; margin-bottom:14px;">
+            Mengalami masalah pada data NIM atau Fakultas? Hubungi IT Support / Admin Tracer Study via WhatsApp Official.
+          </p>
+          <div class="feature-card-action">
+            <a href="https://wa.me/<%= typeof whatsappAdmin !== 'undefined' ? whatsappAdmin : '6282340000000' %>?text=Halo%20Admin%20Tracer%20Study%20Sistem%20Informasi%20Fakultas%20Teknik%20Universitas%20Hamzanwadi,%20saya%20alumni%20ingin%20meminta%20bantuan/akses%20login." target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:6px; background:#25d366; color:#ffffff; font-weight:700; font-size:0.8rem; padding:8px 16px; border-radius:10px; text-decoration:none;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.003 5.324 5.328 0 11.859 0c3.161.001 6.136 1.233 8.375 3.474 2.24 2.239 3.473 5.215 3.472 8.384-.002 6.537-5.328 11.86-11.859 11.86H11.82c-2.016-.002-3.998-.534-5.748-1.543L0 24zM5.849 18.666c1.662.986 3.292 1.502 4.908 1.503 5.4 0 9.794-4.394 9.796-9.794.001-2.616-1.015-5.074-2.862-6.92C15.845 3.609 13.385 2.593 10.77 2.593c-5.402 0-9.796 4.393-9.798 9.795-.001 1.83.479 3.623 1.391 5.2l-.993 3.626 3.71-.973c1.558.85 3.109 1.425 3.769 1.425zm11.23-5.26c-.301-.15-1.78-.878-2.056-.978-.275-.1-.476-.15-.675.15-.2.299-.775.978-.95 1.178-.175.199-.35.224-.65.075-.3-.15-1.268-.467-2.417-1.493-.893-.797-1.496-1.782-1.671-2.081-.175-.299-.019-.461.13-.61.135-.133.301-.35.452-.524.15-.174.2-.299.3-.499.1-.2.05-.375-.025-.524-.075-.15-.675-1.626-.925-2.227-.243-.585-.49-.506-.675-.515-.175-.008-.375-.01-.575-.01s-.525.075-.8.375c-.275.3-.1.15-1.101.978-1 .828-1.275 2.444-1.275 2.569 0 .125.05.25.1.375 2.5 5.25 6.325 8.125 10.15 9.7 1.25.5 2.25.625 3 .5.75-.125 2.25-.925 2.5-1.78.25-.85.25-1.575.175-1.725-.075-.15-.275-.25-.575-.4z" stroke="none"/></svg>
+              <span>Hubungi Admin WA</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- CARD 3: LANGKAH SELANJUTNYA -->
+        <div class="feature-card-item" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:18px; padding:22px; box-shadow:0 6px 18px rgba(0,0,0,0.03);">
+          <div class="feature-card-header" style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+            <div style="width:40px; height:40px; border-radius:12px; background:#eff6ff; color:#1d4ed8; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;">🚀</div>
+            <div>
+              <h4 style="margin:0; font-size:0.92rem; font-weight:800; color:#0f172a;">Langkah Selanjutnya</h4>
+              <span style="font-size:0.75rem; color:#64748b;">Isi Kuesioner Tracer</span>
+            </div>
+          </div>
+          <p class="feature-card-desc" style="font-size:0.82rem; color:#475569; line-height:1.55; margin-bottom:14px;">
+            Setelah memperbarui data diri, lanjutkan ke pengisian kuesioner tracer study untuk berkontribusi dalam evaluasi prodi.
+          </p>
+          <div class="feature-card-action">
+            <a href="/alumni/tracer" style="display:inline-flex; align-items:center; gap:6px; background:#064e3b; color:#ffffff; font-weight:700; font-size:0.8rem; padding:8px 16px; border-radius:10px; text-decoration:none;">
+              <span>Isi Kuesioner Tracer &rarr;</span>
+            </a>
+          </div>
         </div>
 
       </div>
@@ -258,7 +474,7 @@
 
     <!-- FOOTER -->
     <footer class="main-footer">
-      <p>&copy; <%= new Date().getFullYear() %> Information Systems Hamzanwadi University. All Rights Reserved.</p>
+      <p>&copy; <%= new Date().getFullYear() %> Information Systems Fakultas Teknik Universitas Hamzanwadi. All Rights Reserved.</p>
     </footer>
 
   </div>

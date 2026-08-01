@@ -8,11 +8,54 @@ const db     = require('../../configs/db');
 
 /* ── GET /admin/login ── */
 exports.showLogin = (req, res) => {
-  const error   = req.session.flash_error   || null;
-  const success  = req.session.flash_success || null;
-  delete req.session.flash_error;
-  delete req.session.flash_success;
-  res.render('admin/login', { error, success });
+  // 1. Primary Source: Check admin table (no_wa_pengirim)
+  db.query(
+    'SELECT no_wa_pengirim FROM admin WHERE no_wa_pengirim IS NOT NULL AND no_wa_pengirim != "" ORDER BY id ASC LIMIT 1',
+    [],
+    (errAdmin, aRows) => {
+      let waAdmin = '';
+      if (!errAdmin && aRows && aRows.length > 0 && aRows[0].no_wa_pengirim) {
+        let clean = String(aRows[0].no_wa_pengirim).replace(/[^0-9]/g, '');
+        if (clean.startsWith('0')) clean = '62' + clean.slice(1);
+        if (clean) waAdmin = clean;
+      }
+
+      if (waAdmin) {
+        return res.render('admin/login', { whatsappAdmin: waAdmin });
+      }
+
+      // 2. Secondary Source: Check tracer_pengaturan
+      db.query(
+        'SELECT nilai FROM tracer_pengaturan WHERE kunci = "whatsapp_admin"',
+        [],
+        (errSetting, sRows) => {
+          if (!errSetting && sRows && sRows.length > 0 && sRows[0].nilai) {
+            let clean = String(sRows[0].nilai).replace(/[^0-9]/g, '');
+            if (clean.startsWith('0')) clean = '62' + clean.slice(1);
+            if (clean) waAdmin = clean;
+          }
+
+          if (!waAdmin) {
+            // 3. Fallback: check active counselor
+            db.query(
+              'SELECT whatsapp FROM konselor WHERE is_active = 1 AND whatsapp IS NOT NULL AND whatsapp != "" LIMIT 1',
+              [],
+              (e2, r2) => {
+                if (!e2 && r2 && r2.length > 0 && r2[0].whatsapp) {
+                  let clean = String(r2[0].whatsapp).replace(/[^0-9]/g, '');
+                  if (clean.startsWith('0')) clean = '62' + clean.slice(1);
+                  if (clean) waAdmin = clean;
+                }
+                res.render('admin/login', { whatsappAdmin: waAdmin || '6281936791163' });
+              }
+            );
+          } else {
+            res.render('admin/login', { whatsappAdmin: waAdmin });
+          }
+        }
+      );
+    }
+  );
 };
 
 /* ── POST /admin/login ── */

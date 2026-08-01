@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Grafik &amp; Analitik | Admin Tracer Study</title>
+  <title>Grafik & Analitik | Admin Tracer Study — Sistem Informasi FT Hamzanwadi</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/css/admin/dashboard.css"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
@@ -34,18 +34,26 @@
 
 <main class="main-content">
   <!-- Topbar -->
-  <%- include('_topbar', { title: 'Grafik & Analitik Alumni' }) %>
+  <%- include('_topbar', { breadcrumbs: [{ label: 'Admin', url: '/admin/dashboard' }, { label: 'Grafik & Analitik' }] }) %>
 
-  <div class="page-content" style="background:#fcfcf7; min-height: calc(100vh - 60px); padding: 24px;">
-    <!-- Page Header Info -->
-    <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
-      <div>
-        <h1 style="font-size: 20px; font-weight: 800; color: #064E3B;">Analitik Kuesioner</h1>
-        <p style="font-size:12px; color:#555; margin-top:4px;">Tinjau diagram visual dari pengumpulan kuesioner pelacakan karir alumni.</p>
+  <div class="page-content">
+    <!-- Page Hero Banner -->
+    <div class="page-hero" style="margin-bottom:24px;">
+      <div class="page-hero-text">
+        <span class="page-hero-badge">
+          <svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5V9.2zM10.6 5h2.8v14h-2.8V5zm5.6 8H19v6h-2.8v-6z"/></svg>
+          Data Visual
+        </span>
+        <h1>Grafik & Analitik</h1>
+        <p>Visualisasi data alumni, partisipasi kuesioner tracer study, dan statistik karir lulusan Sistem Informasi FT Hamzanwadi.</p>
       </div>
-      <a href="/admin/laporan" class="btn btn-secondary" style="font-size:12px; background:#e8f4ec; color:#064E3B; border:none; padding:10px 20px; border-radius:8px; text-decoration:none; font-weight:600;">
-        Lihat Laporan Rekap
-      </a>
+      <div class="page-hero-actions">
+        <a href="/admin/laporan" class="btn-hero-primary">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+          Laporan Rekap
+        </a>
+        <a href="/admin/tracer" class="btn-hero-secondary">Data Tracer</a>
+      </div>
     </div>
 
     <!-- Mini Statistics Grid -->
@@ -180,7 +188,7 @@
 
     <!-- Footer -->
     <div style="text-align:center; border-top:1px solid #e2e8f0; padding-top:16px; font-size:11px; color:#777; margin-top:40px;">
-      &copy; 2026 Information Systems Fakultas Teknik Hamzanwadi University. All Rights Reserved.
+      &copy; 2026 Information Systems Fakultas Teknik Universitas Hamzanwadi. All Rights Reserved.
     </div>
   </div>
 </main>

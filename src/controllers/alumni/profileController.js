@@ -15,22 +15,39 @@ exports.showProfile = (req, res) => {
     }
 
     const alumni = rows[0];
-    const error  = req.session.flash_error   || null;
-    const success = req.session.flash_success || null;
-    delete req.session.flash_error;
-    delete req.session.flash_success;
 
     // Check if tracer is filled
     db.query('SELECT id FROM tracer_study WHERE alumni_id = ?', [alumniId], (errTracer, rowsTracer) => {
       const isTracerFilled = rowsTracer && rowsTracer.length > 0;
+
+      // Compute missing fields for warning
+      const requiredFields = [
+        { key: 'nama', label: 'Nama Lengkap' },
+        { key: 'email', label: 'Email' },
+        { key: 'no_hp', label: 'Nomor HP' },
+        { key: 'jenis_kelamin', label: 'Jenis Kelamin' },
+        { key: 'tempat_lahir', label: 'Tempat Lahir' },
+        { key: 'tanggal_lahir', label: 'Tanggal Lahir' },
+        { key: 'alamat', label: 'Alamat Lengkap' },
+        { key: 'tahun_masuk', label: 'Tahun Masuk' },
+        { key: 'tahun_lulus', label: 'Tahun Lulus' },
+        { key: 'angkatan', label: 'Angkatan' },
+        { key: 'fakultas', label: 'Fakultas' },
+        { key: 'program_studi', label: 'Program Studi' },
+      ];
+      const missingFields = requiredFields.filter(f => {
+        const val = alumni[f.key];
+        return val === null || val === undefined || String(val).trim() === '';
+      });
+      const profilKelengkapan = Math.round(((requiredFields.length - missingFields.length) / requiredFields.length) * 100);
       
       res.render('alumni/profile', {
         title: 'Lengkapi Profil Alumni',
         currentPage: 'profile',
         alumni,
         isTracerFilled,
-        error,
-        success,
+        missingFields,
+        profilKelengkapan,
       });
     });
   });
@@ -42,7 +59,7 @@ exports.updateProfile = (req, res) => {
   const {
     nama, jenis_kelamin, no_hp, tempat_lahir, tanggal_lahir,
     email, alamat, ipk_terakhir, fakultas, program_studi,
-    tahun_masuk, tahun_lulus, angkatan
+    tahun_masuk, tahun_lulus, angkatan, redirect_to_tracer
   } = req.body;
 
   if (!nama || !email) {
@@ -74,12 +91,18 @@ exports.updateProfile = (req, res) => {
       } else {
         req.session.flash_error = 'Gagal menyimpan perubahan profil.';
       }
+      return res.redirect('/alumni/profile');
     } else {
-      // Update session name if changed
       req.session.alumniName = nama;
-      req.session.flash_success = 'Perubahan profil berhasil disimpan!';
+      req.session.flash_success = 'Profil berhasil diperbarui!';
+
+      // If clicked "Simpan dan Lanjutkan", transition immediately to /alumni/tracer
+      if (redirect_to_tracer === 'true') {
+        return res.redirect('/alumni/tracer');
+      } else {
+        return res.redirect('/alumni/profile');
+      }
     }
-    res.redirect('/alumni/profile');
   });
 };
 
@@ -94,17 +117,11 @@ exports.showChangePassword = (req, res) => {
     }
 
     const alumni = rows[0];
-    const error  = req.session.flash_error   || null;
-    const success = req.session.flash_success || null;
-    delete req.session.flash_error;
-    delete req.session.flash_success;
 
     res.render('alumni/change-password', {
-      title: 'Ganti Sandi',
+      title: 'Reset Password',
       currentPage: 'change-password',
       alumni,
-      error,
-      success,
     });
   });
 };
@@ -132,7 +149,7 @@ exports.changePassword = async (req, res) => {
 
   try {
     // Ambil password lama dari database
-    db.query('SELECT password FROM alumni WHERE id = ?', [alumniId], async (err, rows) => {
+    db.query('SELECT password, password_plain FROM alumni WHERE id = ?', [alumniId], async (err, rows) => {
       if (err || rows.length === 0) {
         console.error('Error fetching alumni password:', err);
         req.session.flash_error = 'Terjadi kesalahan server.';
@@ -140,22 +157,31 @@ exports.changePassword = async (req, res) => {
       }
 
       const alumni = rows[0];
+      let isMatch = false;
 
-      // Verifikasi password lama
-      const isMatch = await bcrypt.compare(current_password, alumni.password);
+      try {
+        isMatch = await bcrypt.compare(current_password, alumni.password);
+      } catch (e) {}
+
+      if (!isMatch && alumni.password_plain && alumni.password_plain === current_password) {
+        isMatch = true;
+      }
+      if (!isMatch && alumni.password === current_password) {
+        isMatch = true;
+      }
+
       if (!isMatch) {
-        req.session.flash_error = 'Password lama salah.';
+        req.session.flash_error = 'Password lama tidak cocok dengan data akun Anda.';
         return res.redirect('/alumni/change-password');
       }
 
-      // Hash password baru dan simpan ke database
       const newHash = await bcrypt.hash(new_password, 10);
       db.query('UPDATE alumni SET password = ?, password_plain = ? WHERE id = ?', [newHash, new_password, alumniId], (updateErr) => {
         if (updateErr) {
           console.error('Error updating password:', updateErr);
-          req.session.flash_error = 'Gagal mengubah password.';
+          req.session.flash_error = 'Gagal menyimpan password baru.';
         } else {
-          req.session.flash_success = 'Password berhasil diubah! Gunakan password baru saat login berikutnya.';
+          req.session.flash_success = 'Password berhasil diubah! Gunakan password baru saat Anda login kembali.';
         }
         res.redirect('/alumni/change-password');
       });

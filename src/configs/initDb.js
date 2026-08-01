@@ -57,6 +57,7 @@ async function initialize() {
       nama VARCHAR(100) NOT NULL,
       email VARCHAR(100) UNIQUE NOT NULL,
       password VARCHAR(255) NOT NULL,
+      password_plain VARCHAR(255) NULL,
       no_hp VARCHAR(20) NULL,
       jenis_kelamin ENUM('L', 'P') NULL,
       tempat_lahir VARCHAR(100) NULL,
@@ -68,6 +69,7 @@ async function initialize() {
       tahun_masuk INT NULL,
       tahun_lulus INT NULL,
       angkatan VARCHAR(10) NULL,
+      status_pengisian VARCHAR(20) DEFAULT 'belum',
       is_active TINYINT(1) DEFAULT 1,
       last_login TIMESTAMP NULL DEFAULT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -76,7 +78,17 @@ async function initialize() {
   `);
   console.log(' - Table alumni initialized.');
 
-  // Migrate alumni table to make tahun_lulus nullable
+  // Migrate alumni table to add password_plain & status_pengisian columns
+  try {
+    await db.query(`ALTER TABLE alumni ADD COLUMN password_plain VARCHAR(255) NULL AFTER password;`);
+    console.log(' - Added password_plain column to alumni table.');
+  } catch (e) {}
+
+  try {
+    await db.query(`ALTER TABLE alumni ADD COLUMN status_pengisian VARCHAR(20) DEFAULT 'belum' AFTER angkatan;`);
+    console.log(' - Added status_pengisian column to alumni table.');
+  } catch (e) {}
+
   try {
     await db.query(`ALTER TABLE alumni MODIFY COLUMN tahun_lulus year(4) NULL;`);
     console.log(' - Migrated alumni.tahun_lulus column to nullable.');
@@ -127,6 +139,20 @@ async function initialize() {
     );
   `);
   console.log(' - Table konseling initialized.');
+
+  // 4b. konselor table
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS konselor (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      nama VARCHAR(150) NOT NULL,
+      bidang_keahlian VARCHAR(150) NOT NULL,
+      whatsapp VARCHAR(20) NULL,
+      foto VARCHAR(255) NULL,
+      is_active TINYINT(1) DEFAULT 1,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+  console.log(' - Table konselor initialized.');
 
   // 5. permintaan_konseling table
   await db.query(`
@@ -179,6 +205,7 @@ async function initialize() {
       kompetensi_relevan TEXT NULL,
       kepuasan_layanan INT NULL,
       saran TEXT NULL,
+      jawaban_kustom LONGTEXT NULL,
       status_kerja_detail VARCHAR(100) NULL,
       kepuasan_kurikulum VARCHAR(100) NULL,
       eval_kurikulum INT NULL,
@@ -245,6 +272,7 @@ async function initialize() {
     { name: 'penghasilan_bulanan', def: 'VARCHAR(100) NULL' },
     { name: 'kesesuaian_kompetensi', def: 'INT NULL' },
     { name: 'pendidikan_minimal_s1', def: 'VARCHAR(50) NULL' },
+    { name: 'jawaban_kustom', def: 'LONGTEXT NULL' },
   ];
   for (const col of bekerjaNewCols) {
     try {
@@ -264,7 +292,7 @@ async function initialize() {
       id INT AUTO_INCREMENT PRIMARY KEY,
       kategori VARCHAR(100) NOT NULL,
       pertanyaan TEXT NOT NULL,
-      jenis_jawaban ENUM('pilihan_ganda', 'essay') DEFAULT 'essay',
+      jenis_jawaban VARCHAR(50) DEFAULT 'essay',
       opsi_jawaban TEXT NULL,
       is_active TINYINT(1) DEFAULT 1,
       urutan INT DEFAULT 1,
@@ -277,9 +305,46 @@ async function initialize() {
   // Migrate existing table enum to varchar if needed
   try {
     await db.query(`ALTER TABLE kuesioner_pertanyaan MODIFY COLUMN kategori VARCHAR(100) NOT NULL;`);
-    console.log(' - Migrated kuesioner_pertanyaan.kategori column to VARCHAR(100).');
+    await db.query(`ALTER TABLE kuesioner_pertanyaan MODIFY COLUMN jenis_jawaban VARCHAR(50) DEFAULT 'essay';`);
+    console.log(' - Migrated kuesioner_pertanyaan columns to VARCHAR(100).');
   } catch (e) {
     // If table wasn't created yet or other error
+  }
+
+  // Seed default penilaian_prodi questions if empty
+  try {
+    const [pRows] = await db.query(`SELECT COUNT(*) AS total FROM kuesioner_pertanyaan WHERE kategori = 'penilaian_prodi'`);
+    if (pRows && pRows[0] && pRows[0].total === 0) {
+      const defaultQuestions = [
+        ['penilaian_prodi', 'Kurikulum sesuai kebutuhan dunia kerja.', 'skala', '["Sangat Tidak Setuju", "Sangat Setuju"]', 1, 1],
+        ['penilaian_prodi', 'Mata kuliah mendukung pekerjaan saya.', 'skala', '["Sangat Tidak Setuju", "Sangat Setuju"]', 1, 2],
+        ['penilaian_prodi', 'Kompetensi lulusan sesuai kebutuhan industri.', 'skala', '["Sangat Tidak Setuju", "Sangat Setuju"]', 1, 3],
+        ['penilaian_prodi', 'Dosen memiliki kompetensi yang baik.', 'skala', '["Sangat Tidak Setuju", "Sangat Setuju"]', 1, 4],
+        ['penilaian_prodi', 'Metode pembelajaran efektif.', 'skala', '["Sangat Tidak Setuju", "Sangat Setuju"]', 1, 5],
+        ['penilaian_prodi', 'Fasilitas laboratorium memadai.', 'skala', '["Sangat Tidak Setuju", "Sangat Setuju"]', 1, 6],
+        ['penilaian_prodi', 'Fasilitas kelas memadai.', 'skala', '["Sangat Tidak Setuju", "Sangat Setuju"]', 1, 7],
+        ['penilaian_prodi', 'Sistem akademik berjalan dengan baik.', 'skala', '["Sangat Tidak Setuju", "Sangat Setuju"]', 1, 8],
+        ['penilaian_prodi', 'Pelayanan administrasi akademik memuaskan.', 'skala', '["Sangat Tidak Setuju", "Sangat Setuju"]', 1, 9],
+        ['penilaian_prodi', 'Program magang membantu kesiapan kerja.', 'skala', '["Sangat Tidak Setuju", "Sangat Setuju"]', 1, 10],
+        ['penilaian_prodi', 'Program MBKM bermanfaat.', 'skala', '["Sangat Tidak Setuju", "Sangat Setuju"]', 1, 11],
+        ['penilaian_prodi', 'Kegiatan organisasi membantu pengembangan soft skill.', 'skala', '["Sangat Tidak Setuju", "Sangat Setuju"]', 1, 12],
+        ['penilaian_prodi', 'Pelatihan sertifikasi bermanfaat.', 'skala', '["Sangat Tidak Setuju", "Sangat Setuju"]', 1, 13],
+        ['penilaian_prodi', 'Bimbingan akademik memuaskan.', 'skala', '["Sangat Tidak Setuju", "Sangat Setuju"]', 1, 14],
+        ['penilaian_prodi', 'Layanan karier kampus membantu memperoleh pekerjaan.', 'skala', '["Sangat Tidak Setuju", "Sangat Setuju"]', 1, 15],
+        ['penilaian_prodi', 'Secara keseluruhan saya puas terhadap Program Studi Sistem Informasi.', 'skala', '["Sangat Tidak Setuju", "Sangat Setuju"]', 1, 16],
+        ['penilaian_prodi', 'Apa saran Anda untuk meningkatkan kualitas Program Studi?', 'essay', null, 1, 17],
+        ['penilaian_prodi', 'Mata kuliah apa yang perlu ditambahkan?', 'essay', null, 1, 18],
+        ['penilaian_prodi', 'Mata kuliah apa yang perlu diperbaiki?', 'essay', null, 1, 19],
+        ['penilaian_prodi', 'Apa harapan Anda terhadap lulusan Sistem Informasi ke depan?', 'essay', null, 1, 20],
+        ['penilaian_prodi', 'Kritik dan saran lainnya', 'essay', null, 1, 21]
+      ];
+      for (const row of defaultQuestions) {
+        await db.query('INSERT INTO kuesioner_pertanyaan (kategori, pertanyaan, jenis_jawaban, opsi_jawaban, is_active, urutan) VALUES (?, ?, ?, ?, ?, ?)', row);
+      }
+      console.log(' - Default penilaian_prodi questions seeded successfully.');
+    }
+  } catch (e) {
+    console.error('Seeding error (penilaian_prodi):', e.message);
   }
 
   // 8b. tracer_kategori table
@@ -303,7 +368,8 @@ async function initialize() {
       ('bekerja', 'Bekerja', '💼'),
       ('wirausaha', 'Wirausaha', '🏪'),
       ('kuliah', 'Studi Lanjut', '🎓'),
-      ('belum_bekerja', 'Belum Bekerja', '👤')
+      ('belum_bekerja', 'Belum Bekerja', '👤'),
+      ('penilaian_prodi', 'Penilaian Program Studi', '⭐')
     `);
     console.log(' ✅ Default categories seeded.');
   }
@@ -323,19 +389,6 @@ async function initialize() {
   `);
   console.log(' - Table pengingat initialized.');
 
-  // 10. konselor table
-  await db.query(`
-    CREATE TABLE IF NOT EXISTS konselor (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      nama VARCHAR(150) NOT NULL,
-      bidang_keahlian VARCHAR(150) NOT NULL,
-      foto VARCHAR(255) NULL,
-      is_active TINYINT(1) DEFAULT 1,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-  `);
-  console.log(' - Table konselor initialized.');
-
   // 11. lowongan_access table
   await db.query(`
     CREATE TABLE IF NOT EXISTS lowongan_access (
@@ -345,7 +398,7 @@ async function initialize() {
       nim VARCHAR(50) NULL,
       email VARCHAR(100) NOT NULL,
       no_hp VARCHAR(20) NULL,
-      lowongan_id INT UNSIGNED NOT NULL,
+      lowongan_id INT NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (alumni_id) REFERENCES alumni(id) ON DELETE SET NULL,
       FOREIGN KEY (lowongan_id) REFERENCES lowongan(id) ON DELETE CASCADE
@@ -386,12 +439,16 @@ async function initialize() {
     CREATE TABLE IF NOT EXISTS tracer_pengaturan (
       id INT AUTO_INCREMENT PRIMARY KEY,
       kunci VARCHAR(100) UNIQUE NOT NULL,
-      nilai VARCHAR(255) NOT NULL,
+      nilai TEXT NOT NULL,
       keterangan TEXT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `);
   console.log(' - Table tracer_pengaturan initialized.');
+
+  try {
+    await db.query('ALTER TABLE tracer_pengaturan MODIFY COLUMN nilai TEXT NOT NULL;');
+  } catch (e) {}
 
   // Seed default cooldown if empty
   const [settingCheck] = await db.execute('SELECT COUNT(*) AS total FROM tracer_pengaturan WHERE kunci = "cooldown_bulan"');
@@ -401,6 +458,34 @@ async function initialize() {
       ('cooldown_bulan', '3', 'Jeda minimum antar pengisian kuesioner tracer study (dalam satuan bulan)')
     `);
     console.log(' ✅ Default cooldown_bulan setting seeded.');
+  }
+
+  // Seed default WA message template if empty
+  const defaultWaTemplate = `Assalamualaikum/Selamat pagi, {SAPAAN_KONSELOR} {NAMA_KONSELOR}.
+
+Mohon maaf mengganggu waktunya, {SAPAAN_PENDEK}. Perkenalkan, saya {NAMA_ALUMNI}, alumni angkatan {TAHUN_LULUS}. Dengan hormat, saya ingin menyampaikan bahwa saya telah mengajukan permohonan konseling melalui Tracer Study.
+
+Mohon kiranya {SAPAAN_KONSELOR} berkenan memberikan arahan mengenai proses atau langkah selanjutnya yang perlu saya lakukan. Atas perhatian dan kesediaan {SAPAAN_KONSELOR}, saya ucapkan terima kasih banyak.
+
+Wassalamualaikum/Hormat saya,
+{NAMA_ALUMNI}`;
+
+  const [waCheck] = await db.execute('SELECT COUNT(*) AS total FROM tracer_pengaturan WHERE kunci = "template_wa_konseling"');
+  if (waCheck[0].total === 0) {
+    await db.execute(`
+      INSERT INTO tracer_pengaturan (kunci, nilai, keterangan) VALUES
+      ('template_wa_konseling', ?, 'Template pesan otomatis WhatsApp saat alumni mengajukan konseling karir')
+    `, [defaultWaTemplate]);
+    console.log(' ✅ Default template_wa_konseling setting seeded.');
+  }
+
+  const [waAdminCheck] = await db.execute('SELECT COUNT(*) AS total FROM tracer_pengaturan WHERE kunci = "whatsapp_admin"');
+  if (waAdminCheck[0].total === 0) {
+    await db.execute(`
+      INSERT INTO tracer_pengaturan (kunci, nilai, keterangan) VALUES
+      ('whatsapp_admin', '6282340000000', 'Nomor WhatsApp resmi Administrator / IT Support')
+    `);
+    console.log(' ✅ Default whatsapp_admin setting seeded.');
   }
 
   // Seeding default Admin
@@ -443,17 +528,46 @@ async function initialize() {
   if (questionsCheck[0].total === 0) {
     const defaultQuestions = [
       // bekerja
-      ['bekerja', 'Apa nama instansi/perusahaan tempat Anda bekerja?', 'essay', null, 1],
-      ['bekerja', 'Berapa gaji bulanan pertama Anda?', 'pilihan_ganda', JSON.stringify(['< 3 Juta', '3 - 5 Juta', '5 - 10 Juta', '> 10 Juta']), 2],
-      ['bekerja', 'Seberapa sesuai bidang pekerjaan Anda dengan program studi?', 'pilihan_ganda', JSON.stringify(['Sangat Sesuai', 'Sesuai', 'Kurang Sesuai', 'Tidak Sesuai']), 3],
+      ['bekerja', 'Apakah Anda saat ini sudah bekerja?', 'pilihan_ganda', JSON.stringify(['Sudah bekerja', 'Belum bekerja']), 1],
+      ['bekerja', 'Kapan Anda mulai mencari pekerjaan?', 'essay', null, 2],
+      ['bekerja', 'Berapa lama waktu yang dibutuhkan hingga memperoleh pekerjaan pertama?', 'pilihan_ganda', JSON.stringify(['Kurang dari 3 bulan', '3–6 bulan', '7–12 bulan', 'Lebih dari 1 tahun']), 3],
+      ['bekerja', 'Nama Instansi/Perusahaan', 'essay', null, 4],
+      ['bekerja', 'Jenis Instansi', 'pilihan_ganda', JSON.stringify(['Instansi Pemerintah', 'BUMN', 'Swasta Nasional', 'Swasta Multinasional', 'Organisasi Non-Profit', 'Wirausaha', 'Lainnya']), 5],
+      ['bekerja', 'Bidang Usaha Instansi', 'essay', null, 6],
+      ['bekerja', 'Jabatan Anda saat ini', 'essay', null, 7],
+      ['bekerja', 'Lokasi Tempat Kerja', 'essay', null, 8],
+      ['bekerja', 'Status Kepegawaian', 'pilihan_ganda', JSON.stringify(['Tetap', 'Kontrak', 'Honorer', 'Freelance']), 9],
+      ['bekerja', 'Berapa penghasilan pertama Anda?', 'pilihan_ganda', JSON.stringify(['< Rp2.000.000', 'Rp2.000.000–Rp4.000.000', 'Rp4.000.001–Rp6.000.000', 'Rp6.000.001–Rp8.000.000', '> Rp8.000.000']), 10],
+      ['bekerja', 'Berapa penghasilan Anda saat ini?', 'pilihan_ganda', JSON.stringify(['< Rp2.000.000', 'Rp2.000.000–Rp4.000.000', 'Rp4.000.001–Rp6.000.000', 'Rp6.000.001–Rp8.000.000', '> Rp8.000.000']), 11],
+      ['bekerja', 'Apakah pekerjaan Anda sesuai dengan bidang studi?', 'pilihan_ganda', JSON.stringify(['Sangat Sesuai', 'Sesuai', 'Cukup Sesuai', 'Kurang Sesuai', 'Tidak Sesuai']), 12],
+      ['bekerja', 'Seberapa sesuai pekerjaan Anda dengan kompetensi yang diperoleh selama kuliah?', 'skala', JSON.stringify(['Sangat Tidak Sesuai', 'Sangat Sesuai']), 13],
+
       // wirausaha
-      ['wirausaha', 'Apa bidang usaha yang Anda jalankan?', 'essay', null, 1],
-      ['wirausaha', 'Berapa rata-rata omset bulanan usaha Anda?', 'pilihan_ganda', JSON.stringify(['< 5 Juta', '5 - 15 Juta', '15 - 50 Juta', '> 50 Juta']), 2],
-      // kuliah
-      ['kuliah', 'Di universitas mana Anda melanjutkan studi?', 'essay', null, 1],
-      ['kuliah', 'Apa program studi yang Anda ambil?', 'essay', null, 2],
+      ['wirausaha', 'Apakah Anda memiliki usaha sendiri?', 'pilihan_ganda', JSON.stringify(['Sudah Memiliki Usaha', 'Belum Memiliki Usaha']), 1],
+      ['wirausaha', 'Nama Usaha', 'essay', null, 2],
+      ['wirausaha', 'Bidang Usaha', 'essay', null, 3],
+      ['wirausaha', 'Tahun Memulai Usaha', 'essay', null, 4],
+      ['wirausaha', 'Jumlah Karyawan', 'essay', null, 5],
+      ['wirausaha', 'Omzet per Bulan', 'pilihan_ganda', JSON.stringify(['< Rp5.000.000', 'Rp5.000.000–Rp15.000.000', 'Rp15.000.001–Rp50.000.000', '> Rp50.000.000']), 6],
+      ['wirausaha', 'Sumber Modal Usaha', 'pilihan_ganda', JSON.stringify(['Modal Pribadi', 'Orang Tua', 'Pinjaman', 'Investor', 'Hibah']), 7],
+      ['wirausaha', 'Apakah usaha Anda sesuai dengan bidang studi?', 'pilihan_ganda', JSON.stringify(['Sangat Sesuai', 'Sesuai', 'Cukup Sesuai', 'Kurang Sesuai', 'Tidak Sesuai']), 8],
+      ['wirausaha', 'Seberapa besar perkuliahan membantu usaha Anda?', 'skala', JSON.stringify(['Sangat Tidak Membantu', 'Sangat Membantu']), 9],
+
+      // kuliah (Studi Lanjut)
+      ['kuliah', 'Apakah Anda sedang melanjutkan pendidikan?', 'pilihan_ganda', JSON.stringify(['Ya', 'Tidak']), 1],
+      ['kuliah', 'Nama Perguruan Tinggi', 'essay', null, 2],
+      ['kuliah', 'Jenjang Pendidikan', 'pilihan_ganda', JSON.stringify(['S2', 'Profesi', 'S3']), 3],
+      ['kuliah', 'Program Studi', 'essay', null, 4],
+      ['kuliah', 'Tahun Masuk', 'essay', null, 5],
+      ['kuliah', 'Alasan Melanjutkan Studi', 'essay', null, 6],
+      ['kuliah', 'Sumber Pembiayaan', 'pilihan_ganda', JSON.stringify(['Beasiswa', 'Biaya Sendiri', 'Orang Tua/Keluarga', 'Instansi Tempat Kerja', 'Lainnya']), 7],
+
       // belum_bekerja
-      ['belum_bekerja', 'Apa kendala utama Anda dalam mencari pekerjaan?', 'essay', null, 1]
+      ['belum_bekerja', 'Apakah Anda sedang mencari pekerjaan?', 'pilihan_ganda', JSON.stringify(['Ya', 'Tidak']), 1],
+      ['belum_bekerja', 'Berapa kali melamar pekerjaan?', 'essay', null, 2],
+      ['belum_bekerja', 'Berapa kali mengikuti wawancara kerja?', 'essay', null, 3],
+      ['belum_bekerja', 'Kendala utama memperoleh pekerjaan', 'pilihan_ganda', JSON.stringify(['Belum ada lowongan', 'Kompetensi belum sesuai', 'Persaingan tinggi', 'Lokasi kerja', 'Melanjutkan pendidikan', 'Alasan pribadi', 'Lainnya']), 4],
+      ['belum_bekerja', 'Apa rencana Anda selanjutnya?', 'essay', null, 5]
     ];
     for (const q of defaultQuestions) {
       await db.execute(`
@@ -500,10 +614,9 @@ async function initialize() {
     await db.execute(`
       INSERT INTO lowongan (admin_id, judul, perusahaan, lokasi, tipe, deskripsi, persyaratan, gaji, deadline, link)
       VALUES
-      (?, 'Senior Backend Engineer', 'PT GoTo Gojek Tokopedia', 'Jakarta (Remote)', 'full_time', 'Mengembangkan backend service berskala besar.', 'Pengalaman Node.js/Go minimal 3 tahun.', 'Rp 15.000.000 - 25.000.000', '2026-09-30', 'https://www.gotocompany.com/careers'),
-      (?, 'Mobile Developer', 'PT Shopee International', 'Mataram, NTB', 'full_time', 'Membangun aplikasi mobile iOS dan Android menggunakan Flutter.', 'Pengalaman Flutter minimal 2 tahun.', 'Rp 8.000.000 - 12.000.000', '2026-08-31', 'https://careers.shopee.co.id'),
-      (?, 'IT Support Internship', 'Dinas Komunikasi dan Informatika', 'Selong, Lombok Timur', 'magang', 'Melakukan pemeliharaan perangkat IT instansi.', 'Fresh graduate atau mahasiswa tingkat akhir.', 'Rp 1.500.000', '2026-07-25', 'https://diskominfo.lomboktimurkab.go.id')
-    `, [adminId, adminId, adminId]);
+      (?, 'Senior Web Developer', 'PT E-Commerce Nusantara', 'Mataram, NTB', 'full_time', 'Kami mencari pengembang web senior yang berpengalaman dengan React dan Node.js untuk bergabung dalam tim pengembangan platform e-commerce skala besar kami.', 'Pengalaman React dan Node.js minimal 3 tahun.', 'Rp 8.000.000 - 15.000.000', '2026-09-30', 'https://si.ft.hamzanwadi.ac.id'),
+      (?, 'Data Analyst', 'CV Data Insight Global', 'Jakarta (Remote)', 'full_time', 'Dibutuhkan analis data untuk mengolah informasi pasar keuangan menggunakan Python dan Tableau. Memiliki kemampuan statistik yang kuat adalah nilai tambah.', 'Kuasai Python, Tableau, SQL dan Statistik.', 'Rp 7.000.000 - 12.000.000', '2026-08-31', 'https://si.ft.hamzanwadi.ac.id')
+    `, [adminId, adminId]);
     console.log('✅ Dummy lowongan seeded.');
   }
 
@@ -531,11 +644,11 @@ async function initialize() {
   const [konselorCheck] = await db.execute('SELECT COUNT(*) AS total FROM konselor');
   if (konselorCheck[0].total === 0) {
     await db.execute(`
-      INSERT INTO konselor (nama, bidang_keahlian, is_active)
+      INSERT INTO konselor (nama, bidang_keahlian, whatsapp, is_active)
       VALUES
-      ('Ahmad Naufal, M.T.', 'Software Engineering & Cloud Computing', 1),
-      ('Siti Khadijah, M.Kom.', 'Data Science & Artificial Intelligence', 1),
-      ('Budi Santoso, Ph.D.', 'IT Governance & Cybersecurity', 1)
+      ('Ahmad Naufal, M.T.', 'Software Engineering & Cloud Computing', '6282340000000', 1),
+      ('Siti Khadijah, M.Kom.', 'Data Science & Artificial Intelligence', '6282340000001', 1),
+      ('Budi Santoso, Ph.D.', 'IT Governance & Cybersecurity', '6282340000002', 1)
     `);
     console.log('✅ Default counselors seeded.');
   }

@@ -76,11 +76,7 @@ exports.showDashboard = (req, res) => {
         tracerKelengkapan,
         lowongan,
         konseling,
-        flash_success: req.session.flash_success || null,
-        flash_error  : req.session.flash_error   || null,
       });
-      delete req.session.flash_success;
-      delete req.session.flash_error;
     })
     .catch(err => {
       console.error('Dashboard alumni error:', err);

@@ -4,432 +4,306 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> | Portal Tracer Study Sistem Informasi Universitas Hamzanwadi</title>
+  <meta name="description" content="Portal Resmi Tracer Study Alumni Program Studi Sistem Informasi Fakultas Teknik Universitas Hamzanwadi." />
+  <meta name="keywords" content="tracer study, alumni, sistem informasi, universitas hamzanwadi" />
   <link rel="stylesheet" href="/css/public.css" />
   <link rel="stylesheet" href="/css/beranda.css" />
 </head>
 
 <body>
-
-  <!-- ===== NAVBAR ===== -->
   <%- include('partials/public-navbar') %>
 
-  <!-- ===== HERO ===== -->
-  <section class="hero">
-    <!-- Automatic Background Slideshow -->
-    <div class="hero-slides">
-      <div class="hero-slide active" style="background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.65) 0%, rgba(15, 23, 42, 0.8) 100%), url('/images/students-hero.jpg');"></div>
-      <div class="hero-slide" style="background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.65) 0%, rgba(15, 23, 42, 0.8) 100%), url('/images/mbkm-international.png');"></div>
-    </div>
-
-    <div class="hero-container">
-      <div class="hero-tag">
-        <svg viewBox="0 0 24 24">
-          <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" />
-        </svg>
-        Fakultas Teknik Hamzanwadi
+  <main>
+    <!-- ===== HERO SECTION ===== -->
+    <section class="hero" aria-label="Hero Banner">
+      <div class="hero-slides">
+        <div class="hero-slide active" style="background-image: linear-gradient(180deg, rgba(6, 78, 59, 0.82) 0%, rgba(4, 62, 47, 0.94) 100%), url('/images/students-hero.jpg');"></div>
+        <div class="hero-slide" style="background-image: linear-gradient(180deg, rgba(6, 78, 59, 0.82) 0%, rgba(4, 62, 47, 0.94) 100%), url('/images/mbkm-international.png');"></div>
       </div>
-
-      <h1>Portal Tracer Study Alumni<br />Sistem Informasi.</h1>
-
-      <p>Media resmi penelusuran alumni Program Studi Sistem Informasi Fakultas Teknik Universitas Hamzanwadi untuk
-        mendukung monitoring lulusan, informasi karir, dan pengembangan kompetensi alumni.</p>
-
-      <div class="hero-actions">
-        <a href="/login" class="btn-primary">
-          <span>Isi Tracer Study</span>
-          <svg viewBox="0 0 24 24" class="btn-icon">
-            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
-        </a>
-        <a href="/lowongan" class="btn-outline">
-          Lihat Lowongan Kerja
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <section class="section statistik">
-    <div class="section-container">
-      <!-- Floating decorative glowing blobs -->
-      <div class="stat-glow-1"></div>
-      <div class="stat-glow-2"></div>
-      
-      <div class="stat-header">
-        <span class="section-badge">METRIK UTAMA</span>
-        <h2>Statistik Alumni</h2>
-        <p>Gambaran umum perkembangan karir lulusan Sistem Informasi.</p>
-      </div>
-
-      <div class="stat-grid">
-        <div class="stat-card">
-          <div class="stat-icon icon-total">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
-            </svg>
-          </div>
-          <div class="stat-number-wrap">
-            <span class="stat-number counter" data-target="<%= statistik.totalAlumni %>">
-              <%= statistik.totalAlumni.toLocaleString('id-ID') %>
-            </span>
-          </div>
-          <div class="stat-label">Total Alumni</div>
+      <div class="hero-container">
+        <div class="hero-tag">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" /></svg>
+          <span>Fakultas Teknik • Universitas Hamzanwadi</span>
         </div>
-
-        <div class="stat-card">
-          <div class="stat-icon icon-work">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M20 6h-2.18c.07-.44.18-.88.18-1.35C18 2.53 15.47 0 12 0 8.53 0 6 2.53 6 4.65c0 .47.11.91.18 1.35H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-8 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" />
-            </svg>
-          </div>
-          <div class="stat-number-wrap">
-            <span class="stat-number counter" data-target="<%= statistik.alumniBekerja %>">
-              <%= statistik.alumniBekerja.toLocaleString('id-ID') %>
-            </span>
-          </div>
-          <div class="stat-label">Alumni Bekerja</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon icon-entrepreneur">
-            <svg viewBox="0 0 24 24">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="2"
-                fill="none" />
-            </svg>
-          </div>
-          <div class="stat-number-wrap">
-            <span class="stat-number counter" data-target="<%= statistik.alumniWirausaha %>">
-              <%= statistik.alumniWirausaha.toLocaleString('id-ID') %>
-            </span>
-          </div>
-          <div class="stat-label">Alumni Wirausaha</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon icon-study">
-            <svg viewBox="0 0 24 24">
-              <path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z" />
-            </svg>
-          </div>
-          <div class="stat-number-wrap">
-            <span class="stat-number counter" data-target="<%= statistik.melanjutkanStudi %>">
-              <%= statistik.melanjutkanStudi.toLocaleString('id-ID') %>
-            </span>
-          </div>
-          <div class="stat-label">Melanjutkan Studi</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== CHART SECTION ===== -->
-  <section class="section chart-section">
-    <div class="section-container">
-      <div class="chart-header">
-        <div class="section-badge">TREN KARIR</div>
-        <h2>Penyerapan Lulusan di Dunia Kerja</h2>
-        <p>Grafik persentase alumni yang langsung bekerja &lt; 6 bulan setelah wisuda (Tahun Lulus 2020 - 2025).</p>
-      </div>
-
-      <!-- Quick Metrics Summary Bar -->
-      <div class="chart-metrics-row">
-        <div class="metric-item">
-          <div class="metric-val">93%</div>
-          <div class="metric-lbl">Puncak Keterserapan (2025)</div>
-        </div>
-        <div class="metric-divider"></div>
-        <div class="metric-item">
-          <div class="metric-val">&lt; 2.8 Bln</div>
-          <div class="metric-lbl">Rata-rata Masa Tunggu Kerja</div>
-        </div>
-        <div class="metric-divider"></div>
-        <div class="metric-item">
-          <div class="metric-val">96.4%</div>
-          <div class="metric-lbl">Tingkat Kepuasan Pengguna</div>
-        </div>
-      </div>
-
-      <div class="chart-container-wrap">
-        <div class="chart-card">
-          <canvas id="employmentTrendChart"></canvas>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== ALUR CARA KERJA TRACER STUDY ===== -->
-  <section class="section how-it-works">
-    <div class="section-container">
-      <div class="how-header">
-        <div class="section-badge">PANDUAN ALUMNI</div>
-        <h2>3 Langkah Mudah Berpartisipasi</h2>
-        <p>Proses singkat pengisian Tracer Study untuk membantu pengembangan almamater Anda.</p>
-      </div>
-
-      <div class="steps-grid">
-        <div class="step-card">
-          <div class="step-number">01</div>
-          <div class="step-icon">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
-            </svg>
-          </div>
-          <h3>Login Akun Alumni</h3>
-          <p>Gunakan NIM / Email terdaftar untuk masuk ke portal Tracer Study Sistem Informasi.</p>
-        </div>
-
-        <div class="step-card">
-          <div class="step-number">02</div>
-          <div class="step-icon">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
-            </svg>
-          </div>
-          <h3>Lengkapi Kuesioner</h3>
-          <p>Isi formulir tracer study mengenai pekerjaan, pengalaman, dan saran untuk program studi.</p>
-        </div>
-
-        <div class="step-card">
-          <div class="step-number">03</div>
-          <div class="step-icon">
-            <svg viewBox="0 0 24 24">
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-            </svg>
-          </div>
-          <h3>Nikmati Layanan Karir</h3>
-          <p>Dapatkan akses eksklusif info lowongan kerja IT dan layanan konseling karir alumni.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== LAYANAN & FITUR ===== -->
-  <section class="section layanan">
-    <div class="section-container">
-      <div class="layanan-header">
-        <h2>Layanan & Fitur Portal</h2>
-        <p>Kami menyediakan berbagai alat untuk mendukung kesuksesan karir dan menjaga hubungan alumni dengan program studi.</p>
-      </div>
-
-      <div class="layanan-grid">
-        <div class="layanan-card">
-          <div class="layanan-icon icon-emerald">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
-            </svg>
-          </div>
-          <h3>Tracer Study</h3>
-          <p>Penelusuran data karir alumni untuk akreditasi dan pengembangan kurikulum Sistem Informasi.</p>
-          <a href="/login" class="layanan-link">
-            <span>Mulai Survei</span>
-            <svg viewBox="0 0 24 24">
-              <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            </svg>
+        <h1>Portal Tracer Study Alumni<br />Sistem Informasi</h1>
+        <p>Media penelusuran resmi alumni Program Studi Sistem Informasi untuk mendukung penjaminan mutu lulusan, informasi karir, dan penguatan kurikulum almamater.</p>
+        <div class="hero-actions">
+          <a href="/login" class="btn-primary" id="btnHeroTracer">
+            <span>Isi Tracer Study</span>
+            <svg viewBox="0 0 24 24" class="btn-icon" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
           </a>
-        </div>
-
-        <div class="layanan-card">
-          <div class="layanan-icon icon-blue">
-            <svg viewBox="0 0 24 24">
-              <path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 5h3v-3h2v3h3v2h-3v3h-2v-3h-3z" />
-            </svg>
-          </div>
-          <h3>Dashboard Alumni</h3>
-          <p>Akses profil profesional Anda, perbarui data kontak, dan lihat riwayat karir Anda.</p>
-          <a href="/dashboard" class="layanan-link">
-            <span>Buka Dashboard</span>
-            <svg viewBox="0 0 24 24">
-              <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            </svg>
-          </a>
-        </div>
-
-        <div class="layanan-card">
-          <div class="layanan-icon icon-amber">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M20 6h-2.18c.07-.44.18-.88.18-1.35C18 2.53 15.47 0 12 0 8.53 0 6 2.53 6 4.65c0 .47.11.91.18 1.35H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-8 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" />
-            </svg>
-          </div>
-          <h3>Lowongan Kerja</h3>
-          <p>Dapatkan informasi peluang kerja eksklusif di bidang IT dan Sistem Informasi.</p>
-          <a href="/lowongan" class="layanan-link">
-            <span>Cari Loker</span>
-            <svg viewBox="0 0 24 24">
-              <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            </svg>
-          </a>
-        </div>
-
-        <div class="layanan-card">
-          <div class="layanan-icon icon-purple">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8z" />
-            </svg>
-          </div>
-          <h3>Konseling Karir</h3>
-          <p>Layanan bimbingan karir dan persiapan dunia kerja bagi alumni muda.</p>
-          <a href="/konseling" class="layanan-link">
-            <span>Konsultasi</span>
-            <svg viewBox="0 0 24 24">
-              <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            </svg>
-          </a>
+          <a href="/lowongan" class="btn-outline" id="btnHeroLowongan">Lihat Lowongan Kerja</a>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ===== CTA BANNER ===== -->
-  <section class="section cta-section">
-    <div class="section-container">
-      <div class="cta-banner">
-        <div class="cta-content">
-          <h2>Berkontribusi untuk Almamater</h2>
-          <p>Data yang Anda berikan melalui Tracer Study sangat berharga bagi pengembangan kualitas akademik dan akreditasi Program Studi Sistem Informasi.</p>
-          <a href="/login" class="btn-cta">
-            <svg viewBox="0 0 24 24" class="btn-cta-icon">
-              <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-            </svg>
-            Isi Tracer Study Sekarang
-          </a>
+    <!-- ===== STATISTIK SECTION ===== -->
+    <section class="section statistik" aria-label="Statistik Lulusan">
+      <div class="section-container">
+        <div class="stat-header reveal">
+          <span class="section-badge badge-emerald">METRIK UTAMA</span>
+          <h2>Statistik Keterserapan Alumni</h2>
+          <p>Gambaran umum persebaran dan status karir lulusan Sistem Informasi sesuai database real-time.</p>
+        </div>
+        <div class="stat-grid">
+          <article class="stat-card reveal">
+            <div class="stat-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" /></svg></div>
+            <div class="stat-number-wrap"><span class="stat-number counter" data-target="<%= statistik.totalAlumni %>">0</span></div>
+            <div class="stat-label">Total Alumni Terdata</div>
+          </article>
+          <article class="stat-card reveal">
+            <div class="stat-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.35C18 2.53 15.47 0 12 0 8.53 0 6 2.53 6 4.65c0 .47.11.91.18 1.35H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-8 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" /></svg></div>
+            <div class="stat-number-wrap"><span class="stat-number counter" data-target="<%= statistik.alumniBekerja %>">0</span></div>
+            <div class="stat-label">Alumni Bekerja</div>
+          </article>
+          <article class="stat-card reveal">
+            <div class="stat-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" fill="none" /></svg></div>
+            <div class="stat-number-wrap"><span class="stat-number counter" data-target="<%= statistik.alumniWirausaha %>">0</span></div>
+            <div class="stat-label">Alumni Wirausaha</div>
+          </article>
+          <article class="stat-card reveal">
+            <div class="stat-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z" /></svg></div>
+            <div class="stat-number-wrap"><span class="stat-number counter" data-target="<%= statistik.melanjutkanStudi %>">0</span></div>
+            <div class="stat-label">Melanjutkan Studi</div>
+          </article>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ===== FOOTER ===== -->
+    <!-- ===== CHART SECTION ===== -->
+    <section class="section chart-section" aria-label="Grafik Tren Karir">
+      <div class="section-container">
+        <div class="chart-header reveal">
+          <span class="section-badge badge-dark">TREN KARIR</span>
+          <h2>Penyerapan Lulusan di Dunia Kerja</h2>
+          <p>Persentase alumni dengan masa tunggu kerja kurang dari 6 bulan setelah wisuda.</p>
+        </div>
+        <div class="chart-metrics-row reveal">
+          <div class="metric-item">
+            <div class="metric-val"><%= metrics.peakAbsorption %></div>
+            <div class="metric-lbl">Puncak Keterserapan</div>
+          </div>
+          <div class="metric-divider"></div>
+          <div class="metric-item">
+            <div class="metric-val"><%= metrics.avgMasaTunggu %></div>
+            <div class="metric-lbl">Masa Tunggu Dominan</div>
+          </div>
+          <div class="metric-divider"></div>
+          <div class="metric-item">
+            <div class="metric-val"><%= metrics.avgKepuasan %></div>
+            <div class="metric-lbl">Kepuasan Lulusan</div>
+          </div>
+        </div>
+        <div class="chart-container-wrap reveal">
+          <div class="chart-card"><canvas id="employmentTrendChart"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PANDUAN ALUMNI SECTION ===== -->
+    <section class="section how-it-works" aria-label="Panduan Partisipasi">
+      <div class="section-container">
+        <div class="how-header reveal">
+          <span class="section-badge badge-dark">PANDUAN ALUMNI</span>
+          <h2>3 Langkah Mudah Berpartisipasi</h2>
+          <p>Proses singkat pengisian Tracer Study demi mendukung kemajuan program studi Anda.</p>
+        </div>
+        <div class="steps-grid">
+          <article class="step-card reveal" data-step="1">
+            <div class="step-number-circle">1</div>
+            <div class="step-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" /></svg></div>
+            <h3>Login Akun Alumni</h3>
+            <p>Gunakan NIM dan kata sandi terdaftar untuk masuk ke portal resmi Tracer Study.</p>
+          </article>
+          <article class="step-card reveal" data-step="2">
+            <div class="step-number-circle">2</div>
+            <div class="step-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" /></svg></div>
+            <h3>Lengkapi Kuesioner</h3>
+            <p>Isi data profil, riwayat pekerjaan, wirausaha, studi lanjut, serta feedback kurikulum.</p>
+          </article>
+          <article class="step-card reveal" data-step="3">
+            <div class="step-number-circle">3</div>
+            <div class="step-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg></div>
+            <h3>Akses Layanan Karir</h3>
+            <p>Dapatkan informasi peluang kerja eksklusif di bidang teknologi informasi.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== LAYANAN & FITUR ===== -->
+    <section class="section layanan" aria-label="Fitur & Layanan">
+      <div class="section-container">
+        <div class="layanan-header reveal">
+          <span class="section-badge badge-dark">FITUR PORTAL</span>
+          <h2>Layanan & Fitur Unggulan</h2>
+          <p>Berbagai fitur pendukung untuk memfasilitasi kebutuhan karir serta relasi alumni.</p>
+        </div>
+        <div class="layanan-grid">
+          <article class="layanan-card reveal">
+            <div class="layanan-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" /></svg></div>
+            <h3>Tracer Study</h3>
+            <p>Penelusuran data karir alumni guna keperluan akreditasi BAN-PT dan peningkatan standar kurikulum.</p>
+            <a href="/login" class="layanan-link"><span>Mulai Survei</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg></a>
+          </article>
+          <article class="layanan-card reveal">
+            <div class="layanan-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 5h3v-3h2v3h3v2h-3v3h-2v-3h-3z" /></svg></div>
+            <h3>Dashboard Alumni</h3>
+            <p>Kelola data profil profesional, perbarui kontak secara mandiri, dan bagikan rekam jejak karir.</p>
+            <a href="/login" class="layanan-link"><span>Masuk Dashboard</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg></a>
+          </article>
+          <article class="layanan-card reveal">
+            <div class="layanan-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.35C18 2.53 15.47 0 12 0 8.53 0 6 2.53 6 4.65c0 .47.11.91.18 1.35H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-8 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" /></svg></div>
+            <h3>Lowongan Kerja</h3>
+            <p>Temukan informasi lowongan kerja terkini di bidang IT dan rekayasa perangkat lunak.</p>
+            <a href="/lowongan" class="layanan-link"><span>Cari Loker</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg></a>
+          </article>
+          <article class="layanan-card reveal">
+            <div class="layanan-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8z" /></svg></div>
+            <h3>Konseling Karir</h3>
+            <p>Konsultasikan persiapan memasuki dunia industri kerja dengan konselor karir berpengalaman.</p>
+            <a href="/konseling" class="layanan-link"><span>Konsultasi</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg></a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== KONSELOR KARIR SECTION (CONNECTED TO ADMIN KONSELOR) ===== -->
+    <section class="section konselor-section" aria-label="Konselor Karir" style="background: #f8fafc; padding: 60px 0;">
+      <div class="section-container">
+        <div class="layanan-header reveal" style="text-align: center; margin-bottom: 40px;">
+          <span class="section-badge badge-emerald">TIM KONSELOR REKREASI & KARIR</span>
+          <h2>Konselor Karir Terkoneksi</h2>
+          <p>Bimbingan dan konsultasi karir langsung bersama konselor resmi pilihan Program Studi.</p>
+        </div>
+        <div class="konselor-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px;">
+          <% if (typeof konselors !== 'undefined' && konselors && konselors.length > 0) { %>
+            <% konselors.forEach(k => { %>
+              <div class="layanan-card reveal" style="background: #ffffff; border-radius: 20px; padding: 28px 24px; text-align: center; border: 1.5px solid #e2e8f0; box-shadow: 0 10px 25px rgba(0,0,0,0.04); display: flex; flex-direction: column; align-items: center; transition: all 0.3s ease;">
+                <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #064E3B, #047857); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; margin-bottom: 16px; box-shadow: 0 8px 20px rgba(6, 78, 59, 0.18); overflow: hidden; border: 3px solid #a7f3d0;">
+                  <% if (k.foto) { %>
+                    <img src="<%= k.foto.startsWith('/') ? k.foto : ('/images/' + k.foto) %>" alt="<%= k.nama %>" style="width: 100%; height: 100%; object-fit: cover;" />
+                  <% } else { %>
+                    <%= k.nama ? k.nama[0].toUpperCase() : 'K' %>
+                  <% } %>
+                </div>
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: #0f172a; margin: 0 0 6px 0;"><%= k.nama %></h3>
+                <span style="font-size: 0.8rem; font-weight: 700; color: #047857; background: #ecfdf5; padding: 4px 12px; border-radius: 20px; border: 1px solid #a7f3d0; margin-bottom: 14px; display: inline-block;">
+                  <%= k.bidang_keahlian || 'Konselor Karir SI' %>
+                </span>
+                <p style="font-size: 0.85rem; color: #64748b; margin: 0 0 20px 0; line-height: 1.5; flex-grow: 1;">
+                  Siap memberikan arahan persiapan karir, penyusunan portofolio, dan konsultasi profesional.
+                </p>
+                <% 
+                  var waUrl = '/konseling/form?konselor_id=' + k.id;
+                  if (k.whatsapp) {
+                    var cleanWa = String(k.whatsapp).replace(/[^0-9]/g, '');
+                    if (cleanWa.startsWith('0')) cleanWa = '62' + cleanWa.slice(1);
+                    else if (cleanWa.startsWith('8')) cleanWa = '62' + cleanWa;
+                    waUrl = 'https://wa.me/' + cleanWa + '?text=' + encodeURIComponent('Halo ' + k.nama + ', saya ingin berdiskusi mengenai konsultasi karir alumni.');
+                  }
+                %>
+                <a href="<%= waUrl %>" target="_blank" class="btn-primary" style="width: 100%; justify-content: center; padding: 10px 16px; border-radius: 12px; font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+                  <span>Mulai Konsultasi</span>
+                </a>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <div style="grid-column: 1 / -1; text-align: center; color: #94a3b8; font-size: 0.9rem;">
+              Belum ada data konselor aktif.
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CTA BANNER SECTION ===== -->
+    <section class="section cta-section" aria-label="Call to Action">
+      <div class="section-container">
+        <div class="cta-banner reveal">
+          <div class="cta-content">
+            <span class="section-badge badge-glow" style="margin-bottom:16px">KONTRIBUSI ALUMNI</span>
+            <h2>Kontribusi Nyata Untuk Almamater Anda</h2>
+            <p>Data pengisian yang Anda berikan melalui survei Tracer Study menjadi instrumen evaluasi krusial bagi pengembangan mutu akademik dan kurikulum Sistem Informasi Hamzanwadi.</p>
+            <a href="/login" class="btn-cta">
+              <svg viewBox="0 0 24 24" class="btn-cta-icon" aria-hidden="true"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" /></svg>
+              <span>Isi Kuesioner Sekarang</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
   <%- include('partials/public-footer') %>
 
-  <!-- Chart.js and Custom Script -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       // Hero Background Slideshow
       const slides = document.querySelectorAll('.hero-slide');
       let currentSlide = 0;
-      if (slides.length > 0) {
+      if (slides.length > 1) {
         setInterval(() => {
           slides[currentSlide].classList.remove('active');
           currentSlide = (currentSlide + 1) % slides.length;
           slides[currentSlide].classList.add('active');
-        }, 2000); // changes every 2 seconds
+        }, 4000);
       }
 
-      // Counter Animation
-      const counters = document.querySelectorAll('.counter');
-      const speed = 200;
-
-      const animateCounters = () => {
-        counters.forEach(counter => {
-          const target = +counter.getAttribute('data-target');
-          if (!target) return;
-          const count = +counter.innerText.replace(/\D/g, '') || 0;
-          const inc = target / speed;
-
-          if (count < target) {
-            let current = count + Math.ceil(inc);
-            if (current > target) current = target;
-            counter.innerText = current.toLocaleString('id-ID');
-            setTimeout(animateCounters, 15);
-          } else {
-            counter.innerText = target.toLocaleString('id-ID');
-          }
-        });
+      // Smooth Count-up with requestAnimationFrame
+      const animateCounter = (counter) => {
+        const target = +counter.getAttribute('data-target');
+        if (!target) { counter.innerText = '0'; return; }
+        const duration = 1500;
+        const startTime = performance.now();
+        const updateCount = (currentTime) => {
+          const progress = Math.min((currentTime - startTime) / duration, 1);
+          const easeProgress = progress * (2 - progress);
+          counter.innerText = Math.floor(easeProgress * target).toLocaleString('id-ID');
+          if (progress < 1) requestAnimationFrame(updateCount);
+          else counter.innerText = target.toLocaleString('id-ID');
+        };
+        requestAnimationFrame(updateCount);
       };
 
-      // Intersection Observer for Counter Animation
-      const statSection = document.querySelector('.statistik');
-      if (statSection && 'IntersectionObserver' in window) {
-        let animated = false;
-        const observer = new IntersectionObserver((entries) => {
-          if (entries[0].isIntersecting && !animated) {
-            animated = true;
-            animateCounters();
-          }
-        }, { threshold: 0.2 });
-        observer.observe(statSection);
+      // Scroll Reveal & Counter triggers
+      const revealElements = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window) {
+        const obs = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('active');
+              const c = entry.target.querySelector('.counter');
+              if (c && !c.classList.contains('counted')) { c.classList.add('counted'); animateCounter(c); }
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.15 });
+        revealElements.forEach(el => obs.observe(el));
       } else {
-        animateCounters();
+        revealElements.forEach(el => { el.classList.add('active'); const c = el.querySelector('.counter'); if (c) animateCounter(c); });
       }
 
-      // Chart setup
+      // Chart
       const canvas = document.getElementById('employmentTrendChart');
       if (canvas) {
         const ctx = canvas.getContext('2d');
         const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-        gradient.addColorStop(0, 'rgba(6, 78, 59, 0.35)');
-        gradient.addColorStop(1, 'rgba(6, 78, 59, 0.00)');
-
+        gradient.addColorStop(0, 'rgba(16, 185, 129, 0.25)');
+        gradient.addColorStop(1, 'rgba(16, 185, 129, 0.00)');
+        const trendLabels = <%- JSON.stringify(trend.labels && trend.labels.length > 0 ? trend.labels : ['2020','2021','2022','2023','2024','2025']) %>;
+        const trendData = <%- JSON.stringify(trend.percentages && trend.percentages.length > 0 ? trend.percentages : [0,0,0,0,0,0]) %>;
         new Chart(ctx, {
           type: 'line',
-          data: {
-            labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
-            datasets: [{
-              label: 'Persentase Bekerja < 6 Bulan',
-              data: [72, 78, 83, 85, 89, 93],
-              borderColor: '#064E3B',
-              borderWidth: 3.5,
-              backgroundColor: gradient,
-              fill: true,
-              tension: 0.4,
-              pointBackgroundColor: '#064E3B',
-              pointBorderColor: '#ffffff',
-              pointBorderWidth: 2,
-              pointRadius: 6,
-              pointHoverRadius: 8,
-              pointHoverBackgroundColor: '#047857',
-              pointHoverBorderColor: '#ffffff',
-              pointHoverBorderWidth: 3
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { display: false },
-              tooltip: {
-                backgroundColor: '#0F172A',
-                titleFont: { size: 13, weight: 'bold', family: "'Plus Jakarta Sans', sans-serif" },
-                bodyFont: { size: 12, family: "'Plus Jakarta Sans', sans-serif" },
-                padding: 12,
-                cornerRadius: 8,
-                displayColors: false,
-                callbacks: {
-                  label: function (context) {
-                    return ` ${context.parsed.y}% Alumni Terserap Kerja`;
-                  }
-                }
-              }
-            },
-            scales: {
-              x: {
-                grid: { display: false },
-                ticks: { color: '#64748B', font: { size: 12, weight: '600', family: "'Plus Jakarta Sans', sans-serif" } }
-              },
-              y: {
-                min: 50, max: 100,
-                ticks: {
-                  stepSize: 10,
-                  color: '#64748B',
-                  font: { size: 12, weight: '600', family: "'Plus Jakarta Sans', sans-serif" },
-                  callback: function (value) { return value + '%'; }
-                },
-                grid: { color: 'rgba(226, 232, 240, 0.7)', borderDash: [4, 4] }
-              }
-            }
-          }
+          data: { labels: trendLabels, datasets: [{ label: 'Terserap Kerja', data: trendData, borderColor: '#10b981', borderWidth: 3, backgroundColor: gradient, fill: true, tension: 0.4, pointBackgroundColor: '#10b981', pointBorderColor: '#fff', pointBorderWidth: 2, pointRadius: 5, pointHoverRadius: 7 }] },
+          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { backgroundColor: '#0F172A', titleFont: { size: 13, weight: 'bold' }, bodyFont: { size: 12 }, padding: 12, cornerRadius: 8, displayColors: false, callbacks: { label: (c) => ` ${c.parsed.y}% Terserap Kerja` } } }, scales: { x: { grid: { display: false }, ticks: { color: '#64748B', font: { size: 12, weight: '600' } } }, y: { min: 0, max: 100, ticks: { stepSize: 20, color: '#64748B', font: { size: 12, weight: '600' }, callback: (v) => v + '%' }, grid: { color: 'rgba(226,232,240,0.5)', borderDash: [4,4] } } } }
         });
       }
     });
   </script>
-
 </body>
 
 </html>

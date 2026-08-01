@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pengaturan Akun | Admin Tracer Study</title>
+  <title>Pengaturan Akun | Admin Tracer Study — Sistem Informasi FT Hamzanwadi</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/css/admin/dashboard.css"/>
   <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .settings-wrapper {
       display: grid;
       grid-template-columns: 1.5fr 1fr;
@@ -17,7 +18,7 @@
     .settings-main-card {
       background: #fff;
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 16px;
       padding: 28px;
       box-shadow: var(--shadow);
     }
@@ -27,8 +28,10 @@
       gap: 10px;
       margin-bottom: 24px;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 800;
       color: #064E3B;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
     }
     .settings-title-row svg {
       width: 18px; height: 18px; fill: currentColor;
@@ -261,7 +264,7 @@
 
 <main class="main-content">
   <!-- Topbar -->
-  <%- include('_topbar', { title: 'Pengaturan Akun' }) %>
+  <%- include('_topbar', { breadcrumbs: [{ label: 'Admin', url: '/admin/dashboard' }, { label: 'Pengaturan Akun' }] }) %>
 
   <div class="page-content" style="background:#fcfcf7; min-height: calc(100vh - 60px); padding: 24px;">
     <% if (error) { %><div class="alert alert-error" style="margin-bottom:16px;"><%= error %></div><% } %>
@@ -315,18 +318,10 @@
                 </div>
               </div>
 
-              <div class="grid-fields-2">
-                <div class="settings-group">
-                  <label for="role">Peran (Role)</label>
-                  <select id="role" name="role">
-                    <option value="Super Admin" <%= admin.role === 'Super Admin' ? 'selected' : '' %>>Super Admin</option>
-                    <option value="Admin Prodi" <%= admin.role === 'Admin Prodi' ? 'selected' : '' %>>Admin Prodi</option>
-                  </select>
-                </div>
-                <div class="settings-group">
-                  <label for="no_wa_pengirim">Nomor WhatsApp Pengirim (Official)</label>
-                  <input type="text" id="no_wa_pengirim" name="no_wa_pengirim" value="<%= admin.no_wa_pengirim || '081936791163' %>" placeholder="Contoh: 081936791163"/>
-                </div>
+              <div class="settings-group" style="margin-top: 4px;">
+                <label for="no_wa_pengirim">Nomor WhatsApp Pengirim &amp; Administrator Official (Digunakan Sistem)</label>
+                <input type="text" id="no_wa_pengirim" name="no_wa_pengirim" value="<%= admin.no_wa_pengirim || '081936791163' %>" placeholder="Contoh: 081936791163" style="font-weight:700; color:#064E3B;"/>
+                <small style="font-size:11px; color:#64748b; margin-top:2px;">Nomor ini terintegrasi penuh secara otomatis ke seluruh tombol "Tanya Admin / Hubungi IT Support" &amp; pesan pengingat alumni.</small>
               </div>
             </div>
           </div>

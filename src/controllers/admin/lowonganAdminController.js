@@ -14,11 +14,7 @@ exports.index = (req, res) => {
         title        : 'Manajemen Lowongan',
         adminName    : req.session.adminName,
         lowongan     : rows,
-        flash_success: req.session.flash_success || null,
-        flash_error  : req.session.flash_error   || null,
       });
-      delete req.session.flash_success;
-      delete req.session.flash_error;
     }
   );
 };
@@ -44,7 +40,7 @@ exports.store = (req, res) => {
   const gambar = req.file ? '/images/' + req.file.filename : null;
 
   db.query(
-    'INSERT INTO lowongan (admin_id, judul, perusahaan, lokasi, tipe, deskripsi, persyaratan, gaji, deadline, gambar, link) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+    'INSERT INTO lowongan (admin_id, judul, perusahaan, lokasi, tipe, deskripsi, persyaratan, gaji, deadline, gambar, link, is_active) VALUES (?,?,?,?,?,?,?,?,?,?,?,1)',
     [req.session.adminId, judul, perusahaan, lokasi, tipe, deskripsi, persyaratan, gaji, deadline || null, gambar, link || null],
     (err) => {
       if (err) {

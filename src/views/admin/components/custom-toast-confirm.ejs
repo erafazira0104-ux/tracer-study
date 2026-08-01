@@ -1,0 +1,315 @@
+<!-- Custom Beautiful Confirm Modal -->
+<div id="customConfirmModal" class="custom-confirm-overlay" style="
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 99999;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+">
+  <div class="custom-confirm-card" style="
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    max-width: 420px;
+    width: 90%;
+    padding: 28px;
+    text-align: center;
+    transform: scale(0.95);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  ">
+    <!-- Icon Container -->
+    <div class="custom-confirm-icon-box" style="
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #fef2f2;
+      color: #ef4444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 24px;
+      border: 1px solid #fee2e2;
+    ">
+      ⚠️
+    </div>
+    <!-- Title -->
+    <h3 style="
+      font-size: 17px;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0 0 10px;
+      font-family: 'Inter', sans-serif;
+    ">Konfirmasi Tindakan</h3>
+    <!-- Message -->
+    <p id="customConfirmMessage" style="
+      font-size: 14px;
+      color: #475569;
+      margin: 0 0 24px;
+      line-height: 1.5;
+      font-family: 'Inter', sans-serif;
+    ">Apakah Anda yakin ingin melakukan tindakan ini?</p>
+    <!-- Buttons -->
+    <div style="
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    ">
+      <button id="customConfirmCancelBtn" type="button" style="
+        flex: 1;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        color: #475569;
+        padding: 11px 16px;
+        border-radius: 10px;
+        font-size: 13.5px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: 'Inter', sans-serif;
+        outline: none;
+      " onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f1f5f9'">Batal</button>
+      
+      <button id="customConfirmOkBtn" type="button" style="
+        flex: 1;
+        background: #ef4444;
+        border: none;
+        color: #ffffff;
+        padding: 11px 16px;
+        border-radius: 10px;
+        font-size: 13.5px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: 'Inter', sans-serif;
+        outline: none;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+      " onmouseover="this.style.background='#dc2626'" onmouseout="this.style.background='#ef4444'">Ya, Hapus</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="customToastContainer" style="
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 999999;
+  pointer-events: none;
+"></div>
+
+<script>
+(function() {
+  let activeCallback = null;
+  const modal = document.getElementById('customConfirmModal');
+  const card = modal ? modal.firstElementChild : null;
+  const messageEl = document.getElementById('customConfirmMessage');
+  const cancelBtn = document.getElementById('customConfirmCancelBtn');
+  const okBtn = document.getElementById('customConfirmOkBtn');
+
+  window.showCustomConfirmModal = function(message, callback) {
+    if (!modal || !messageEl || !okBtn) return;
+    activeCallback = callback;
+    messageEl.textContent = message;
+
+    // Check if delete operation to style button red or green
+    const isDelete = message.toLowerCase().includes('hapus') || message.toLowerCase().includes('delete');
+    if (isDelete) {
+      okBtn.textContent = 'Ya, Hapus';
+      okBtn.style.background = '#ef4444';
+      okBtn.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.2)';
+      okBtn.onmouseover = () => okBtn.style.background = '#dc2626';
+      okBtn.onmouseout = () => okBtn.style.background = '#ef4444';
+    } else {
+      okBtn.textContent = 'Ya, Lanjutkan';
+      okBtn.style.background = '#064E3B';
+      okBtn.style.boxShadow = '0 4px 12px rgba(6, 78, 59, 0.2)';
+      okBtn.onmouseover = () => okBtn.style.background = '#04392b';
+      okBtn.onmouseout = () => okBtn.style.background = '#064E3B';
+    }
+
+    modal.style.display = 'flex';
+    // Force reflow
+    modal.offsetHeight;
+    modal.style.opacity = '1';
+    if (card) card.style.transform = 'scale(1)';
+  };
+
+  const hideModal = () => {
+    if (!modal || !card) return;
+    modal.style.opacity = '0';
+    card.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+      modal.style.display = 'none';
+    }, 250);
+  };
+
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      hideModal();
+      activeCallback = null;
+    });
+  }
+
+  if (okBtn) {
+    okBtn.addEventListener('click', () => {
+      if (activeCallback) activeCallback();
+      hideModal();
+      activeCallback = null;
+    });
+  }
+
+  // Toast Functionality
+  window.showBeautifulToast = function(message, type = 'success') {
+    const container = document.getElementById('customToastContainer');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = 'beautiful-toast-item';
+    toast.style.cssText = `
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border: 1px solid ${type === 'success' ? '#bbf7d0' : '#fecaca'};
+      border-left: 5px solid ${type === 'success' ? '#10b981' : '#ef4444'};
+      border-radius: 12px;
+      padding: 16px 20px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+      color: #1e293b;
+      font-size: 13.5px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      min-width: 300px;
+      max-width: 420px;
+      opacity: 0;
+      transform: translateY(-20px) scale(0.95);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: auto;
+    `;
+
+    const icon = document.createElement('div');
+    icon.style.cssText = `
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: ${type === 'success' ? '#ecfdf5' : '#fef2f2'};
+      color: ${type === 'success' ? '#10b981' : '#ef4444'};
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+      border: 1px solid ${type === 'success' ? '#a7f3d0' : '#fee2e2'};
+    `;
+    icon.innerHTML = type === 'success' ? '✓' : '⚠️';
+
+    const text = document.createElement('div');
+    text.style.cssText = 'flex: 1;';
+    text.textContent = message;
+
+    const close = document.createElement('button');
+    close.style.cssText = `
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      padding: 0 4px;
+    `;
+    close.innerHTML = '&times;';
+    close.onclick = () => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(-20px) scale(0.95)';
+      setTimeout(() => toast.remove(), 400);
+    };
+
+    toast.appendChild(icon);
+    toast.appendChild(text);
+    toast.appendChild(close);
+    container.appendChild(toast);
+
+    // Trigger animation
+    toast.offsetHeight;
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateY(0) scale(1)';
+
+    setTimeout(() => {
+      if (toast.parentNode) {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-20px) scale(0.95)';
+        setTimeout(() => toast.remove(), 400);
+      }
+    }, 4500);
+  };
+
+  // Intercept confirm clicks/submits
+  const initInterception = () => {
+    document.querySelectorAll('form').forEach(form => {
+      const onsubmitAttr = form.getAttribute('onsubmit');
+      if (onsubmitAttr && onsubmitAttr.includes('confirm(')) {
+        const match = onsubmitAttr.match(/confirm\(['"](.*?)['"]\)/);
+        const msg = match ? match[1] : 'Apakah Anda yakin?';
+        
+        // Remove standard attribute
+        form.removeAttribute('onsubmit');
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          window.showCustomConfirmModal(msg, () => {
+            form.submit();
+          });
+        });
+      }
+    });
+
+    document.querySelectorAll('a, button').forEach(el => {
+      const onclickAttr = el.getAttribute('onclick');
+      if (onclickAttr && onclickAttr.includes('confirm(')) {
+        const match = onclickAttr.match(/confirm\(['"](.*?)['"]\)/);
+        const msg = match ? match[1] : 'Apakah Anda yakin?';
+        
+        // Remove standard attribute
+        el.removeAttribute('onclick');
+        el.addEventListener('click', function(e) {
+          e.preventDefault();
+          window.showCustomConfirmModal(msg, () => {
+            if (el.tagName === 'A' && el.href) {
+              window.location.href = el.href;
+            } else if (el.type === 'submit') {
+              const form = el.closest('form');
+              if (form) form.submit();
+            }
+          });
+        });
+      }
+    });
+  };
+
+  window.addEventListener('DOMContentLoaded', initInterception);
+  if (document.readyState === 'interactive' || document.readyState === 'complete') {
+    initInterception();
+  }
+
+  // Trigger toast for flash messages automatically
+  <% if (locals.flash_success) { %>
+    window.addEventListener('DOMContentLoaded', () => {
+      window.showBeautifulToast('<%= locals.flash_success %>', 'success');
+    });
+  <% } %>
+  <% if (locals.flash_error) { %>
+    window.addEventListener('DOMContentLoaded', () => {
+      window.showBeautifulToast('<%= locals.flash_error %>', 'error');
+    });
+  <% } %>
+})();
+</script>

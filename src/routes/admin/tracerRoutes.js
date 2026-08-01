@@ -22,6 +22,7 @@ router.post('/pertanyaan/:id/hapus',      ctrl.hapusPertanyaan);
 
 // Tambah Kategori Baru
 router.post('/kategori/tambah', ctrl.tambahKategori);
+router.post('/kategori/:id/edit', ctrl.editKategori);
 
 // Hapus Kategori
 router.post('/kategori/:id/hapus', ctrl.hapusKategori);
@@ -32,6 +33,7 @@ router.get('/detail/:id', ctrl.show);
 // Kelola Periode Pengisian (Masa Pengisian)
 router.get('/periode', ctrl.listPeriode);
 router.post('/periode/tambah', ctrl.tambahPeriode);
+router.post('/periode/:id/edit', ctrl.editPeriode);
 router.post('/periode/:id/toggle', ctrl.togglePeriode);
 router.post('/periode/:id/hapus', ctrl.hapusPeriode);
 

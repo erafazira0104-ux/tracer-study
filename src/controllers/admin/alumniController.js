@@ -76,11 +76,7 @@ exports.index = (req, res) => {
             totalPages,
             totalRows,
             sumData     : { ...sumData, belumMengisi, partisipasi },
-            flash_success: req.session.flash_success || null,
-            flash_error  : req.session.flash_error   || null,
           });
-          delete req.session.flash_success;
-          delete req.session.flash_error;
         }
       );
     });
@@ -99,16 +95,41 @@ exports.showTambah = (req, res) => {
 
 /* ── POST /admin/alumni/tambah ── */
 exports.store = async (req, res) => {
-  const { nim, nama, email, password, no_hp, tahun_masuk, tahun_lulus, angkatan, jenis_kelamin, fakultas, program_studi, tempat_lahir, tanggal_lahir, alamat, ipk_terakhir } = req.body;
+  let { nim, nama, email, password, no_hp, tahun_masuk, tahun_lulus, angkatan, jenis_kelamin, fakultas, program_studi, tempat_lahir, tanggal_lahir, alamat, ipk_terakhir } = req.body;
   const plainPw = password && password.trim() ? password.trim() : 'alumni123';
   try {
     const hash = await bcrypt.hash(plainPw, 10);
+
+    const tMasuk = tahun_masuk && tahun_masuk.toString().trim() ? parseInt(tahun_masuk) : null;
+    const tLulus = tahun_lulus && tahun_lulus.toString().trim() ? parseInt(tahun_lulus) : null;
+    const ipkVal = ipk_terakhir && ipk_terakhir.toString().trim() ? parseFloat(ipk_terakhir) : null;
+    const tglLahir = tanggal_lahir && tanggal_lahir.toString().trim() ? tanggal_lahir : null;
+    const jkVal = jenis_kelamin && jenis_kelamin.toString().trim() ? jenis_kelamin : null;
+    const hpVal = no_hp && no_hp.toString().trim() ? no_hp.trim() : null;
+    const tmpLahir = tempat_lahir && tempat_lahir.toString().trim() ? tempat_lahir.trim() : null;
+    const alamatVal = alamat && alamat.toString().trim() ? alamat.trim() : null;
+    const angkVal = angkatan && angkatan.toString().trim() ? angkatan.trim() : null;
+
     db.query(
       `INSERT INTO alumni (nim, nama, email, password, password_plain, no_hp, tahun_masuk, tahun_lulus, angkatan, jenis_kelamin, fakultas, program_studi, tempat_lahir, tanggal_lahir, alamat, ipk_terakhir, is_active)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
       [
-        nim, nama, email, hash, plainPw, no_hp, tahun_masuk || null, tahun_lulus || null, angkatan, jenis_kelamin || null,
-        fakultas || 'Fakultas Teknik', program_studi || 'Sistem Informasi', tempat_lahir || null, tanggal_lahir || null, alamat || null, ipk_terakhir || null
+        nim ? nim.trim() : '',
+        nama ? nama.trim() : '',
+        email ? email.trim() : '',
+        hash,
+        plainPw,
+        hpVal,
+        tMasuk,
+        tLulus,
+        angkVal,
+        jkVal,
+        fakultas || 'Fakultas Teknik',
+        program_studi || 'Sistem Informasi',
+        tmpLahir,
+        tglLahir,
+        alamatVal,
+        ipkVal
       ],
       (err) => {
         if (err) {
@@ -123,6 +144,7 @@ exports.store = async (req, res) => {
       }
     );
   } catch (e) {
+    console.error('Store alumni exception:', e);
     res.status(500).send('Server error');
   }
 };
@@ -142,8 +164,18 @@ exports.showEdit = (req, res) => {
 
 /* ── POST /admin/alumni/:id/edit ── */
 exports.update = async (req, res) => {
-  const { nim, nama, email, no_hp, tahun_masuk, tahun_lulus, angkatan, jenis_kelamin, password, fakultas, program_studi, tempat_lahir, tanggal_lahir, alamat, ipk_terakhir } = req.body;
+  let { nim, nama, email, no_hp, tahun_masuk, tahun_lulus, angkatan, jenis_kelamin, password, fakultas, program_studi, tempat_lahir, tanggal_lahir, alamat, ipk_terakhir } = req.body;
   const id = req.params.id;
+
+  const tMasuk = tahun_masuk && tahun_masuk.toString().trim() ? parseInt(tahun_masuk) : null;
+  const tLulus = tahun_lulus && tahun_lulus.toString().trim() ? parseInt(tahun_lulus) : null;
+  const ipkVal = ipk_terakhir && ipk_terakhir.toString().trim() ? parseFloat(ipk_terakhir) : null;
+  const tglLahir = tanggal_lahir && tanggal_lahir.toString().trim() ? tanggal_lahir : null;
+  const jkVal = jenis_kelamin && jenis_kelamin.toString().trim() ? jenis_kelamin : null;
+  const hpVal = no_hp && no_hp.toString().trim() ? no_hp.trim() : null;
+  const tmpLahir = tempat_lahir && tempat_lahir.toString().trim() ? tempat_lahir.trim() : null;
+  const alamatVal = alamat && alamat.toString().trim() ? alamat.trim() : null;
+  const angkVal = angkatan && angkatan.toString().trim() ? angkatan.trim() : null;
 
   let sql, params;
   if (password && password.trim()) {
@@ -151,14 +183,14 @@ exports.update = async (req, res) => {
     const hash = await bcrypt.hash(plainPw, 10);
     sql    = 'UPDATE alumni SET nim=?, nama=?, email=?, password=?, password_plain=?, no_hp=?, tahun_masuk=?, tahun_lulus=?, angkatan=?, jenis_kelamin=?, fakultas=?, program_studi=?, tempat_lahir=?, tanggal_lahir=?, alamat=?, ipk_terakhir=? WHERE id=?';
     params = [
-      nim, nama, email, hash, plainPw, no_hp, tahun_masuk||null, tahun_lulus||null, angkatan, jenis_kelamin||null,
-      fakultas||'Fakultas Teknik', program_studi||'Sistem Informasi', tempat_lahir||null, tanggal_lahir||null, alamat||null, ipk_terakhir||null, id
+      nim ? nim.trim() : '', nama ? nama.trim() : '', email ? email.trim() : '', hash, plainPw, hpVal, tMasuk, tLulus, angkVal, jkVal,
+      fakultas || 'Fakultas Teknik', program_studi || 'Sistem Informasi', tmpLahir, tglLahir, alamatVal, ipkVal, id
     ];
   } else {
     sql    = 'UPDATE alumni SET nim=?, nama=?, email=?, no_hp=?, tahun_masuk=?, tahun_lulus=?, angkatan=?, jenis_kelamin=?, fakultas=?, program_studi=?, tempat_lahir=?, tanggal_lahir=?, alamat=?, ipk_terakhir=? WHERE id=?';
     params = [
-      nim, nama, email, no_hp, tahun_masuk||null, tahun_lulus||null, angkatan, jenis_kelamin||null,
-      fakultas||'Fakultas Teknik', program_studi||'Sistem Informasi', tempat_lahir||null, tanggal_lahir||null, alamat||null, ipk_terakhir||null, id
+      nim ? nim.trim() : '', nama ? nama.trim() : '', email ? email.trim() : '', hpVal, tMasuk, tLulus, angkVal, jkVal,
+      fakultas || 'Fakultas Teknik', program_studi || 'Sistem Informasi', tmpLahir, tglLahir, alamatVal, ipkVal, id
     ];
   }
 
@@ -168,7 +200,7 @@ exports.update = async (req, res) => {
       return db.query('SELECT * FROM alumni WHERE id = ?', [id], (e2, rows) => {
         res.render('admin/alumni-form', {
           title: 'Edit Alumni', adminName: req.session.adminName,
-          alumni: rows[0] || req.body, error: 'Gagal menyimpan. NIM/Email mungkin sudah dipakai.',
+          alumni: rows[0] || req.body, error: err.code === 'ER_DUP_ENTRY' ? 'NIM atau Email sudah terdaftar.' : 'Gagal menyimpan data.',
         });
       });
     }
@@ -637,5 +669,115 @@ exports.importCsv = async (req, res) => {
   }
 
   res.redirect('/admin/alumni');
+};
+
+/* ── GET /admin/alumni/:id/detail ── */
+exports.getDetail = (req, res) => {
+  const id = req.params.id;
+  db.query(
+    `SELECT a.*, ts.status_pekerjaan, ts.nama_perusahaan, ts.jabatan, ts.tanggal_isi AS ts_tanggal_isi
+     FROM alumni a
+     LEFT JOIN (
+       SELECT alumni_id, MAX(id) AS max_id FROM tracer_study GROUP BY alumni_id
+     ) ts_sub ON ts_sub.alumni_id = a.id
+     LEFT JOIN tracer_study ts ON ts.id = ts_sub.max_id
+     WHERE a.id = ?`,
+    [id],
+    (err, rows) => {
+      if (err || !rows || rows.length === 0) {
+        return res.status(404).json({ ok: false, message: 'Data alumni tidak ditemukan.' });
+      }
+      res.json({ ok: true, alumni: rows[0] });
+    }
+  );
+};
+
+/* ── GET /admin/alumni/export-pdf ── */
+exports.exportPdf = (req, res) => {
+  db.query(
+    `SELECT a.nim, a.nama, a.email, a.no_hp, a.jenis_kelamin, a.tahun_masuk, a.tahun_lulus, a.angkatan, a.is_active,
+            IF(ts.id IS NOT NULL, 1, 0) AS sudah_tracer
+     FROM alumni a
+     LEFT JOIN (
+       SELECT alumni_id, MAX(id) AS max_id FROM tracer_study GROUP BY alumni_id
+     ) ts_sub ON ts_sub.alumni_id = a.id
+     LEFT JOIN tracer_study ts ON ts.id = ts_sub.max_id
+     ORDER BY a.created_at DESC`,
+    [],
+    (err, rows) => {
+      if (err) return res.status(500).send('Export PDF Error');
+
+      const printDate = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+      let tableRows = (rows || []).map((r, i) => `
+        <tr>
+          <td style="text-align:center;">${i + 1}</td>
+          <td style="font-weight:700;">${r.nim}</td>
+          <td>${r.nama}</td>
+          <td>${r.email}</td>
+          <td>${r.no_hp || '-'}</td>
+          <td style="text-align:center;">${r.jenis_kelamin || '-'}</td>
+          <td style="text-align:center;">${r.tahun_lulus || '-'}</td>
+          <td style="text-align:center;">${r.sudah_tracer ? '<span style="color:#047857; font-weight:700;">✓ Sudah</span>' : '<span style="color:#64748b;">Belum</span>'}</td>
+        </tr>
+      `).join('');
+
+      const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8"/>
+          <title>Laporan Data Alumni Tracer Study</title>
+          <style>
+            body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 12px; color: #1e293b; padding: 24px; background: #ffffff; }
+            .header { text-align: center; border-bottom: 2px solid #064E3B; padding-bottom: 12px; margin-bottom: 20px; }
+            .header h2 { margin: 0; font-size: 18px; color: #064E3B; text-transform: uppercase; letter-spacing: 0.5px; }
+            .header p { margin: 4px 0 0; font-size: 11px; color: #64748b; }
+            table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+            th, td { border: 1px solid #cbd5e1; padding: 8px 10px; font-size: 11px; text-align: left; }
+            th { background: #064E3B; color: #ffffff; font-weight: 700; }
+            tr:nth-child(even) { background: #f8fafc; }
+            .footer { margin-top: 30px; text-align: right; font-size: 11px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 10px; }
+            @media print {
+              body { padding: 0; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h2>REKAPITULASI DATA ALUMNI</h2>
+            <p><strong>PROGRAM STUDI SISTEM INFORMASI • FAKULTAS TEKNIK • UNIVERSITAS HAMZANWADI</strong></p>
+            <p style="font-size:10px; color:#64748b; margin-top:4px;">Dicetak Pada: ${printDate}</p>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th style="width:30px; text-align:center;">No</th>
+                <th>NIM</th>
+                <th>Nama Alumni</th>
+                <th>Email</th>
+                <th>No HP</th>
+                <th style="text-align:center;">JK</th>
+                <th style="text-align:center;">Thn Lulus</th>
+                <th style="text-align:center;">Status Tracer</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tableRows}
+            </tbody>
+          </table>
+          <div class="footer">
+            <p>Dokumen Laporan Resmi Tracer Study Sistem Informasi Fakultas Teknik Universitas Hamzanwadi</p>
+          </div>
+          <script>
+            window.onload = function() { window.print(); }
+          </script>
+        </body>
+        </html>
+      `;
+
+      res.setHeader('Content-Type', 'text/html');
+      res.send(html);
+    }
+  );
 };
 

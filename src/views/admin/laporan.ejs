@@ -1,308 +1,420 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Laporan | Admin Tracer Study</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet" />
-    <link rel="stylesheet" href="/css/admin/dashboard.css" />
-    <style>
-        .laporan-flex-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            margin-top: 24px;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Laporan | Admin Tracer Study — Sistem Informasi FT Hamzanwadi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/admin/dashboard.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-        .laporan-card-custom {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 32px 24px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            box-shadow: var(--shadow);
-            transition: all var(--transition);
-        }
+    .page-content {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
 
-        .laporan-card-custom:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-md);
-        }
+    /* ── HEADER ── */
+    .laporan-header-section {
+      margin-bottom: 24px;
+    }
 
-        .laporan-icon-circle {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
+    .laporan-header-section h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #064E3B;
+      margin: 0 0 4px;
+      letter-spacing: -0.2px;
+    }
 
-        .laporan-icon-circle.green {
-            background: #e8f4ec;
-            color: #2d6a4f;
-        }
+    .laporan-header-section p {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 400;
+      color: #64748B;
+      margin: 0;
+      line-height: 1.5;
+    }
 
-        .laporan-icon-circle.teal {
-            background: #e0f2fe;
-            color: #0369a1;
-        }
+    /* ── STATS GRID ── */
+    .laporan-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
 
-        .laporan-icon-circle.blue {
-            background: #f0fdf4;
-            color: #15803d;
-        }
+    .laporan-stat-card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 14px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
 
-        .laporan-icon-circle svg {
-            width: 24px;
-            height: 24px;
-            fill: currentColor;
-        }
+    .laporan-stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+    }
 
-        .laporan-card-custom h4 {
-            font-size: 15px;
-            font-weight: 700;
-            color: #064E3B;
-            margin-bottom: 12px;
-        }
+    .laporan-stat-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
 
-        .laporan-card-custom p {
-            font-size: 12px;
-            color: #555;
-            line-height: 1.5;
-            margin-bottom: 24px;
-            flex: 1;
-        }
+    .laporan-stat-icon.green  { background: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; }
+    .laporan-stat-icon.blue   { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
+    .laporan-stat-icon.purple { background: #F5F3FF; color: #7C3AED; border: 1px solid #DDD6FE; }
+    .laporan-stat-icon.amber  { background: #FEF3C7; color: #D97706; border: 1px solid #FDE68A; }
 
-        .laporan-btns-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            width: 100%;
-        }
+    .laporan-stat-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #64748B;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
 
-        .btn-laporan-outline {
-            padding: 10px;
-            border: 1.5px solid var(--border);
-            background: #fff;
-            color: #555;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 13px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: all var(--transition);
-        }
+    .laporan-stat-value {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: #0F172A;
+      line-height: 1.1;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
 
-        .btn-laporan-outline:hover {
-            background: #f5f5f5;
-        }
+    .laporan-stat-sub {
+      font-size: 0.76rem;
+      color: #94A3B8;
+      margin-top: 2px;
+    }
 
-        .btn-laporan-solid {
-            padding: 10px;
-            border: none;
-            background: #064E3B;
-            color: #fff;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 13px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: all var(--transition);
-        }
+    /* ── REPORT CARDS GRID (4 CARDS MATCHING MOCKUP) ── */
+    .laporan-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 32px;
+    }
 
-        .btn-laporan-solid:hover {
-            background: #053d2f;
-        }
+    .laporan-rpt-card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+      transition: all 0.25s ease;
+    }
 
-        .btn-laporan-outline svg,
-        .btn-laporan-solid svg {
-            width: 15px;
-            height: 15px;
-            fill: currentColor;
-        }
+    .laporan-rpt-card:hover {
+      transform: translateY(-4px);
+      border-color: #A7F3D0;
+      box-shadow: 0 12px 28px rgba(6, 78, 59, 0.08);
+    }
 
-        /* Topbar search & actions */
-        .topbar-search-wrap {
-            position: relative;
-            display: flex;
-            align-items: center;
-            max-width: 320px;
-            width: 100%;
-        }
+    .laporan-rpt-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: #ECFDF5;
+      color: #059669;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+    }
 
-        .topbar-search-wrap svg {
-            position: absolute;
-            left: 12px;
-            width: 16px;
-            height: 16px;
-            fill: #aaa;
-        }
+    .laporan-rpt-icon svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
 
-        .topbar-search-wrap input {
-            width: 100%;
-            padding: 8px 12px 8px 36px;
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            font-size: 12px;
-            outline: none;
-            background: #f3f4f6;
-            transition: all var(--transition);
-        }
+    .laporan-rpt-card h4 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #064E3B;
+      margin: 0 0 8px;
+      line-height: 1.35;
+    }
 
-        .topbar-search-wrap input:focus {
-            background: #fff;
-            border-color: #2d6a4f;
-            box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.1);
-        }
-    </style>
+    .laporan-rpt-card p {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.84rem;
+      color: #64748B;
+      line-height: 1.6;
+      margin: 0 0 20px;
+      flex-grow: 1;
+    }
+
+    .laporan-rpt-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: auto;
+    }
+
+    .btn-rpt-outline {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 14px;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      background: #FFFFFF;
+      color: #064E3B;
+      font-size: 0.84rem;
+      font-weight: 700;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-rpt-outline:hover {
+      background: #F8FAFC;
+      border-color: #064E3B;
+    }
+
+    .btn-rpt-solid {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 14px;
+      border: none;
+      border-radius: 8px;
+      background: #064E3B;
+      color: #FFFFFF;
+      font-size: 0.84rem;
+      font-weight: 700;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      box-shadow: 0 3px 10px rgba(6, 78, 59, 0.18);
+    }
+
+    .btn-rpt-solid:hover {
+      background: #043E2F;
+      transform: translateY(-1px);
+      box-shadow: 0 5px 14px rgba(6, 78, 59, 0.25);
+    }
+
+    /* FOOTER */
+    .laporan-footer-credit {
+      text-align: center;
+      padding: 24px 0 8px;
+      font-size: 0.76rem;
+      color: #94A3B8;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1200px) {
+      .laporan-cards-grid { grid-template-columns: repeat(2, 1fr); }
+      .laporan-stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 576px) {
+      .laporan-cards-grid { grid-template-columns: 1fr; }
+      .laporan-stats-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
-
 <body>
 
-    <%- include('_sidebar', { active: 'laporan' }) %>
+  <%- include('_sidebar', { active: 'laporan' }) %>
 
-        <main class="main-content">
-            <!-- Topbar matching mockup -->
-            <%- include('_topbar', { title: 'Laporan' , showSearch: true, searchAction: '/admin/laporan' ,
-                searchPlaceholder: 'Cari laporan...' }) %>
+  <main class="main-content">
+    <%- include('_topbar', {
+      breadcrumbs: [{ label: 'Admin', url: '/admin/dashboard' }, { label: 'Pusat Laporan' }],
+      showSearch: false
+    }) %>
 
-                <div class="page-content" style="background:#fcfcf7; min-height: calc(100vh - 60px); padding: 24px;">
-                    <!-- Card header matching mockup -->
-                    <div class="form-container-box"
-                        style="padding: 24px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <h2 style="font-size: 16px; font-weight: 800; color: #064E3B;">Laporan</h2>
-                            <p style="font-size: 12px; color: #555; margin-top: 4px;">Pusat unduhan data dan
-                                rekapitulasi sistem untuk monitoring alumni.</p>
-                        </div>
-                        <button onclick="location.reload()" class="btn-laporan-solid"
-                            style="background:#064E3B; padding: 10px 20px; display:flex; align-items:center; gap:8px;">
-                            <svg viewBox="0 0 24 24" style="width:14px;height:14px;">
-                                <path
-                                    d="M19 8l-4 4h3c0 3.31-2.69 6-6 6-1.01 0-1.97-.25-2.8-.7l-1.46 1.46C8.97 19.54 10.43 20 12 20c4.42 0 8-3.58 8-8h3l-4-4zM6 12c0-3.31 2.69-6 6-6 1.01 0 1.97.25 2.8.7l1.46-1.46C15.03 4.46 13.57 4 12 4c-4.42 0-8 3.58-8 8H1l4 4 4-4H6z" />
-                            </svg>
-                            Perbarui Data
-                        </button>
-                    </div>
+    <div class="page-content">
 
-                    <!-- Grid row of reports -->
-                    <div class="laporan-flex-grid">
-                        <!-- Card 1: Tracer Study -->
-                        <div class="laporan-card-custom">
-                            <div class="laporan-icon-circle green">
-                                <svg viewBox="0 0 24 24">
-                                    <path
-                                        d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" />
-                                </svg>
-                            </div>
-                            <h4>Laporan Hasil Tracer Study</h4>
-                            <p>Data komprehensif hasil pelacakan alumni yang mencakup analisis tingkat respons, sebaran
-                                pekerjaan, dan evaluasi kurikulum berdasarkan masukan lulusan.</p>
-                            <div class="laporan-btns-row">
-                                <a href="/admin/laporan/preview" class="btn-laporan-outline">
-                                    <svg viewBox="0 0 24 24">
-                                        <path
-                                            d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
-                                    </svg>
-                                    PDF
-                                </a>
-                                <a href="/admin/laporan/export/tracer" class="btn-laporan-solid">
-                                    <svg viewBox="0 0 24 24">
-                                        <path
-                                            d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z" />
-                                    </svg>
-                                    Excel
-                                </a>
-                            </div>
-                        </div>
+      <!-- Header Section -->
+      <div class="laporan-header-section">
+        <h1>Pusat Laporan & Ekspor Data</h1>
+        <p>Unduh dan pantau rekapitulasi data alumni secara komprehensif — hasil tracer study, konseling karir, bursa kerja, hingga penilaian program studi.</p>
+      </div>
 
-                        <!-- Card 2: Konseling Karir -->
-                        <div class="laporan-card-custom">
-                            <div class="laporan-icon-circle teal">
-                                <svg viewBox="0 0 24 24">
-                                    <path
-                                        d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z" />
-                                </svg>
-                            </div>
-                            <h4>Laporan Konseling Karir</h4>
-                            <p>Rekapitulasi sesi konseling karir, penilaian performa konselor, serta tingkat partisipasi
-                                alumni dalam program bimbingan persiapan kerja.</p>
-                            <div class="laporan-btns-row">
-                                <a href="/admin/laporan/preview?type=konseling" class="btn-laporan-outline">
-                                    <svg viewBox="0 0 24 24">
-                                        <path
-                                            d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
-                                    </svg>
-                                    PDF
-                                </a>
-                                <a href="/admin/laporan/export/konseling" class="btn-laporan-solid">
-                                    <svg viewBox="0 0 24 24">
-                                        <path
-                                            d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z" />
-                                    </svg>
-                                    Excel
-                                </a>
-                            </div>
-                        </div>
+      <!-- Ringkasan Statistik -->
+      <div class="laporan-stats-grid">
+        <div class="laporan-stat-card">
+          <div class="laporan-stat-icon green">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          </div>
+          <div>
+            <div class="laporan-stat-label">Total Alumni</div>
+            <div class="laporan-stat-value"><%= stats.total_alumni %></div>
+            <div class="laporan-stat-sub">Alumni Terdaftar</div>
+          </div>
+        </div>
 
-                        <!-- Card 3: Akses Lowongan -->
-                        <div class="laporan-card-custom">
-                            <div class="laporan-icon-circle blue">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
-                                </svg>
-                            </div>
-                            <h4>Laporan Akses Lowongan Kerja</h4>
-                            <p>Metrik penggunaan bursa kerja internal, jumlah akses tombol "Lamar Sekarang" oleh alumni,
-                                dan data pengisian form akses lowongan.</p>
-                            <div class="laporan-btns-row">
-                                <a href="/admin/laporan/preview?type=lowongan" class="btn-laporan-outline">
-                                    <svg viewBox="0 0 24 24">
-                                        <path
-                                            d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
-                                    </svg>
-                                    PDF
-                                </a>
-                                <a href="/admin/laporan/export/lowongan" class="btn-laporan-solid">
-                                    <svg viewBox="0 0 24 24">
-                                        <path
-                                            d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z" />
-                                    </svg>
-                                    Excel
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+        <div class="laporan-stat-card">
+          <div class="laporan-stat-icon blue">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+          </div>
+          <div>
+            <div class="laporan-stat-label">Responden Tracer</div>
+            <div class="laporan-stat-value"><%= stats.total_tracer %></div>
+            <div class="laporan-stat-sub">Data Terisi</div>
+          </div>
+        </div>
 
-                    <!-- Footer -->
-                    <div
-                        style="text-align:center; border-top:1px solid #e2e8f0; padding-top:16px; font-size:11px; color:#777; margin-top:40px;">
-                        &copy; 2026 Information Systems Fakultas Teknik Hamzanwadi University. All Rights Reserved.
-                    </div>
-                </div>
-        </main>
+        <div class="laporan-stat-card">
+          <div class="laporan-stat-icon purple">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          </div>
+          <div>
+            <div class="laporan-stat-label">Sesi Konseling</div>
+            <div class="laporan-stat-value"><%= stats.total_konseling %></div>
+            <div class="laporan-stat-sub">Permintaan Masuk</div>
+          </div>
+        </div>
 
-        <script>
-            function toggleSidebar() {
-                document.getElementById('sidebar').classList.toggle('open');
-            }
-        </script>
+        <div class="laporan-stat-card">
+          <div class="laporan-stat-icon amber">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M20 6h-2.18c.07-.44.18-.86.18-1.3C18 2.12 15.88 0 13.3 0c-1.3 0-2.4.5-3.2 1.3L9 2.5 7.9 1.3C7.1.5 6 0 4.7 0 2.12 0 0 2.12 0 4.7c0 .44.11.86.18 1.3H0c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM13.3 2c1.49 0 2.7 1.21 2.7 2.7 0 1.49-1.21 2.7-2.7 2.7h-3.6V4.7C9.7 3.21 10.91 2 13.3 2zM2.7 7.4C1.21 7.4 0 6.19 0 4.7 0 3.21 1.21 2 2.7 2s2.7 1.21 2.7 2.7v2.7H2.7zM2 19V9h9v10H2zm11 0V9h9v10h-9z"/></svg>
+          </div>
+          <div>
+            <div class="laporan-stat-label">Akses Lowongan</div>
+            <div class="laporan-stat-value"><%= stats.total_lowongan_access %></div>
+            <div class="laporan-stat-sub">Total Log Akses</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REPORT CARDS GRID (4 CARDS MATCHING MOCKUP) -->
+      <div class="laporan-cards-grid">
+
+        <!-- Card 1: Tracer Study -->
+        <div class="laporan-rpt-card">
+          <div class="laporan-rpt-icon">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+          </div>
+          <h4>Laporan Hasil Tracer Study</h4>
+          <p>Data komprehensif hasil pelacakan alumni. Pilih filter kategori status karir untuk mencetak / mengekspor detail kuesioner secara spesifik.</p>
+          
+          <div style="margin-bottom: 16px;">
+            <label style="font-size: 11px; font-weight: 800; color: #064E3B; display: block; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;">Filter Kategori Tracer:</label>
+            <select id="tracerStatusSelect" onchange="updateTracerReportLinks(this.value)" style="width: 100%; border: 1.5px solid #a7f3d0; border-radius: 10px; padding: 9px 12px; font-size: 12.5px; font-weight: 700; color: #064E3B; background: #ecfdf5; outline: none; cursor: pointer; transition: all 0.2s ease;">
+              <option value="semua">🌐 Semua Status Karir (Ringkasan General)</option>
+              <option value="bekerja">💼 Bekerja (Detail Lengkap 13 Pertanyaan)</option>
+              <option value="wirausaha">🏪 Wirausaha (Detail Lengkap 9 Pertanyaan)</option>
+              <option value="kuliah">🎓 Studi Lanjut (Detail Lengkap 7 Pertanyaan)</option>
+              <option value="belum_bekerja">⏳ Belum Bekerja (Detail Lengkap 5 Pertanyaan)</option>
+            </select>
+          </div>
+
+          <div class="laporan-rpt-actions">
+            <a id="btnTracerPdf" href="/admin/laporan/preview?type=tracer&status=semua" class="btn-rpt-outline">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+              <span>PDF</span>
+            </a>
+            <a id="btnTracerExcel" href="/admin/laporan/export/tracer?status=semua" class="btn-rpt-solid">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+              <span>Excel</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 2: Konseling Karir -->
+        <div class="laporan-rpt-card">
+          <div class="laporan-rpt-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          </div>
+          <h4>Laporan Konseling Karir</h4>
+          <p>Rekapitulasi sesi konseling karir, penilaian performa konselor, serta tingkat partisipasi alumni dalam program bimbingan persiapan kerja.</p>
+          <div class="laporan-rpt-actions">
+            <a href="/admin/laporan/preview?type=konseling" class="btn-rpt-outline">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+              <span>PDF</span>
+            </a>
+            <a href="/admin/laporan/export/konseling" class="btn-rpt-solid">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+              <span>Excel</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 3: Apply Lowongan Kerja -->
+        <div class="laporan-rpt-card">
+          <div class="laporan-rpt-icon">
+            <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          </div>
+          <h4>Laporan Apply Lowongan Kerja</h4>
+          <p>Metrik penggunaan bursa kerja internal, jumlah aplikasi yang dikirimkan per bulan, dan tingkat keberhasilan rekrutmen alumni di perusahaan mitra.</p>
+          <div class="laporan-rpt-actions">
+            <a href="/admin/laporan/preview?type=lowongan" class="btn-rpt-outline">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+              <span>PDF</span>
+            </a>
+            <a href="/admin/laporan/export/lowongan" class="btn-rpt-solid">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+              <span>Excel</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 4: Penilaian Program Studi -->
+        <div class="laporan-rpt-card">
+          <div class="laporan-rpt-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          </div>
+          <h4>Laporan Penilaian Program Studi</h4>
+          <p>Rekapitulasi evaluasi alumni terhadap kualitas kurikulum prodi, efektivitas pengajaran dosen, keandalan fasilitas sarpras, dan masukan akreditasi.</p>
+          <div class="laporan-rpt-actions">
+            <a href="/admin/laporan/preview?type=prodi" class="btn-rpt-outline">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+              <span>PDF</span>
+            </a>
+            <a href="/admin/laporan/export/prodi" class="btn-rpt-solid">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+              <span>Excel</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="laporan-footer-credit">
+        &copy; <%= new Date().getFullYear() %> Information Systems Fakultas Teknik Universitas Hamzanwadi. All Rights Reserved.
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+    }
+
+    function updateTracerReportLinks(status) {
+      const pdfBtn = document.getElementById('btnTracerPdf');
+      const excelBtn = document.getElementById('btnTracerExcel');
+      if (pdfBtn) pdfBtn.href = '/admin/laporan/preview?type=tracer&status=' + status;
+      if (excelBtn) excelBtn.href = '/admin/laporan/export/tracer?status=' + status;
+    }
+  </script>
 </body>
-
 </html>

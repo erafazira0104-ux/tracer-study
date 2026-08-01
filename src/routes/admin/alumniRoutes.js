@@ -9,9 +9,10 @@ router.use(isAdminLoggedIn);
 
 router.get('/',                ctrl.index);
 router.get('/export',          ctrl.exportCsv);
-router.post('/import',         upload.single('csvFile'), ctrl.importCsv);
+router.get('/export-pdf',      ctrl.exportPdf);
 router.get('/tambah',          ctrl.showTambah);
 router.post('/tambah',         ctrl.store);
+router.get('/:id/detail',      ctrl.getDetail);
 router.get('/:id/edit',        ctrl.showEdit);
 router.post('/:id/edit',       ctrl.update);
 router.post('/:id/hapus',      ctrl.destroy);

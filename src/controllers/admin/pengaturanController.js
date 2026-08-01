@@ -5,16 +5,10 @@ const db = require('../../configs/db');
 exports.index = (req, res) => {
   db.query(`SELECT * FROM admin WHERE id = ?`, [req.session.adminId], (err, rows) => {
     if (err || !rows || rows.length === 0) return res.redirect('/admin/dashboard');
-    const error = req.session.flash_error || null;
-    const success = req.session.flash_success || null;
-    delete req.session.flash_error;
-    delete req.session.flash_success;
-
     res.render('admin/pengaturan', {
       title: 'Pengaturan Akun',
       adminName: req.session.adminName,
       admin: rows[0],
-      error, success,
     });
   });
 };
@@ -42,7 +36,22 @@ exports.updateProfil = (req, res) => {
       if (req.file) {
         req.session.adminFoto = '/images/' + req.file.filename;
       }
-      req.session.flash_success = 'Profil berhasil diperbarui.';
+
+      // Sync no_wa_pengirim to tracer_pengaturan under key whatsapp_admin
+      if (no_wa_pengirim) {
+        const cleanWa = no_wa_pengirim.trim().replace(/[^0-9]/g, '');
+        db.query(
+          `INSERT INTO tracer_pengaturan (kunci, nilai, keterangan)
+           VALUES ('whatsapp_admin', ?, 'Nomor WhatsApp resmi Administrator / IT Support')
+           ON DUPLICATE KEY UPDATE nilai = VALUES(nilai)`,
+          [cleanWa],
+          (eWa) => {
+            if (eWa) console.error('Error syncing whatsapp_admin setting:', eWa.message);
+          }
+        );
+      }
+
+      req.session.flash_success = 'Profil & Nomor WhatsApp Administrator berhasil diperbarui.';
     }
     res.redirect('/admin/pengaturan');
   });

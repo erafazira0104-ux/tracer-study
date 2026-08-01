@@ -209,61 +209,22 @@
               </span>
             </div>
 
-            <!-- Conditional Details based on status -->
-            <% if (tracerDetail.status_pekerjaan === 'bekerja' || tracerDetail.status_pekerjaan === 'wirausaha') { %>
-              <div class="detail-grid" style="row-gap: 20px;">
-                <div class="detail-item">
-                  <label><%= tracerDetail.status_pekerjaan === 'wirausaha' ? 'Nama Usaha' : 'Nama Perusahaan' %></label>
-                  <span><%= tracerDetail.nama_perusahaan || '-' %></span>
-                </div>
-                <div class="detail-item">
-                  <label>Posisi / Jabatan</label>
-                  <span><%= tracerDetail.jabatan || '-' %></span>
-                </div>
-                <div class="detail-item">
-                  <label>Bidang Usaha</label>
-                  <span><%= tracerDetail.bidang_perusahaan || '-' %></span>
-                </div>
-                <div class="detail-item">
-                  <label>Lokasi Pekerjaan</label>
-                  <span><%= tracerDetail.lokasi_perusahaan || '-' %></span>
-                </div>
-                <div class="detail-item">
-                  <label>Gaji Pertama</label>
-                  <span><%= tracerDetail.gaji_pertama || '-' %></span>
-                </div>
-                <div class="detail-item">
-                  <label>Lama Mencari Kerja</label>
-                  <span><%= tracerDetail.lama_mencari_kerja || '-' %></span>
-                </div>
-                <div class="detail-item">
-                  <label>Kesesuaian Bidang</label>
-                  <span><%= tracerDetail.kesesuaian_bidang || '-' %></span>
-                </div>
-              </div>
-            <% } else if (tracerDetail.status_pekerjaan === 'kuliah') { %>
-              <div class="detail-grid" style="row-gap: 20px;">
-                <div class="detail-item">
-                  <label>Nama Universitas</label>
-                  <span><%= tracerDetail.nama_universitas || '-' %></span>
-                </div>
-                <div class="detail-item">
-                  <label>Program Studi</label>
-                  <span><%= tracerDetail.program_studi_lanjut || '-' %></span>
-                </div>
-                <div class="detail-item">
-                  <label>Jenjang Pendidikan</label>
-                  <span><%= tracerDetail.jenjang_lanjut || '-' %></span>
-                </div>
-              </div>
-            <% } else { %>
-              <div class="detail-grid">
-                <div class="detail-item">
-                  <label>Lama Mencari Kerja</label>
-                  <span><%= tracerDetail.lama_mencari_kerja || '-' %></span>
-                </div>
-              </div>
-            <% } %>
+            <!-- Dynamic Details based on status -->
+            <div class="detail-grid" style="row-gap: 20px;">
+              <% 
+                const statusQuestions = (typeof pertanyaanList !== 'undefined' ? pertanyaanList : []).filter(q => q.kategori !== 'penilaian_prodi');
+                if (statusQuestions.length === 0) {
+              %>
+                <div style="grid-column: span 2; color: #64748b; font-size: 13px;">Tidak ada detail kuesioner status karir.</div>
+              <% } else { %>
+                <% statusQuestions.forEach(q => { %>
+                  <div class="detail-item">
+                    <label><%= q.pertanyaan %></label>
+                    <span><%= q.jawaban || '-' %></span>
+                  </div>
+                <% }) %>
+              <% } %>
+            </div>
           </div>
 
           <!-- Evaluation Card -->
@@ -272,50 +233,30 @@
               Evaluasi Pembelajaran & Mutu Prodi (Skala 1 - 5)
             </h3>
             
-            <div class="rating-row">
-              <div style="font-size:13px; font-weight:500; color:#334155;">Kurikulum Pembelajaran</div>
-              <div class="rating-stars">
-                <% [1, 2, 3, 4, 5].forEach(star => { %>
-                  <span class="star-dot <%= tracerDetail.eval_kurikulum >= star ? 'filled' : '' %>"><%= star %></span>
-                <% }) %>
-              </div>
-            </div>
-
-            <div class="rating-row">
-              <div style="font-size:13px; font-weight:500; color:#334155;">Kualitas Dosen Mengajar</div>
-              <div class="rating-stars">
-                <% [1, 2, 3, 4, 5].forEach(star => { %>
-                  <span class="star-dot <%= tracerDetail.eval_dosen >= star ? 'filled' : '' %>"><%= star %></span>
-                <% }) %>
-              </div>
-            </div>
-
-            <div class="rating-row">
-              <div style="font-size:13px; font-weight:500; color:#334155;">Fasilitas Kampus & Lab</div>
-              <div class="rating-stars">
-                <% [1, 2, 3, 4, 5].forEach(star => { %>
-                  <span class="star-dot <%= tracerDetail.eval_fasilitas >= star ? 'filled' : '' %>"><%= star %></span>
-                <% }) %>
-              </div>
-            </div>
-
-            <div class="rating-row">
-              <div style="font-size:13px; font-weight:500; color:#334155;">Layanan Akademik & Administrasi</div>
-              <div class="rating-stars">
-                <% [1, 2, 3, 4, 5].forEach(star => { %>
-                  <span class="star-dot <%= tracerDetail.eval_pelayanan >= star ? 'filled' : '' %>"><%= star %></span>
-                <% }) %>
-              </div>
-            </div>
-
-            <div class="rating-row" style="border-bottom:none;">
-              <div style="font-size:13px; font-weight:500; color:#334155;">Program MBKM & Magang</div>
-              <div class="rating-stars">
-                <% [1, 2, 3, 4, 5].forEach(star => { %>
-                  <span class="star-dot <%= tracerDetail.eval_mbkm >= star ? 'filled' : '' %>"><%= star %></span>
-                <% }) %>
-              </div>
-            </div>
+            <% 
+              const prodiQuestions = (typeof pertanyaanList !== 'undefined' ? pertanyaanList : []).filter(q => q.kategori === 'penilaian_prodi');
+              if (prodiQuestions.length === 0) {
+            %>
+              <div style="color: #64748b; font-size: 13px;">Tidak ada penilaian program studi.</div>
+            <% } else { %>
+              <% prodiQuestions.forEach((q, idx) => { %>
+                <% if (q.jenis_jawaban === 'essay') { %>
+                  <div style="padding: 12px 0; border-bottom: 1px solid #f1f5f9;">
+                    <div style="font-size:13px; font-weight:700; color:#1e293b; margin-bottom: 4px;"><%= q.pertanyaan %></div>
+                    <div style="font-size:13px; color:#475569; background: #f8fafc; padding: 10px 14px; border-radius: 8px; border: 1px solid #e2e8f0; line-height:1.5;"><%= q.jawaban || 'Tidak ada isian.' %></div>
+                  </div>
+                <% } else { %>
+                  <div class="rating-row" style="<%= idx === prodiQuestions.length - 1 ? 'border-bottom:none;' : '' %>">
+                    <div style="font-size:13px; font-weight:500; color:#334155; max-width:60%;"><%= q.pertanyaan %></div>
+                    <div class="rating-stars">
+                      <% [1, 2, 3, 4, 5].forEach(star => { %>
+                        <span class="star-dot <%= q.jawaban >= star ? 'filled' : '' %>"><%= star %></span>
+                      <% }) %>
+                    </div>
+                  </div>
+                <% } %>
+              <% }) %>
+            <% } %>
           </div>
 
           <!-- Saran -->
@@ -594,5 +535,6 @@ function closeModal() {
 </script>
 <% } %>
 
+<%- include('components/custom-toast-confirm') %>
 </body>
 </html>

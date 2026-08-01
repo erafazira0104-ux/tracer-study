@@ -37,8 +37,15 @@ app.use((req, res, next) => {
   res.locals.alumniName = req.session.alumniName || null;
   res.locals.alumniNim = req.session.alumniNim || null;
 
-  res.locals.flash_success = req.flash('success')[0] || null;
-  res.locals.flash_error = req.flash('error')[0] || null;
+  // Salin custom session flash messages ke res.locals
+  res.locals.flash_success = req.session.flash_success || req.flash('success')[0] || null;
+  res.locals.flash_error = req.session.flash_error || req.flash('error')[0] || null;
+  res.locals.error = res.locals.flash_error;
+  res.locals.success = res.locals.flash_success;
+
+  // Hapus dari session agar langsung bersih dan tidak muncul terus-menerus
+  delete req.session.flash_success;
+  delete req.session.flash_error;
   next();
 });
 

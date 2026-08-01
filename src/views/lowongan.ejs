@@ -4,6 +4,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lowongan Kerja &amp; Karir | Tracer Study Hamzanwadi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="/css/public.css" />
     <link rel="stylesheet" href="/css/lowongan.css" />
 </head>
@@ -13,117 +17,147 @@
     <!-- ===== NAVBAR ===== -->
     <%- include('partials/public-navbar') %>
 
-    <!-- ===== HERO ===== -->
+    <!-- ===== HERO SECTION ===== -->
     <section class="hero">
-        <div class="hero-icon-wrap">
-            <svg viewBox="0 0 24 24">
-                <path
-                    d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-            </svg>
+        <div class="hero-container">
+            <div class="hero-icon-badge">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                </svg>
+            </div>
+
+            <h1 class="hero-title">Temukan Karir <span>Impian Anda</span></h1>
+
+            <div class="hero-divider">
+                <span class="hero-divider-line"></span>
+                <span class="hero-divider-dot"></span>
+                <span class="hero-divider-line"></span>
+            </div>
+
+            <p class="hero-subtitle">Akses eksklusif bagi alumni Sistem Informasi Universitas Hamzanwadi untuk terhubung dengan jaringan perusahaan mitra terkemuka di industri teknologi global.</p>
+
+            <!-- Search & Filter Bar -->
+            <div class="search-box-wrap">
+                <div class="search-box">
+                    <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                    <input type="text" id="jobSearchInput" onkeyup="filterJobs()" placeholder="Cari posisi lowongan, perusahaan, atau lokasi..." />
+                    <button type="button" class="btn-search-clear" id="btnClearSearch" onclick="clearSearch()" style="display:none;">&times;</button>
+                </div>
+            </div>
         </div>
-        <h1>Temukan Karir <span>Impian Anda</span></h1>
-        <div class="hero-divider"></div>
-        <p>Akses eksklusif bagi alumni Sistem Informasi Universitas Hamzanwadi untuk terhubung dengan jaringan
-            perusahaan mitra terkemuka di industri teknologi global.</p>
     </section>
 
     <!-- ===== DAFTAR LOWONGAN ===== -->
     <section class="section lowongan-section">
-        <div class="lowongan-list">
-            <% if (lowongans && lowongans.length > 0) { %>
-                <% lowongans.forEach(function(job) { %>
-                    <div class="lowongan-card">
-                        <div class="lowongan-img-wrap">
-                            <% if (job.gambar) { %>
-                                <img src="<%= job.gambar %>" alt="<%= job.judul %>" class="lowongan-img" />
-                            <% } else { %>
-                                <div class="lowongan-img-placeholder">
-                                    <svg viewBox="0 0 24 24">
-                                        <path
-                                            d="M20 6h-2.18c.07-.44.18-.88.18-1.35C18 2.53 15.47 0 12 0 8.53 0 6 2.53 6 4.65c0 .47.11.91.18 1.35H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-8 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" />
-                                    </svg>
+        <div class="lowongan-container">
+            <div class="lowongan-header-meta">
+                <span class="total-badge" id="jobCountBadge">Menampilkan <%= (lowongans && lowongans.length) || 0 %> Lowongan Aktif</span>
+            </div>
+
+            <div class="lowongan-list" id="lowonganList">
+                <% if (lowongans && lowongans.length > 0) { %>
+                    <% lowongans.forEach(function(job) { %>
+                        <div class="lowongan-card" data-title="<%= job.judul.toLowerCase() %>" data-company="<%= (job.perusahaan || '').toLowerCase() %>" data-location="<%= (job.lokasi || '').toLowerCase() %>">
+                            <div class="lowongan-card-body">
+                                <div class="lowongan-img-wrap">
+                                    <% if (job.gambar) { %>
+                                        <img src="<%= job.gambar %>" alt="<%= job.judul %>" class="lowongan-img" />
+                                    <% } else { %>
+                                        <div class="lowongan-img-placeholder">
+                                            <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                                            </svg>
+                                        </div>
+                                    <% } %>
                                 </div>
-                            <% } %>
-                        </div>
-                        <div class="lowongan-info">
-                            <h2 class="lowongan-title">
-                                <%= job.judul %>
-                            </h2>
-                            <p class="lowongan-desc">
-                                <%= job.deskripsi %>
-                            </p>
-                            <div class="lowongan-meta">
-                                <svg viewBox="0 0 24 24">
-                                    <path
-                                        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                                </svg>
-                                <span>
-                                    <%= job.lokasi %>
-                                </span>
+
+                                <div class="lowongan-info">
+                                    <h2 class="lowongan-title"><%= job.judul %></h2>
+                                    
+                                    <p class="lowongan-desc"><%= job.deskripsi %></p>
+                                    
+                                    <% if (job.lokasi) { %>
+                                        <div class="lowongan-location">
+                                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                                <circle cx="12" cy="10" r="3"></circle>
+                                            </svg>
+                                            <span><%= job.lokasi %></span>
+                                        </div>
+                                    <% } %>
+                                </div>
+
+                                <div class="lowongan-action">
+                                    <button type="button" onclick="openAksesModal(event, '<%= job.id %>', '<%= job.link || '#' %>')" class="btn-lamar">
+                                        Lamar Sekarang
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <div class="lowongan-action">
-                            <a href="#" onclick="openAksesModal(event, '<%= job.id %>', '<%= job.link || '#' %>')"
-                                class="btn-lamar">Lamar Sekarang</a>
-                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="lowongan-empty">
+                        <svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .9-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.9 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
+                        <p>Belum ada lowongan kerja yang tersedia saat ini.</p>
                     </div>
-                <% }); %>
-            <% } else { %>
-                <div class="lowongan-empty">
-                    <p>Belum ada lowongan tersedia saat ini.</p>
+                <% } %>
+            </div>
+
+            <!-- PAGINATION -->
+            <% if (totalHalaman > 1) { %>
+                <div class="pagination">
+                    <a href="/lowongan?halaman=<%= halaman > 1 ? halaman - 1 : 1 %>"
+                        class="page-btn nav-btn <%= halaman <= 1 ? 'disabled' : '' %>">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+                        </svg>
+                    </a>
+                    <% for (let i = 1; i <= totalHalaman; i++) { %>
+                        <a href="/lowongan?halaman=<%= i %>" class="page-btn <%= i === halaman ? 'active' : '' %>">
+                            <%= i %>
+                        </a>
+                    <% } %>
+                    <a href="/lowongan?halaman=<%= halaman < totalHalaman ? halaman + 1 : totalHalaman %>"
+                        class="page-btn nav-btn <%= halaman >= totalHalaman ? 'disabled' : '' %>">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+                        </svg>
+                    </a>
                 </div>
             <% } %>
         </div>
-
-        <!-- PAGINATION -->
-        <% if (totalHalaman > 1) { %>
-            <div class="pagination">
-                <a href="/lowongan?halaman=<%= halaman > 1 ? halaman - 1 : 1 %>"
-                    class="page-btn nav-btn <%= halaman <= 1 ? 'disabled' : '' %>">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
-                    </svg>
-                </a>
-                <% for (let i = 1; i <= totalHalaman; i++) { %>
-                    <a href="/lowongan?halaman=<%= i %>" class="page-btn <%= i === halaman ? 'active' : '' %>">
-                        <%= i %>
-                    </a>
-                <% } %>
-                <a href="/lowongan?halaman=<%= halaman < totalHalaman ? halaman + 1 : totalHalaman %>"
-                    class="page-btn nav-btn <%= halaman >= totalHalaman ? 'disabled' : '' %>">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-                    </svg>
-                </a>
-            </div>
-        <% } %>
     </section>
 
     <!-- ===== FOOTER ===== -->
     <%- include('partials/public-footer') %>
 
-    <!-- Modal Form Akses Lowongan -->
+    <!-- ===== MODAL FORM AKSES LOWONGAN ===== -->
     <div class="modal-overlay" id="aksesModal">
         <div class="modal-box">
             <div class="modal-header">
-                <h3>Form Akses Lowongan</h3>
+                <div class="modal-header-title">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                    <h3>Form Akses &amp; Lamaran</h3>
+                </div>
                 <button type="button" onclick="closeAksesModal()" class="btn-close-modal">&times;</button>
             </div>
             <form id="aksesForm" onsubmit="submitAksesForm(event)" class="modal-form">
                 <input type="hidden" name="lowongan_id" id="akses_lowongan_id" />
 
                 <div class="form-group">
-                    <label>Nama Lengkap <span class="required">*</span></label>
+                    <label>Nama Lengkap Alumni <span class="required">*</span></label>
                     <input type="text" name="nama" required placeholder="Masukkan nama lengkap Anda" />
                 </div>
 
                 <div class="form-group">
-                    <label>NIM <span class="required">*</span></label>
-                    <input type="text" name="nim" required placeholder="Masukkan NIM Anda" />
+                    <label>NIM (Nomor Induk Mahasiswa) <span class="required">*</span></label>
+                    <input type="text" name="nim" required placeholder="Masukkan NIM Anda (Terdaftar di database)" />
                 </div>
 
                 <div class="form-group">
-                    <label>Email <span class="required">*</span></label>
+                    <label>Email Terdaftar <span class="required">*</span></label>
                     <input type="email" name="email" required placeholder="name@example.com" />
                 </div>
 
@@ -134,9 +168,28 @@
 
                 <div class="modal-actions">
                     <button type="button" onclick="closeAksesModal()" class="btn-cancel">Batal</button>
-                    <button type="submit" class="btn-submit">Kirim &amp; Lanjutkan</button>
+                    <button type="submit" class="btn-submit">
+                        <span>Kirim &amp; Lanjutkan</span>
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+                    </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- ===== CUSTOM ALERT POPUP MODAL (Replacing native browser alert) ===== -->
+    <div class="alert-modal-overlay" id="customAlertModal">
+        <div class="alert-modal-box">
+            <div class="alert-modal-icon-wrap" id="alertModalIconBg">
+                <svg id="alertIconError" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                <svg id="alertIconSuccess" viewBox="0 0 24 24" style="display:none;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                <svg id="alertIconInfo" viewBox="0 0 24 24" style="display:none;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            </div>
+            <h3 class="alert-modal-title" id="alertModalTitle">Pemberitahuan</h3>
+            <p class="alert-modal-message" id="alertModalMessage"></p>
+            <div class="alert-modal-actions">
+                <button type="button" onclick="closeCustomAlert()" class="btn-alert-ok">Mengerti</button>
+            </div>
         </div>
     </div>
 
@@ -158,6 +211,39 @@
             return clean;
         }
 
+        /* ===== CUSTOM ALERT MODAL ===== */
+        function showCustomAlert(title, message, type = 'error') {
+            const modal = document.getElementById('customAlertModal');
+            const iconBg = document.getElementById('alertModalIconBg');
+            const titleEl = document.getElementById('alertModalTitle');
+            const msgEl = document.getElementById('alertModalMessage');
+            const iconErr = document.getElementById('alertIconError');
+            const iconSucc = document.getElementById('alertIconSuccess');
+            const iconInfo = document.getElementById('alertIconInfo');
+
+            titleEl.textContent = title;
+            msgEl.textContent = message;
+
+            iconErr.style.display = type === 'error' ? 'block' : 'none';
+            iconSucc.style.display = type === 'success' ? 'block' : 'none';
+            iconInfo.style.display = type === 'info' ? 'block' : 'none';
+
+            iconBg.className = 'alert-modal-icon-wrap ' + type;
+
+            modal.style.display = 'flex';
+            modal.offsetHeight;
+            modal.classList.add('show');
+        }
+
+        function closeCustomAlert() {
+            const modal = document.getElementById('customAlertModal');
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        /* ===== MODAL AKSES LOWONGAN ===== */
         function openAksesModal(event, jobId, jobUrl) {
             event.preventDefault();
 
@@ -169,10 +255,8 @@
             if (alumniData.nim && form.nim) form.nim.value = alumniData.nim;
             if (alumniData.email && form.email) form.email.value = alumniData.email;
 
-            // Show modal with animation
             const modal = document.getElementById('aksesModal');
             modal.style.display = 'flex';
-            // Force reflow
             modal.offsetHeight;
             modal.classList.add('show');
         }
@@ -208,16 +292,55 @@
                         if (currentTargetUrl) {
                             window.open(currentTargetUrl, '_blank');
                         } else {
-                            alert('Data lamaran Anda berhasil dikirim! Terima kasih.');
+                            showCustomAlert('Lamaran Berhasil', 'Data lamaran Anda berhasil dikirim! Terima kasih.', 'success');
                         }
                     } else {
-                        alert(res.message || 'Gagal menyimpan akses.');
+                        showCustomAlert('Verifikasi Gagal', res.message || 'Gagal menyimpan akses.', 'error');
                     }
                 })
                 .catch(err => {
                     console.error('Error logging access:', err);
-                    alert('Terjadi kesalahan koneksi.');
+                    showCustomAlert('Kesalahan Koneksi', 'Terjadi kesalahan koneksi. Silakan coba lagi.', 'error');
                 });
+        }
+
+        /* ===== LIVE SEARCH FILTER ===== */
+        function filterJobs() {
+            const input = document.getElementById('jobSearchInput');
+            const filter = input.value.toLowerCase().trim();
+            const btnClear = document.getElementById('btnClearSearch');
+            const cards = document.querySelectorAll('.lowongan-card');
+            let visibleCount = 0;
+
+            if (filter.length > 0) {
+                btnClear.style.display = 'block';
+            } else {
+                btnClear.style.display = 'none';
+            }
+
+            cards.forEach(card => {
+                const title = card.getAttribute('data-title') || '';
+                const company = card.getAttribute('data-company') || '';
+                const location = card.getAttribute('data-location') || '';
+
+                if (title.includes(filter) || company.includes(filter) || location.includes(filter)) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            const countBadge = document.getElementById('jobCountBadge');
+            if (countBadge) {
+                countBadge.textContent = `Menampilkan ${visibleCount} Lowongan ${filter ? 'Sesuai Pencarian' : 'Aktif'}`;
+            }
+        }
+
+        function clearSearch() {
+            const input = document.getElementById('jobSearchInput');
+            input.value = '';
+            filterJobs();
         }
     </script>
 </body>

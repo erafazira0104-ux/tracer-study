@@ -7,7 +7,6 @@ router.use(isAdminLoggedIn);
 
 router.get('/',                 ctrl.index);
 router.post('/',                ctrl.tambah);
-router.post('/pengaturan',      ctrl.updatePengaturan);
 router.post('/:id/hapus',       ctrl.hapus);
 
 module.exports = router;

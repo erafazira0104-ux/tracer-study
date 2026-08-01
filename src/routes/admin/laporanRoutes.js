@@ -10,5 +10,6 @@ router.get('/preview',           ctrl.preview);
 router.get('/export/tracer',     ctrl.exportTracer);
 router.get('/export/konseling',  ctrl.exportKonseling);
 router.get('/export/lowongan',   ctrl.exportLowongan);
+router.get('/export/prodi',      ctrl.exportProdi);
 
 module.exports = router;

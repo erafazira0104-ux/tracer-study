@@ -56,8 +56,8 @@ const logJobAccess = (req, res) => {
   const cleanEmail = email.trim();
   const cleanHp = no_hp ? no_hp.trim() : null;
 
-  // Periksa apakah NIM terdaftar di database (tabel alumni)
-  db.query('SELECT id FROM alumni WHERE nim = ?', [cleanNim], (errCheck, alumniRows) => {
+  // Periksa apakah NIM dan Nama terdaftar & cocok di database (tabel alumni)
+  db.query('SELECT id, nama FROM alumni WHERE nim = ?', [cleanNim], (errCheck, alumniRows) => {
     if (errCheck) {
       console.error('Error checking NIM for job access:', errCheck);
       return res.status(500).json({ ok: false, message: 'Terjadi kesalahan sistem saat memvalidasi NIM.' });
@@ -65,6 +65,11 @@ const logJobAccess = (req, res) => {
 
     if (!alumniRows || alumniRows.length === 0) {
       return res.status(400).json({ ok: false, message: 'NIM tidak terdaftar di database. Anda harus menjadi alumni terdaftar untuk mengakses lowongan.' });
+    }
+
+    const dbNama = (alumniRows[0].nama || '').trim().toLowerCase();
+    if (dbNama !== cleanNama.toLowerCase()) {
+      return res.status(400).json({ ok: false, message: 'Kombinasi NIM dan Nama tidak cocok dengan data alumni terdaftar di database. Silakan periksa kembali Nama Anda.' });
     }
 
     const matchedAlumniId = alumniId || alumniRows[0].id;

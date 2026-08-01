@@ -236,19 +236,8 @@
       </a>
     </div>
 
-    <!-- Alert / Messages -->
-    <% if (flash_success) { %>
-      <div class="alert alert-success" style="background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d; padding:16px; border-radius:12px; margin-bottom:24px; display:flex; gap:12px; align-items:center;">
-        <span style="font-weight:bold;">✓</span>
-        <div><%= flash_success %></div>
-      </div>
-    <% } %>
-    <% if (flash_error) { %>
-      <div class="alert alert-danger" style="background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; padding:16px; border-radius:12px; margin-bottom:24px; display:flex; gap:12px; align-items:center;">
-        <span style="font-weight:bold;">⚠️</span>
-        <div><%= flash_error %></div>
-      </div>
-    <% } %>
+
+
 
     <!-- TAMBAH PERIODE FORM -->
     <div class="tambah-periode-form">
@@ -369,6 +358,11 @@
                 </button>
               </form>
 
+              <!-- EDIT -->
+              <button type="button" class="btn-act" style="background:#eff6ff; color:#3b82f6; border:1px solid #bfdbfe; font-size:12px; font-weight:700; cursor:pointer;" onclick='openEditPeriodeModal(<%= JSON.stringify(p) %>)' title="Edit Periode">
+                Edit
+              </button>
+
               <!-- DELETE -->
               <form action="/admin/tracer/periode/<%= p.id %>/hapus" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus periode ini?')" style="flex-shrink:0;">
                 <button type="submit" class="btn-act btn-act-delete" title="Hapus Periode">
@@ -382,6 +376,41 @@
     </div>
   </div>
 </main>
+
+<!-- MODAL EDIT PERIODE -->
+<div id="modalEditPeriode" class="modal-admin-backdrop" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.3); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:#fff; border-radius:24px; border:1px solid rgba(6,78,59,0.08); width:100%; max-width:550px; padding:32px; box-shadow:0 24px 50px -12px rgba(0,0,0,0.15); position:relative;">
+    <h3 style="font-size:18px; font-weight:800; color:#064E3B; margin-bottom:6px; display:flex; align-items:center; gap:8px;">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+      Edit Periode Tracer Study
+    </h3>
+    <p style="font-size:13px; color:#64748b; margin-bottom:24px;">Perbarui durasi dan waktu aktif pengisian kuesioner tracer study.</p>
+    
+    <form id="formEditPeriode" action="" method="POST" style="display:flex; flex-direction:column; gap:20px;">
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <label for="edit_nama_periode" style="font-size:12px; font-weight:700; color:#334155; text-transform:uppercase;">Nama / Label Periode</label>
+        <input type="text" id="edit_nama_periode" name="nama" required style="border:1.5px solid #cbd5e1; border-radius:12px; padding:12px 16px; font-size:14px; outline:none; background:#fafaf9; width:100%; box-sizing:border-box;"/>
+      </div>
+      
+      <div style="display:flex; gap:16px; flex-wrap:wrap;">
+        <div style="flex:1; min-width:200px; display:flex; flex-direction:column; gap:6px;">
+          <label for="edit_tanggal_mulai" style="font-size:12px; font-weight:700; color:#334155; text-transform:uppercase;">Waktu Mulai</label>
+          <input type="text" id="edit_tanggal_mulai" name="tanggal_mulai" required style="border:1.5px solid #cbd5e1; border-radius:12px; padding:12px 16px; font-size:14px; outline:none; background:#fafaf9; width:100%; box-sizing:border-box;"/>
+        </div>
+        
+        <div style="flex:1; min-width:200px; display:flex; flex-direction:column; gap:6px;">
+          <label for="edit_tanggal_selesai" style="font-size:12px; font-weight:700; color:#334155; text-transform:uppercase;">Waktu Selesai</label>
+          <input type="text" id="edit_tanggal_selesai" name="tanggal_selesai" required style="border:1.5px solid #cbd5e1; border-radius:12px; padding:12px 16px; font-size:14px; outline:none; background:#fafaf9; width:100%; box-sizing:border-box;"/>
+        </div>
+      </div>
+      
+      <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:12px;">
+        <button type="button" class="btn btn-ghost" onclick="closeEditPeriodeModal()" style="padding:12px 20px; font-weight:700; font-size:14px; border:none; cursor:pointer; background:none; color:#64748b;">Batal</button>
+        <button type="submit" class="btn-submit-custom" style="height:44px; padding:0 24px;">Simpan Perubahan</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 <!-- Flatpickr JS -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -406,6 +435,61 @@
     dateFormat: "Y-m-d H:i",
     time_24hr: true
   });
+  
+  // Flatpickr instances for Edit Form
+  const editMulaiPicker = flatpickr("#edit_tanggal_mulai", {
+    enableTime: true,
+    altInput: true,
+    altFormat: "d-m-Y H:i",
+    dateFormat: "Y-m-d H:i",
+    time_24hr: true
+  });
+  
+  const editSelesaiPicker = flatpickr("#edit_tanggal_selesai", {
+    enableTime: true,
+    altInput: true,
+    altFormat: "d-m-Y H:i",
+    dateFormat: "Y-m-d H:i",
+    time_24hr: true
+  });
+  
+  // Edit Periode Modal Functions
+  function openEditPeriodeModal(periode) {
+    const modal = document.getElementById('modalEditPeriode');
+    const form = document.getElementById('formEditPeriode');
+    const nameInput = document.getElementById('edit_nama_periode');
+    
+    // Set form action URL
+    form.action = `/admin/tracer/periode/${periode.id}/edit`;
+    
+    // Set Fields
+    nameInput.value = periode.nama;
+    
+    // Format dates to YYYY-MM-DD HH:MM
+    const startObj = new Date(periode.tanggal_mulai);
+    const endObj = new Date(periode.tanggal_selesai);
+    
+    const pad = (n) => n.toString().padStart(2, '0');
+    const formatDt = (d) => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    
+    editMulaiPicker.setDate(formatDt(startObj));
+    editSelesaiPicker.setDate(formatDt(endObj));
+    
+    modal.style.display = 'flex';
+  }
+  
+  function closeEditPeriodeModal() {
+    document.getElementById('modalEditPeriode').style.display = 'none';
+  }
+  
+  // Close modal when clicking outer backdrop
+  window.addEventListener('click', function(e) {
+    const modal = document.getElementById('modalEditPeriode');
+    if (e.target === modal) {
+      closeEditPeriodeModal();
+    }
+  });
 </script>
+<%- include('components/custom-toast-confirm') %>
 </body>
 </html>
